@@ -6,12 +6,13 @@
 #define RRT_PROJECT_PLANNER_H
 
 #include <set>
+#include <unordered_set>
 #include "../State/RobotState.h"
 #include "../State/Location.h"
 #include "../State/Coordinate.h"
 
 // todo: have functions for drawing (circle, line, obstacle ... take in a color too?)
-// todo: verify that locations are being checked correctly for uniqueness
+// todo: verify that locations are being checked correctly for uniqueness (make a hash function, do unordered set of location)
 
 class Planner {
 public:
@@ -32,7 +33,7 @@ private:
     // saving all created states and locations
     // this will make deleting pointers easy in the destructor
     // this will also allow checking for duplicate locations
-    std::set<RobotState*> allStates;
+    std::unordered_set<RobotState*> allStates;
     std::set<Location*> allLocations;
 };
 

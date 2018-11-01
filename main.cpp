@@ -1,25 +1,6 @@
-//#include <iostream>
-//
-//int main() {
-//    std::cout << "Hello, World!" << std::endl;
-//    return 0;
-//}
 #include <GL/glut.h>
 #include <string>
 #include "Planner/Planner.h"
-
-void displayMe(void)
-{
-    glClear(GL_COLOR_BUFFER_BIT);
-    glBegin(GL_LINES);
-    glColor3f(0.0, 0.0, 1.0);
-    glVertex2f(.5, .5);
-    glVertex2f(.5, 0);
-    glVertex2f(.5, 0);
-    glVertex2f(0, .5);
-    glEnd();
-    glFlush();
-}
 
 int main(int argc, char** argv)
 {
