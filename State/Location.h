@@ -6,6 +6,7 @@
 #define RRT_PROJECT_LOCATION_H
 
 
+#include <queue>
 #include "Coordinate.h"
 
 class Location {
@@ -15,11 +16,11 @@ public:
     bool operator==(const Location &rhs) const;
     bool operator!=(const Location &rhs) const;
 
-    float xPosition();
-    float yPosition();
+    float xPosition() const;
+    float yPosition() const;
 
-    int xID();
-    int yID();
+    int xID() const;
+    int yID() const;
 
 private:
     Coordinate x_coord;

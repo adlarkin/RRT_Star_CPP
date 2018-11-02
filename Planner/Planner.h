@@ -10,9 +10,11 @@
 #include "../State/RobotState.h"
 #include "../State/Location.h"
 #include "../State/Coordinate.h"
+#include "../Utils/ObjHashes.cpp"
 
-// todo: have functions for drawing (circle, line, obstacle ... take in a color too?)
-// todo: verify that locations are being checked correctly for uniqueness (make a hash function, do unordered set of location)
+// todo: have drawing functions (circle, line, obstacle ... take in a color too) -- Visualization directory
+// todo: add in a folder of colors in the Vizualization directory
+
 
 class Planner {
 public:
@@ -34,7 +36,7 @@ private:
     // this will make deleting pointers easy in the destructor
     // this will also allow checking for duplicate locations
     std::unordered_set<RobotState*> allStates;
-    std::set<Location*> allLocations;
+    std::unordered_set<Location> allLocations;
 };
 
 

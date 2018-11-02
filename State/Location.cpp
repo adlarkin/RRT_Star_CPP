@@ -16,18 +16,18 @@ bool Location::operator!=(const Location &rhs) const {
     return !(rhs == *this);
 }
 
-float Location::xPosition() {
+float Location::xPosition() const {
     return x_coord.getPos();
 }
 
-float Location::yPosition() {
+float Location::yPosition() const {
     return y_coord.getPos();
 }
 
-int Location::xID() {
+int Location::xID() const {
     return x_coord.getId();
 }
 
-int Location::yID() {
+int Location::yID() const {
     return y_coord.getId();
 }

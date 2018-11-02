@@ -19,8 +19,8 @@ Planner::Planner(int numPoints, float epsilon) :
     this->root = new RobotState(nullptr, this->start);  // the root state has no parent
 
     this->allStates.insert(root);
-    this->allLocations.insert(&this->start);
-    this->allLocations.insert(&this->end);
+    this->allLocations.insert(this->start);
+    this->allLocations.insert(this->end);
 }
 
 void Planner::print() {
