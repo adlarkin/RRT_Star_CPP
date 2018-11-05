@@ -13,6 +13,13 @@
 #include "../Utils/ObjHashes.cpp"
 #include "../Visualization/ShapeDrawer.h"
 
+// needed for rTree
+// boost must be installed in order for this to work
+#include <boost/geometry.hpp>
+#include <boost/geometry/geometries/point.hpp>
+#include <boost/geometry/geometries/box.hpp>
+namespace bg = boost::geometry;
+namespace bgi = boost::geometry::index;
 
 class Planner {
 public:

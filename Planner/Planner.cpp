@@ -23,7 +23,7 @@ Planner::Planner(int numPoints, float epsilon) :
     this->allLocations.insert(this->start);
     this->allLocations.insert(this->end);
 
-    glFlush();
+    glFlush();  // this opens up an openGL screen with a black background
 }
 
 void Planner::findBestPath() {
@@ -33,25 +33,28 @@ void Planner::findBestPath() {
 
     drawer.drawLine(start, end);
     drawer.drawRectangle(.3f, start, .1f);
+    glFlush();
 
-    /*
     // wait half a second before showing the next line
     std::chrono::milliseconds waitTime(500);
     std::this_thread::sleep_for(waitTime);
-    */
 
     drawer.drawLine(Location(makeRandomCoordinate(), makeRandomCoordinate()),
             Location(makeRandomCoordinate(), makeRandomCoordinate()));
     glFlush();
 
+    int iterations = 0;
     while (allStates.size() < maxIterations) {
         // todo: write the rrt* code here
+        // todo: no obstacles first. add obstacles after the planner works w/o them
         break;
     }
 }
 
 Coordinate Planner::makeRandomCoordinate() {
-    int pointRange = 2 * this->maxIterations;
+    // the number of possible points to be sampled from
+    // higher pointRange means less chance for randomly sampling duplicate points
+    int pointRange = 4 * this->maxIterations;
 
     // make a number between 0 and pointRange, exclusive
     // this number is the id of the coordinate
