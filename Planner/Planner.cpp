@@ -14,58 +14,40 @@ Planner::Planner(int numPoints, float epsilon) :
         maxIterations(numPoints),
         epsilon(epsilon),
         start(makeRandomCoordinate(), makeRandomCoordinate()),
-        end(makeRandomCoordinate(), makeRandomCoordinate()) {
+        end(makeRandomCoordinate(), makeRandomCoordinate()),
+        drawer(.0125) {
 
     this->root = new RobotState(nullptr, this->start);  // the root state has no parent
 
     this->allStates.insert(root);
     this->allLocations.insert(this->start);
     this->allLocations.insert(this->end);
+
+    glFlush();
 }
 
-void Planner::print() {
-
+void Planner::findBestPath() {
     // draw the start and end points
-    glBegin(GL_POLYGON);
-    glColor3f(0.0f, 1.0f, 0.0f);
-    float r = .02;
-    glVertex2f(start.xPosition()-r, start.yPosition());
-    glVertex2f(start.xPosition(), start.yPosition()-r);
-    glVertex2f(start.xPosition()+r, start.yPosition());
-    glVertex2f(start.xPosition(), start.yPosition()+r);
-    glEnd();
-    glFlush();
-    glBegin(GL_POLYGON);
-    glColor3f(1.0f, 0.0f, 0.0f);
-    glVertex2f(end.xPosition()-r, end.yPosition());
-    glVertex2f(end.xPosition(), end.yPosition()-r);
-    glVertex2f(end.xPosition()+r, end.yPosition());
-    glVertex2f(end.xPosition(), end.yPosition()+r);
-    glEnd();
-    glFlush();
+    drawer.drawCircle(start, GREEN);
+    drawer.drawCircle(end, BLUE);
 
-    glBegin(GL_LINES);
-    glColor3f(1.0f, 1.0f, 1.0f);
-    glVertex2f(start.xPosition(), start.yPosition());
-    glVertex2f(end.xPosition(), end.yPosition());
-    glEnd();
-    glFlush();
+    drawer.drawLine(start, end);
+    drawer.drawRectangle(.3f, start, .1f);
 
+    /*
     // wait half a second before showing the next line
     std::chrono::milliseconds waitTime(500);
     std::this_thread::sleep_for(waitTime);
+    */
 
-    glBegin(GL_LINES);
-    glVertex2f(0, 0);
-    glVertex2f(0, .5);
-    glEnd();
+    drawer.drawLine(Location(makeRandomCoordinate(), makeRandomCoordinate()),
+            Location(makeRandomCoordinate(), makeRandomCoordinate()));
     glFlush();
 
-    std::cout << start.xPosition() << ", " << start.yPosition() << std::endl;
-    std::cout << end.xPosition() << ", " << end.yPosition() << std::endl << std::endl << std::endl;
-
-    std::cout << start.xID() << ", " << start.yID() << std::endl;
-    std::cout << end.xID() << ", " << end.yID() << std::endl;
+    while (allStates.size() < maxIterations) {
+        // todo: write the rrt* code here
+        break;
+    }
 }
 
 Coordinate Planner::makeRandomCoordinate() {

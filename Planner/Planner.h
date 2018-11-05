@@ -11,9 +11,7 @@
 #include "../State/Location.h"
 #include "../State/Coordinate.h"
 #include "../Utils/ObjHashes.cpp"
-
-// todo: have drawing functions (circle, line, obstacle ... take in a color too) -- Visualization directory
-// todo: add in a folder of colors in the Vizualization directory
+#include "../Visualization/ShapeDrawer.h"
 
 
 class Planner {
@@ -21,7 +19,7 @@ public:
     virtual ~Planner();
 
     Planner(int numPoints, float epsilon);
-    void print();
+    void findBestPath();
 
 private:
     Coordinate makeRandomCoordinate();
@@ -31,6 +29,8 @@ private:
     float epsilon;
     Location start;
     Location end;
+
+    ShapeDrawer drawer;
 
     // saving all created states and locations
     // this will make deleting pointers easy in the destructor

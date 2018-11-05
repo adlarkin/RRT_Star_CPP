@@ -34,7 +34,7 @@ int main(int argc, char** argv) {
 
     // run the planner
     Planner planner(numPoints, epsilon);
-    planner.print();
+    planner.findBestPath();
 
     // keep the display open
     // closes when the user clicks the GUI's 'x' button
@@ -46,7 +46,7 @@ int main(int argc, char** argv) {
 
 void testLocationDuplicates() {
     std::unordered_set<Location> locations;
-    assert(locations.size() == 0);
+    assert(locations.empty() == true);
 
     // try to make 2 Location objects using duplicate coordinate pairs
     // only one of the objects should be added
