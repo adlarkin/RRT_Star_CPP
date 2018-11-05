@@ -14,12 +14,16 @@
 #include "../Visualization/ShapeDrawer.h"
 
 // needed for rTree
-// boost must be installed in order for this to work
+// boost must be installed in order for this to work:
+// https://www.boost.org/doc/libs/1_68_0/more/getting_started/index.html
 #include <boost/geometry.hpp>
 #include <boost/geometry/geometries/point.hpp>
 #include <boost/geometry/geometries/box.hpp>
 namespace bg = boost::geometry;
 namespace bgi = boost::geometry::index;
+typedef bg::model::point<float, 2, bg::cs::cartesian> point;
+typedef bg::model::box<point> box;
+typedef std::pair<box, unsigned> value;
 
 class Planner {
 public:

@@ -45,7 +45,7 @@ void Planner::findBestPath() {
 
     int iterations = 0;
     while (allStates.size() < maxIterations) {
-        // todo: write the rrt* code here
+        // todo: write the rrt* code here (use rTree?)
         // todo: no obstacles first. add obstacles after the planner works w/o them
         break;
     }
