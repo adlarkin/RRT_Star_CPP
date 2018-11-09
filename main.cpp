@@ -4,7 +4,7 @@
 #include <assert.h>
 #include "Planner/Planner.h"
 
-// testing methods
+// methods for testing
 void testLocationDuplicates();
 
 int main(int argc, char** argv) {
@@ -46,7 +46,7 @@ int main(int argc, char** argv) {
 
 void testLocationDuplicates() {
     std::unordered_set<Location> locations;
-    assert(locations.empty() == true);
+    assert(locations.empty());
 
     // try to make 2 Location objects using duplicate coordinate pairs
     // only one of the objects should be added
