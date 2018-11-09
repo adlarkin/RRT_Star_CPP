@@ -4,6 +4,12 @@
 #include <assert.h>
 #include "Planner/Planner.h"
 
+<<<<<<< HEAD
+=======
+// methods for testing
+void testLocationDuplicates();
+
+>>>>>>> master
 int main(int argc, char** argv) {
     // define program inputs
     int winWidth = 900;
@@ -33,4 +39,33 @@ int main(int argc, char** argv) {
     glutMainLoop(); // todo: comment this line out if you want to test with valgrind
 
     return 0;
+<<<<<<< HEAD
+=======
+}
+
+
+void testLocationDuplicates() {
+    std::unordered_set<Location> locations;
+    assert(locations.empty());
+
+    // try to make 2 Location objects using duplicate coordinate pairs
+    // only one of the objects should be added
+    Coordinate c1(1, 2.5f);
+    Coordinate c2(1, 2.5f);
+    Location l(c1, c2);
+    locations.insert(l);
+    assert(locations.size() == 1);
+    Coordinate c3(1, 2.5f);
+    Coordinate c4(1, 2.5f);
+    Location l2(c3, c4);
+    locations.insert(l2);
+    assert(locations.size() == 1);
+
+    // add in a new Location object that is not a duplicate
+    Coordinate c5(1, 2.0f);
+    Coordinate c6(2, 2.5f);
+    Location l3(c5, c6);
+    locations.insert(l3);
+    assert(locations.size() == 2);
+>>>>>>> master
 }
