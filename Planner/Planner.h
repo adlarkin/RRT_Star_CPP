@@ -14,7 +14,7 @@ class Planner {
 public:
     Planner(int numPoints, float epsilon);
     void findBestPath();
-    virtual ~Planner();
+    virtual ~Planner(); // todo: smart pointers? (avoid deletion)
 
 private:
     float makeRandomLocation();
