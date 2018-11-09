@@ -14,8 +14,8 @@ void ShapeDrawer::drawCircle(Location center, Color color) {
     glBegin(GL_POLYGON);
     setDrawingColor(color);
     for (int theta = 0; theta < 360; ++theta) {
-        glVertex2f(center.xPosition() + (float)cos(theta*PI/180)*radius,
-                   center.yPosition() + (float)sin(theta*PI/180)*radius);
+        glVertex2f(center.getXCoord() + (float)(cos(theta*PI/180)*radius),
+                   center.getYCoord() + (float)(sin(theta*PI/180)*radius));
     }
     glEnd();
 }
@@ -23,19 +23,23 @@ void ShapeDrawer::drawCircle(Location center, Color color) {
 void ShapeDrawer::drawRectangle(float width, Location topLeft, float height, Color color) {
     glBegin(GL_POLYGON);
     setDrawingColor(color);
-    glVertex2f(topLeft.xPosition(), topLeft.yPosition());
-    glVertex2f(topLeft.xPosition() + width, topLeft.yPosition());
-    glVertex2f(topLeft.xPosition() + width, topLeft.yPosition() - height);
-    glVertex2f(topLeft.xPosition(), topLeft.yPosition() - height);
+    glVertex2f(topLeft.getXCoord(), topLeft.getYCoord());
+    glVertex2f(topLeft.getXCoord() + width, topLeft.getYCoord());
+    glVertex2f(topLeft.getXCoord() + width, topLeft.getYCoord() - height);
+    glVertex2f(topLeft.getXCoord(), topLeft.getYCoord() - height);
     glEnd();
 }
 
 void ShapeDrawer::drawLine(Location start, Location end, Color color) {
     glBegin(GL_LINES);
     setDrawingColor(color);
-    glVertex2f(start.xPosition(), start.yPosition());
-    glVertex2f(end.xPosition(), end.yPosition());
+    glVertex2f(start.getXCoord(), start.getYCoord());
+    glVertex2f(end.getXCoord(), end.getYCoord());
     glEnd();
+}
+
+void ShapeDrawer::updateScreen() {
+    glFlush();
 }
 
 void ShapeDrawer::setDrawingColor(Color color) {

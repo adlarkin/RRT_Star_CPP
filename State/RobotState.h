@@ -5,15 +5,16 @@
 #ifndef RRT_PROJECT_ROBOTSTATE_H
 #define RRT_PROJECT_ROBOTSTATE_H
 
-
 #include <set>
 #include "Location.h"
 
 class RobotState {
 public:
     RobotState(RobotState *parent, const Location &location);
-
-public:
+    BoostPoint getBoostLocation();
+    const Location &getLocation() const;
+    int getCost() const;
+    void setCost(int cost);
 
 private:
     RobotState* parent;

@@ -5,7 +5,6 @@
 #include <GL/gl.h>
 #include <iostream>
 #include "Planner.h"
-#include "../State/Coordinate.h"
 #include <set>
 #include <chrono>
 #include <thread>
@@ -13,17 +12,22 @@
 Planner::Planner(int numPoints, float epsilon) :
         maxIterations(numPoints),
         epsilon(epsilon),
-        start(makeRandomCoordinate(), makeRandomCoordinate()),
-        end(makeRandomCoordinate(), makeRandomCoordinate()),
+        start(makeRandomLocation(), makeRandomLocation()),
+        end(makeRandomLocation(), makeRandomLocation()),
         drawer(.0125) {
 
     this->root = new RobotState(nullptr, this->start);  // the root state has no parent
 
     this->allStates.insert(root);
+    // ensure that the start and end are different
+    while (this->start == this->end) {
+        this->end.changeCoords(makeRandomLocation(), makeRandomLocation());
+    }
     this->allLocations.insert(this->start);
     this->allLocations.insert(this->end);
 
-    glFlush();  // this opens up an openGL screen with a black background
+    rtree.add(root);
+    drawer.updateScreen();  // this opens up an openGL screen with a black background
 }
 
 void Planner::findBestPath() {
@@ -33,15 +37,20 @@ void Planner::findBestPath() {
 
     drawer.drawLine(start, end);
     drawer.drawRectangle(.3f, start, .1f);
-    glFlush();
+    drawer.updateScreen();
 
     // wait half a second before showing the next line
     std::chrono::milliseconds waitTime(500);
     std::this_thread::sleep_for(waitTime);
 
-    drawer.drawLine(Location(makeRandomCoordinate(), makeRandomCoordinate()),
-            Location(makeRandomCoordinate(), makeRandomCoordinate()));
-    glFlush();
+    drawer.drawLine(Location(makeRandomLocation(), makeRandomLocation()),
+            Location(makeRandomLocation(), makeRandomLocation()));
+    drawer.updateScreen();
+
+    // sometimes, the end BoostPoint is in the rectangle
+    // redrawing the end BoostPoint to make sure it's not off the screen (this is for testing)
+    drawer.drawCircle(end, BLUE);
+    drawer.updateScreen();
 
     int iterations = 0;
     while (allStates.size() < maxIterations) {
@@ -51,7 +60,7 @@ void Planner::findBestPath() {
     }
 }
 
-Coordinate Planner::makeRandomCoordinate() {
+float Planner::makeRandomLocation() {
     // the number of possible points to be sampled from
     // higher pointRange means less chance for randomly sampling duplicate points
     int pointRange = 4 * this->maxIterations;
@@ -62,7 +71,7 @@ Coordinate Planner::makeRandomCoordinate() {
     int id = rand() % pointRange;
 
     /*
-     * turn this number into a float between -1 and 1 (needed for openGL)
+     * turn this number into a float between -1 and 1 (coordinate range for openGL)
      * this is done the following way:
      * 1) divide id by pointRange
      *    this will give a float between 0 and 1
@@ -71,7 +80,7 @@ Coordinate Planner::makeRandomCoordinate() {
      */
     float pos = (((float)id / pointRange) * 2) - 1;
 
-    return Coordinate{id, pos};
+    return pos;
 }
 
 Planner::~Planner() {

@@ -14,16 +14,17 @@ enum Color {WHITE, BLACK, RED, GREEN, BLUE};
 
 class ShapeDrawer {
 public:
-    ShapeDrawer(float radius);
+    explicit ShapeDrawer(float radius);
 
     void drawCircle(Location center, Color color);
     void drawRectangle(float width, Location topLeft, float height, Color color = WHITE);
     void drawLine(Location start, Location end, Color color = WHITE);
+    void updateScreen();
 
 private:
     void setDrawingColor(Color color);
 
-    float radius;
+    double radius;
     std::map<Color, std::vector<float> > colorMap {
             {WHITE, {1.0f, 1.0f, 1.0f}},
             {BLACK, {0.0f, 0.0f, 0.0f}},

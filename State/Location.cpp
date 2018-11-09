@@ -4,30 +4,30 @@
 
 #include "Location.h"
 
-Location::Location(const Coordinate &x_coord, const Coordinate &y_coord) :
-        x_coord(x_coord), y_coord(y_coord) {}
+Location::Location(float x_coord, float y_coord) : xCoord(x_coord), yCoord(y_coord) {}
+
+float Location::getXCoord() const {
+    return xCoord;
+}
+
+float Location::getYCoord() const {
+    return yCoord;
+}
+
+void Location::changeCoords(float x, float y) {
+    this->xCoord = x;
+    this->yCoord = y;
+}
+
+BoostPoint Location::getBoostPoint() {
+    return BoostPoint{xCoord, yCoord};
+}
 
 bool Location::operator==(const Location &rhs) const {
-    return x_coord == rhs.x_coord &&
-           y_coord == rhs.y_coord;
+    return xCoord == rhs.xCoord &&
+           yCoord == rhs.yCoord;
 }
 
 bool Location::operator!=(const Location &rhs) const {
     return !(rhs == *this);
-}
-
-float Location::xPosition() const {
-    return x_coord.getPos();
-}
-
-float Location::yPosition() const {
-    return y_coord.getPos();
-}
-
-int Location::xID() const {
-    return x_coord.getId();
-}
-
-int Location::yID() const {
-    return y_coord.getId();
 }
