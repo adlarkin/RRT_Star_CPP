@@ -11,23 +11,30 @@
 // needed for the rTree
 //#include <boost/geometry/geometries/BoostPoint.hpp>
 #include <boost/geometry.hpp>
+#include "Point.h"
+
 typedef boost::geometry::model::point<float, 2, boost::geometry::cs::cartesian> BoostPoint;
 
 class Location {
 public:
-    Location(float x_coord, float y_coord);
+    explicit Location(int maxIterations);
+
     float getXCoord() const;
     float getYCoord() const;
-    void changeCoords(float x, float y);
+
     BoostPoint getBoostPoint();  // needed for the rTree
 
     bool operator==(const Location &rhs) const;
     bool operator!=(const Location &rhs) const;
+
 private:
-    float xCoord;
-    float yCoord;
+    static Point makeRandomPoint(int maxIterations);
+
+    Point x;
+    Point y;
 };
 
+// for use in unordered set (if you want to check for duplicate locations ... it may not matter)
 namespace std {
     template<>
     struct hash<Location> {

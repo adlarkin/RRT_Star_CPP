@@ -12,19 +12,21 @@
 Planner::Planner(int numPoints, float epsilon) :
         maxIterations(numPoints),
         epsilon(epsilon),
-        start(makeRandomLocation(), makeRandomLocation()),
-        end(makeRandomLocation(), makeRandomLocation()),
+        start(maxIterations),
+        end(maxIterations),
+        // the constructor for the shape drawer takes in a radius (for drawing circles)
         drawer(.0125) {
 
     this->root = new RobotState(nullptr, this->start);  // the root state has no parent
-
     this->allStates.insert(root);
-    // ensure that the start and end are different
-    while (this->start == this->end) {
-        this->end.changeCoords(makeRandomLocation(), makeRandomLocation());
-    }
-    this->allLocations.insert(this->start);
-    this->allLocations.insert(this->end);
+
+    // NOT WORRYING ABOUT CHECKING FOR DUPLICATE LOCATIONS RIGHT NOW
+//    // ensure that the start and end are different
+//    while (this->start == this->end) {
+//        this->end = Location(maxIterations);
+//    }
+//    this->allLocations.insert(this->start);
+//    this->allLocations.insert(this->end);
 
     rtree.add(root);
     drawer.updateScreen();  // this opens up an openGL screen with a black background
@@ -43,8 +45,8 @@ void Planner::findBestPath() {
     std::chrono::milliseconds waitTime(500);
     std::this_thread::sleep_for(waitTime);
 
-    drawer.drawLine(Location(makeRandomLocation(), makeRandomLocation()),
-            Location(makeRandomLocation(), makeRandomLocation()));
+    drawer.drawLine(Location(maxIterations),
+            Location(maxIterations));
     drawer.updateScreen();
 
     // sometimes, the end BoostPoint is in the rectangle
@@ -52,35 +54,15 @@ void Planner::findBestPath() {
     drawer.drawCircle(end, BLUE);
     drawer.updateScreen();
 
+//    std::cout << "Start: " << start.getXCoord() << " , " << start.getYCoord() << std::endl;
+//    std::cout << "End: " << end.getXCoord() << " , " << end.getYCoord() << std::endl;
+
     int iterations = 0;
     while (allStates.size() < maxIterations) {
         // todo: write the rrt* code here (use rTree?)
         // todo: no obstacles first. add obstacles after the planner works w/o them
         break;
     }
-}
-
-float Planner::makeRandomLocation() {
-    // the number of possible points to be sampled from
-    // higher pointRange means less chance for randomly sampling duplicate points
-    int pointRange = 4 * this->maxIterations;
-
-    // make a number between 0 and pointRange, exclusive
-    // this number is the id of the coordinate
-    // (using int IDs to compare with other coordinates for duplicates)
-    int id = rand() % pointRange;
-
-    /*
-     * turn this number into a float between -1 and 1 (coordinate range for openGL)
-     * this is done the following way:
-     * 1) divide id by pointRange
-     *    this will give a float between 0 and 1
-     * 2) multiply this new float by 2 to get a float between 0 and 2
-     * 3) subtract 1 from it to get a float between -1 and 1
-     */
-    float pos = (((float)id / pointRange) * 2) - 1;
-
-    return pos;
 }
 
 Planner::~Planner() {

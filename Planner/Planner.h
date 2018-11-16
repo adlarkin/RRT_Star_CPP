@@ -17,8 +17,6 @@ public:
     virtual ~Planner(); // todo: smart pointers? (avoid deletion)
 
 private:
-    float makeRandomLocation();
-
     RobotState* root;
     int maxIterations;
     float epsilon;
@@ -26,11 +24,13 @@ private:
     Location end;
     ShapeDrawer drawer;
     MyRtree rtree;
-    // saving all created states and locations
+
+    // saving all created states
     // this will make deleting pointers easy in the destructor
-    // this will also allow checking for duplicate locations
     std::unordered_set<RobotState*> allStates;
-    std::unordered_set<Location> allLocations;
+    // IGNORING UNIQUE LOCATIONS FOR NOW (I don't think it matters)
+//    // this will also allow checking for duplicate locations
+//    std::unordered_set<Location> allLocations;
 };
 
 #endif //RRT_PROJECT_PLANNER_H

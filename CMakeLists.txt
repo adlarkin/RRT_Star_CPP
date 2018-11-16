@@ -7,7 +7,7 @@ add_executable(RRT_Star_CPP main.cpp
         Planner/Planner.cpp Planner/Planner.h
         State/Location.cpp State/Location.h
         State/RobotState.cpp State/RobotState.h
-        Visualization/ShapeDrawer.cpp Visualization/ShapeDrawer.h Utils/MyRtree.cpp Utils/MyRtree.h)
+        Visualization/ShapeDrawer.cpp Visualization/ShapeDrawer.h Utils/MyRtree.cpp Utils/MyRtree.h State/Point.cpp State/Point.h)
 
 # added this in so that openGL works with the project
 target_link_libraries(RRT_Star_CPP -lglut -lGL -lGLU)
