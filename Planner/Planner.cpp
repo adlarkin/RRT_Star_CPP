@@ -41,16 +41,14 @@ void Planner::findBestPath() {
     drawer.drawRectangle(.3f, start, .1f);
     drawer.updateScreen();
 
-    // wait half a second before showing the next line
-    std::chrono::milliseconds waitTime(500);
-    std::this_thread::sleep_for(waitTime);
+    pauseAnimation(500);
 
     drawer.drawLine(Location(maxIterations),
             Location(maxIterations));
     drawer.updateScreen();
 
-    // sometimes, the end BoostPoint is in the rectangle
-    // redrawing the end BoostPoint to make sure it's not off the screen (this is for testing)
+    // sometimes, the end point is in the rectangle
+    // redrawing the end point to make sure it's not off the screen (this is for testing)
     drawer.drawCircle(end, BLUE);
     drawer.updateScreen();
 
@@ -63,6 +61,12 @@ void Planner::findBestPath() {
         // todo: no obstacles first. add obstacles after the planner works w/o them
         break;
     }
+}
+
+void Planner::pauseAnimation(int milliSec) {
+    // wait for a num. of milliseconds before doing the next thing
+    std::chrono::milliseconds waitTime(milliSec);
+    std::this_thread::sleep_for(waitTime);
 }
 
 Planner::~Planner() {

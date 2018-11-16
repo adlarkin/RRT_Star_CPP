@@ -17,6 +17,8 @@ public:
     virtual ~Planner(); // todo: smart pointers? (avoid deletion)
 
 private:
+    void pauseAnimation(int milliSec);
+
     RobotState* root;
     int maxIterations;
     float epsilon;

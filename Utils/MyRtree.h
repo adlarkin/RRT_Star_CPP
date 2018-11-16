@@ -8,7 +8,7 @@
 // boost must be installed in order for this to work:
 // https://www.boost.org/doc/libs/1_68_0/more/getting_started/index.html
 #include <boost/geometry.hpp>
-#include <boost/geometry/geometries/point.hpp>
+//#include <boost/geometry/geometries/point.hpp>
 //#include <boost/geometry/geometries/box.hpp
 #include <boost/geometry/index/rtree.hpp>
 #include "../State/Location.h"      // defines 'BoostPoint'

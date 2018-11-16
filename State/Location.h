@@ -7,12 +7,11 @@
 
 
 #include <queue>
+#include "Point.h"
 
 // needed for the rTree
 //#include <boost/geometry/geometries/BoostPoint.hpp>
 #include <boost/geometry.hpp>
-#include "Point.h"
-
 typedef boost::geometry::model::point<float, 2, boost::geometry::cs::cartesian> BoostPoint;
 
 class Location {
