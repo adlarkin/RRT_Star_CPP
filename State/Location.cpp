@@ -29,10 +29,10 @@ bool Location::operator!=(const Location &rhs) const {
     return !(rhs == *this);
 }
 
-Point Location::makeRandomPoint(int maxIterations) {
+Point Location::makeRandomPoint(int pointValRange) {
     // the number of possible points to be sampled from
     // higher pointRange means less chance for randomly sampling duplicate points
-    int pointRange = 4 * maxIterations;
+    int pointRange = 4 * pointValRange;
 
     // make a number between 0 and pointRange, exclusive
     // this number is the id of the coordinate

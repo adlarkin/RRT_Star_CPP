@@ -17,7 +17,9 @@ public:
     virtual ~Planner(); // todo: smart pointers? (avoid deletion)
 
 private:
+    RobotState* createNewState(RobotState* parent, Location location);
     void pauseAnimation(int milliSec);
+    void randomTestCode();  // todo: remove this later
 
     RobotState* root;
     int maxIterations;

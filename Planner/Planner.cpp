@@ -17,8 +17,7 @@ Planner::Planner(int numPoints, float epsilon) :
         // the constructor for the shape drawer takes in a radius (for drawing circles)
         drawer(.0125) {
 
-    this->root = new RobotState(nullptr, this->start);  // the root state has no parent
-    this->allStates.insert(root);
+    this->root = createNewState(nullptr, this->start);  // the root state has no parent
 
     // NOT WORRYING ABOUT CHECKING FOR DUPLICATE LOCATIONS RIGHT NOW
 //    // ensure that the start and end are different
@@ -37,23 +36,7 @@ void Planner::findBestPath() {
     drawer.drawCircle(start, GREEN);
     drawer.drawCircle(end, BLUE);
 
-    drawer.drawLine(start, end);
-    drawer.drawRectangle(.3f, start, .1f);
-    drawer.updateScreen();
-
-    pauseAnimation(500);
-
-    drawer.drawLine(Location(maxIterations),
-            Location(maxIterations));
-    drawer.updateScreen();
-
-    // sometimes, the end point is in the rectangle
-    // redrawing the end point to make sure it's not off the screen (this is for testing)
-    drawer.drawCircle(end, BLUE);
-    drawer.updateScreen();
-
-//    std::cout << "Start: " << start.getXCoord() << " , " << start.getYCoord() << std::endl;
-//    std::cout << "End: " << end.getXCoord() << " , " << end.getYCoord() << std::endl;
+    randomTestCode();   // todo: delete this later
 
     int iterations = 0;
     while (allStates.size() < maxIterations) {
@@ -61,6 +44,13 @@ void Planner::findBestPath() {
         // todo: no obstacles first. add obstacles after the planner works w/o them
         break;
     }
+}
+
+RobotState *Planner::createNewState(RobotState *parent, Location location) {
+    // size of allStates is the ID of the newly created robot state (ID starts at 0)
+    auto nextState = new RobotState(parent, location, allStates.size());
+    allStates.insert(nextState);
+    return nextState;
 }
 
 void Planner::pauseAnimation(int milliSec) {
@@ -74,4 +64,25 @@ Planner::~Planner() {
         delete state;
         state = nullptr;
     }
+}
+
+void Planner::randomTestCode() {
+    drawer.drawLine(start, end);
+    drawer.drawRectangle(.3f, start, .1f);
+    drawer.updateScreen();
+
+    pauseAnimation(500);
+
+    drawer.drawLine(Location(maxIterations), Location(maxIterations));
+    drawer.updateScreen();
+
+    // sometimes, the end point is in the rectangle
+    // redrawing the end point to make sure it's not off the screen (this is for testing)
+    drawer.drawCircle(end, BLUE);
+    drawer.updateScreen();
+
+//    std::cout << "Start: " << start.getXCoord() << " , " << start.getYCoord() << std::endl;
+//    std::cout << "End: " << end.getXCoord() << " , " << end.getYCoord() << std::endl;
+
+    // testing the r tree
 }

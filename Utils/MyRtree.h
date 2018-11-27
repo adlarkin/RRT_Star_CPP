@@ -19,13 +19,21 @@ namespace bgi = boost::geometry::index;
 //typedef bg::model::BoostPoint<float, 2, bg::cs::cartesian> BoostPoint;
 //typedef bg::model::box<BoostPoint> box;
 typedef std::pair<BoostPoint, RobotState*> Value;
-typedef bgi::rtree<Value, bgi::rstar<16> > Rtree;
+// need to override the rTree equality operator (used when removing from rTree)
+struct equal_to {
+    bool operator()(Value const& v1, Value const& v2) const {
+        return bg::equals(v1.first, v2.first) &&
+            v1.second == v2.second;
+    }
+};
+typedef bgi::rtree<Value, bgi::rstar<16>, bgi::indexable<Value>, equal_to> Rtree;
 
 class MyRtree {
 public:
     void add(RobotState *state);
+    void remove(RobotState *state);
 private:
-    Rtree rtree;
+    Rtree rTree;
 };
 
 

@@ -5,5 +5,11 @@
 #include "MyRtree.h"
 
 void MyRtree::add(RobotState *state) {
-    rtree.insert(Value(state->getBoostLocation(), state));
+    rTree.insert(Value(state->getBoostLocation(), state));
+    std::cout << "Add called. Size of the rTree is " << rTree.size() << std::endl;
+}
+
+void MyRtree::remove(RobotState *state) {
+    rTree.remove(Value(state->getBoostLocation(), state));
+    std::cout << "Remove called. Size of the rTree is " << rTree.size() << std::endl;
 }

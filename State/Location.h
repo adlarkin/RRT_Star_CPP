@@ -27,7 +27,7 @@ public:
     bool operator!=(const Location &rhs) const;
 
 private:
-    static Point makeRandomPoint(int maxIterations);
+    static Point makeRandomPoint(int pointValRange);
 
     Point x;
     Point y;

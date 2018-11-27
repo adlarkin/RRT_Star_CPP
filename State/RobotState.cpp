@@ -4,9 +4,10 @@
 
 #include "RobotState.h"
 
-RobotState::RobotState(RobotState *parent, const Location &location) :
+RobotState::RobotState(RobotState *parent, const Location &location, size_t id) :
         parent(parent), location(location) {
     this->cost = 0;
+    this->id = id;
 }
 
 BoostPoint RobotState::getBoostLocation() {
@@ -23,4 +24,12 @@ int RobotState::getCost() const {
 
 void RobotState::setCost(int cost) {
     RobotState::cost = cost;
+}
+
+bool RobotState::operator==(const RobotState &rhs) const {
+    return id == rhs.id;
+}
+
+bool RobotState::operator!=(const RobotState &rhs) const {
+    return !(rhs == *this);
 }
