@@ -16,6 +16,10 @@ public:
     void findBestPath();
     virtual ~Planner(); // todo: smart pointers? (avoid deletion)
 
+protected:
+    // the cost method will be determined by the type of planner object that is constructed
+    virtual double cost(RobotState *startState, RobotState *endState) = 0;
+
 private:
     RobotState* createNewState(RobotState* parent, Location location);
     void pauseAnimation(int milliSec);
@@ -27,7 +31,7 @@ private:
     Location start;
     Location end;
     ShapeDrawer drawer;
-    MyRtree rtree;
+    MyRtree rTree;
 
     // saving all created states
     // this will make deleting pointers easy in the destructor

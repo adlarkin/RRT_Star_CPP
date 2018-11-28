@@ -27,7 +27,6 @@ Planner::Planner(int numPoints, float epsilon) :
 //    this->allLocations.insert(this->start);
 //    this->allLocations.insert(this->end);
 
-    rtree.add(root);
     drawer.updateScreen();  // this opens up an openGL screen with a black background
 }
 
@@ -47,9 +46,11 @@ void Planner::findBestPath() {
 }
 
 RobotState *Planner::createNewState(RobotState *parent, Location location) {
-    // size of allStates is the ID of the newly created robot state (ID starts at 0)
+    // size of allStates BEFORE the state creation is the ID of the newly created robot state
+    // (ID starts at 0)
     auto nextState = new RobotState(parent, location, allStates.size());
     allStates.insert(nextState);
+    rTree.add(nextState);
     return nextState;
 }
 
@@ -80,6 +81,10 @@ void Planner::randomTestCode() {
     // redrawing the end point to make sure it's not off the screen (this is for testing)
     drawer.drawCircle(end, BLUE);
     drawer.updateScreen();
+
+    double testCost = cost(root, createNewState(nullptr, this->end));
+    std::cout << "Cost from start to end is ";
+    std:: cout << testCost << std::endl;
 
 //    std::cout << "Start: " << start.getXCoord() << " , " << start.getYCoord() << std::endl;
 //    std::cout << "End: " << end.getXCoord() << " , " << end.getYCoord() << std::endl;

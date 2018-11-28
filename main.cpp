@@ -3,6 +3,10 @@
 #include <iostream>
 #include <assert.h>
 #include "Planner/Planner.h"
+#include "Planner/DistancePlanner.h"
+#include "Planner/EnergyPlanner.h"
+
+enum PlannerType {DISTANCE, ENERGY};
 
 int main(int argc, char** argv) {
     // define program inputs
@@ -12,6 +16,7 @@ int main(int argc, char** argv) {
     int y_winPos = 150;
     int numPoints = 5000;
     float epsilon = 5.0;
+    PlannerType type = DISTANCE;
 
     // needed this to generate random locations throughout the program
     srand(time(nullptr));
@@ -25,8 +30,18 @@ int main(int argc, char** argv) {
     glClear(GL_COLOR_BUFFER_BIT);
 
     // run the planner
-    Planner planner(numPoints, epsilon);
-    planner.findBestPath();
+    Planner* planner;
+    switch (type) {
+        case ENERGY:
+            planner = new EnergyPlanner(numPoints, epsilon);
+            break;
+        default:
+            planner = new DistancePlanner(numPoints, epsilon);
+            break;
+    }
+    planner->findBestPath();
+    delete planner;
+    planner = nullptr;
 
     // keep the display open
     // closes when the user clicks the GUI's 'x' button
