@@ -12,20 +12,22 @@
 Planner::Planner(int numPoints, float epsilon) :
         maxIterations(numPoints),
         epsilon(epsilon),
-        start(maxIterations),
-        end(maxIterations),
+        start(makeUniqueLocation()),
+        end(makeUniqueLocation()),
         // the constructor for the shape drawer takes in a radius (for drawing circles)
         drawer(.0125) {
 
     this->root = createNewState(nullptr, this->start);  // the root state has no parent
 
-    // NOT WORRYING ABOUT CHECKING FOR DUPLICATE LOCATIONS RIGHT NOW
 //    // ensure that the start and end are different
-//    while (this->start == this->end) {
-//        this->end = Location(maxIterations);
-//    }
-//    this->allLocations.insert(this->start);
-//    this->allLocations.insert(this->end);
+    while (this->start == this->end) {
+        this->end = Location(maxIterations);
+    }
+    this->allLocations.insert(this->start);
+    this->allLocations.insert(this->end);
+    std::cout << "Size of allLocations is " << allLocations.size() << std::endl;
+    Location temp = Location(start);
+    std::cout << "Found location? " << allLocations.count(temp) << std::endl;
 
     drawer.updateScreen();  // this opens up an openGL screen with a black background
 }
@@ -43,6 +45,21 @@ void Planner::findBestPath() {
         // todo: no obstacles first. add obstacles after the planner works w/o them
         break;
     }
+}
+
+Location Planner::makeUniqueLocation() {
+    Location location = Location(maxIterations);
+    std::cout << "made it just before .count()" << std::endl;
+    std::cout << location.getXCoord() << std::endl << location.getYCoord() << std::endl;
+//    allLocations.count(location);
+//    while (allLocations.count(location)) {
+//
+//        location = Location(maxIterations);
+//    }
+    std::cout << "made it just AFTER .count()" << std::endl;
+//    allLocations.insert(location);
+    std::cout << "made it after the insertion" << std::endl;
+    return location;
 }
 
 RobotState *Planner::createNewState(RobotState *parent, Location location) {
@@ -89,5 +106,13 @@ void Planner::randomTestCode() {
 //    std::cout << "Start: " << start.getXCoord() << " , " << start.getYCoord() << std::endl;
 //    std::cout << "End: " << end.getXCoord() << " , " << end.getYCoord() << std::endl;
 
-    // testing the r tree
+    RobotState* duplicateTest = new RobotState(nullptr, this->start, 0);
+    std::cout << "found state? " << allStates.count(duplicateTest) << std::endl;
+    std::cout << "found state? " << allStates.count(root) << std::endl;
+
+    Location location = Location(maxIterations);
+    allLocations.count(location);
+    std::cout << "COUNT WORKED" << std::endl;
+    allLocations.insert(location);
+    std::cout << "INSERT WORKED" << std::endl;
 }

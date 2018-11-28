@@ -21,6 +21,7 @@ protected:
     virtual double cost(RobotState *startState, RobotState *endState) = 0;
 
 private:
+    Location makeUniqueLocation();
     RobotState* createNewState(RobotState* parent, Location location);
     void pauseAnimation(int milliSec);
     void randomTestCode();  // todo: remove this later
@@ -33,12 +34,11 @@ private:
     ShapeDrawer drawer;
     MyRtree rTree;
 
-    // saving all created states
+    // saving all created states and locations
     // this will make deleting pointers easy in the destructor
+    // this will also allow checking for duplicate locations
     std::unordered_set<RobotState*> allStates;
-    // IGNORING UNIQUE LOCATIONS FOR NOW (I don't think it matters)
-//    // this will also allow checking for duplicate locations
-//    std::unordered_set<Location> allLocations;
+    std::unordered_set<Location> allLocations;
 };
 
 #endif //RRT_PROJECT_PLANNER_H

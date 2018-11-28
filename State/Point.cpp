@@ -6,6 +6,11 @@
 
 Point::Point(int ID, float coordinate) : ID(ID), coordinate(coordinate) {}
 
+Point::Point(const Point &p2) {
+    this->ID = p2.ID;
+    this->coordinate = p2.coordinate;
+}
+
 int Point::getID() const {
     return ID;
 }
