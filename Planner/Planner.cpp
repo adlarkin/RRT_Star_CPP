@@ -9,6 +9,8 @@
 #include <chrono>
 #include <thread>
 
+// initializer lists init objects based on the order they're declared in the .h file
+// sets must be initialized first in order for makeUniqueLocation() to work
 Planner::Planner(int numPoints, float epsilon) :
         maxIterations(numPoints),
         epsilon(epsilon),
@@ -48,14 +50,14 @@ void Planner::findBestPath() {
 }
 
 Location Planner::makeUniqueLocation() {
-    Location location = Location(maxIterations);
+    Location location(maxIterations);
     std::cout << "made it just before .count()" << std::endl;
     std::cout << location.getXCoord() << std::endl << location.getYCoord() << std::endl;
-//    allLocations.count(location);
-//    while (allLocations.count(location)) {
-//
-//        location = Location(maxIterations);
-//    }
+    allLocations.count(location);
+    while (allLocations.count(location)) {
+
+        location = Location(maxIterations);
+    }
     std::cout << "made it just AFTER .count()" << std::endl;
 //    allLocations.insert(location);
     std::cout << "made it after the insertion" << std::endl;

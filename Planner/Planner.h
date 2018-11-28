@@ -26,6 +26,12 @@ private:
     void pauseAnimation(int milliSec);
     void randomTestCode();  // todo: remove this later
 
+    // saving all created states and locations
+    // this will make deleting pointers easy in the destructor
+    // this will also allow checking for duplicate locations
+    std::unordered_set<RobotState*> allStates;
+    std::unordered_set<Location> allLocations;
+
     RobotState* root;
     int maxIterations;
     float epsilon;
@@ -33,12 +39,6 @@ private:
     Location end;
     ShapeDrawer drawer;
     MyRtree rTree;
-
-    // saving all created states and locations
-    // this will make deleting pointers easy in the destructor
-    // this will also allow checking for duplicate locations
-    std::unordered_set<RobotState*> allStates;
-    std::unordered_set<Location> allLocations;
 };
 
 #endif //RRT_PROJECT_PLANNER_H
