@@ -9,6 +9,7 @@
 class Point {
 public:
     Point(int ID, float coordinate);
+    Point(const Point &p2);
 
     int getID() const;
 

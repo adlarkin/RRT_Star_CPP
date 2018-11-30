@@ -3,10 +3,13 @@
 //
 
 #include "Location.h"
+#include <random>
 
-Location::Location(int maxIterations) :
-    x(makeRandomPoint(maxIterations)),
-    y(makeRandomPoint(maxIterations)) {}
+Location::Location(int pointValRange) :
+    x(makeRandomPoint(pointValRange)),
+    y(makeRandomPoint(pointValRange)) {}
+
+Location::Location(const Location &l2) : x(l2.x), y(l2.y) {}
 
 float Location::getXCoord() const {
     return x.getCoordinate();

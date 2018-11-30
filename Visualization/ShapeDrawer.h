@@ -14,7 +14,7 @@ enum Color {WHITE, BLACK, RED, GREEN, BLUE};
 
 class ShapeDrawer {
 public:
-    explicit ShapeDrawer(float radius);
+    explicit ShapeDrawer(float radius = .0125);
 
     void drawCircle(Location center, Color color);
     void drawRectangle(float width, Location topLeft, float height, Color color = WHITE);

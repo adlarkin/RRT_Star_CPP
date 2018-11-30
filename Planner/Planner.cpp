@@ -9,24 +9,16 @@
 #include <chrono>
 #include <thread>
 
+// initializer lists init objects based on the order they're declared in the .h file
+// sets must be initialized first in order for makeUniqueLocation() to work
 Planner::Planner(int numPoints, float epsilon) :
         maxIterations(numPoints),
         epsilon(epsilon),
-        start(maxIterations),
-        end(maxIterations),
+        start(makeUniqueLocation()),
+        end(makeUniqueLocation()),
         // the constructor for the shape drawer takes in a radius (for drawing circles)
         drawer(.0125) {
-
     this->root = createNewState(nullptr, this->start);  // the root state has no parent
-
-    // NOT WORRYING ABOUT CHECKING FOR DUPLICATE LOCATIONS RIGHT NOW
-//    // ensure that the start and end are different
-//    while (this->start == this->end) {
-//        this->end = Location(maxIterations);
-//    }
-//    this->allLocations.insert(this->start);
-//    this->allLocations.insert(this->end);
-
     drawer.updateScreen();  // this opens up an openGL screen with a black background
 }
 
@@ -45,11 +37,18 @@ void Planner::findBestPath() {
     }
 }
 
+Location Planner::makeUniqueLocation() {
+    Location location(maxIterations);
+    while (allLocations.count(location)) {
+        location = Location(maxIterations);
+    }
+    allLocations.insert(location);
+    return location;
+}
+
 RobotState *Planner::createNewState(RobotState *parent, Location location) {
-    // size of allStates BEFORE the state creation is the ID of the newly created robot state
-    // (ID starts at 0)
-    auto nextState = new RobotState(parent, location, allStates.size());
-    allStates.insert(nextState);
+    auto nextState = new RobotState(parent, location);
+    allStates.push_back(nextState);
     rTree.add(nextState);
     return nextState;
 }
@@ -74,7 +73,7 @@ void Planner::randomTestCode() {
 
     pauseAnimation(500);
 
-    drawer.drawLine(Location(maxIterations), Location(maxIterations));
+    drawer.drawLine(makeUniqueLocation(), makeUniqueLocation());
     drawer.updateScreen();
 
     // sometimes, the end point is in the rectangle
@@ -83,11 +82,7 @@ void Planner::randomTestCode() {
     drawer.updateScreen();
 
     double testCost = cost(root, createNewState(nullptr, this->end));
-    std::cout << "Cost from start to end is ";
-    std:: cout << testCost << std::endl;
-
-//    std::cout << "Start: " << start.getXCoord() << " , " << start.getYCoord() << std::endl;
-//    std::cout << "End: " << end.getXCoord() << " , " << end.getYCoord() << std::endl;
-
-    // testing the r tree
+    std::cout << "Cost from start to end is " << testCost << std::endl;
+    std::cout << "size of allStates vector is " << allStates.size() << std::endl;
+    std::cout << "size of allLocations set is " << allLocations.size() << std::endl;
 }

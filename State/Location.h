@@ -12,11 +12,13 @@
 // needed for the rTree
 //#include <boost/geometry/geometries/BoostPoint.hpp>
 #include <boost/geometry.hpp>
+
 typedef boost::geometry::model::point<float, 2, boost::geometry::cs::cartesian> BoostPoint;
 
 class Location {
 public:
-    explicit Location(int maxIterations);
+    explicit Location(int pointValRange);
+    Location(const Location &l2);
 
     float getXCoord() const;
     float getYCoord() const;

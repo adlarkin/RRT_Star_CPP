@@ -10,20 +10,19 @@
 
 class RobotState {
 public:
-    RobotState(RobotState *parent, const Location &location, size_t id);
+    RobotState(RobotState *parent, const Location &location, size_t cost = 0);
     BoostPoint getBoostLocation();
     const Location &getLocation() const;
-    int getCost() const;
-    void setCost(int cost);
+    size_t getCost() const;
+    void setCost(size_t cost);
 
     bool operator==(const RobotState &rhs) const;
     bool operator!=(const RobotState &rhs) const;
 private:
     RobotState* parent;
-    std::set<RobotState*> neighbors;
+    std::vector<RobotState*> neighbors;
     Location location;
-    int cost;
-    size_t id;
+    size_t cost;
 };
 
 
