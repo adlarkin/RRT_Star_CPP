@@ -29,7 +29,7 @@ private:
     // saving all created states and locations
     // this will make deleting pointers easy in the destructor
     // this will also allow checking for duplicate locations
-    std::unordered_set<RobotState*> allStates;
+    std::vector<RobotState*> allStates;
     std::unordered_set<Location> allLocations;
 
     RobotState* root;

@@ -18,19 +18,7 @@ Planner::Planner(int numPoints, float epsilon) :
         end(makeUniqueLocation()),
         // the constructor for the shape drawer takes in a radius (for drawing circles)
         drawer(.0125) {
-
     this->root = createNewState(nullptr, this->start);  // the root state has no parent
-
-//    // ensure that the start and end are different
-    while (this->start == this->end) {
-        this->end = Location(maxIterations);
-    }
-    this->allLocations.insert(this->start);
-    this->allLocations.insert(this->end);
-    std::cout << "Size of allLocations is " << allLocations.size() << std::endl;
-    Location temp = Location(start);
-    std::cout << "Found location? " << allLocations.count(temp) << std::endl;
-
     drawer.updateScreen();  // this opens up an openGL screen with a black background
 }
 
@@ -51,24 +39,16 @@ void Planner::findBestPath() {
 
 Location Planner::makeUniqueLocation() {
     Location location(maxIterations);
-    std::cout << "made it just before .count()" << std::endl;
-    std::cout << location.getXCoord() << std::endl << location.getYCoord() << std::endl;
-    allLocations.count(location);
     while (allLocations.count(location)) {
-
         location = Location(maxIterations);
     }
-    std::cout << "made it just AFTER .count()" << std::endl;
-//    allLocations.insert(location);
-    std::cout << "made it after the insertion" << std::endl;
+    allLocations.insert(location);
     return location;
 }
 
 RobotState *Planner::createNewState(RobotState *parent, Location location) {
-    // size of allStates BEFORE the state creation is the ID of the newly created robot state
-    // (ID starts at 0)
-    auto nextState = new RobotState(parent, location, allStates.size());
-    allStates.insert(nextState);
+    auto nextState = new RobotState(parent, location);
+    allStates.push_back(nextState);
     rTree.add(nextState);
     return nextState;
 }
@@ -93,7 +73,7 @@ void Planner::randomTestCode() {
 
     pauseAnimation(500);
 
-    drawer.drawLine(Location(maxIterations), Location(maxIterations));
+    drawer.drawLine(makeUniqueLocation(), makeUniqueLocation());
     drawer.updateScreen();
 
     // sometimes, the end point is in the rectangle
@@ -102,19 +82,7 @@ void Planner::randomTestCode() {
     drawer.updateScreen();
 
     double testCost = cost(root, createNewState(nullptr, this->end));
-    std::cout << "Cost from start to end is ";
-    std:: cout << testCost << std::endl;
-
-//    std::cout << "Start: " << start.getXCoord() << " , " << start.getYCoord() << std::endl;
-//    std::cout << "End: " << end.getXCoord() << " , " << end.getYCoord() << std::endl;
-
-    RobotState* duplicateTest = new RobotState(nullptr, this->start, 0);
-    std::cout << "found state? " << allStates.count(duplicateTest) << std::endl;
-    std::cout << "found state? " << allStates.count(root) << std::endl;
-
-    Location location = Location(maxIterations);
-    allLocations.count(location);
-    std::cout << "COUNT WORKED" << std::endl;
-    allLocations.insert(location);
-    std::cout << "INSERT WORKED" << std::endl;
+    std::cout << "Cost from start to end is " << testCost << std::endl;
+    std::cout << "size of allStates vector is " << allStates.size() << std::endl;
+    std::cout << "size of allLocations set is " << allLocations.size() << std::endl;
 }

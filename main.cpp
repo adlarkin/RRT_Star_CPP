@@ -10,10 +10,10 @@ enum PlannerType {DISTANCE, ENERGY};
 
 int main(int argc, char** argv) {
     // define program inputs
-    int winWidth = 900;
-    int winHeight = 700;
-    int x_winPos = 400;
-    int y_winPos = 150;
+    int winWidth = 1500;
+    int winHeight = 1200;
+    int x_winPos = 850;
+    int y_winPos = 200;
     int numPoints = 5000;
     float epsilon = 5.0;
     PlannerType type = DISTANCE;
@@ -26,7 +26,7 @@ int main(int argc, char** argv) {
     glutInitDisplayMode(GLUT_SINGLE);
     glutInitWindowSize(winWidth, winHeight);
     glutInitWindowPosition(x_winPos, y_winPos);
-    glutCreateWindow("RRT* Planner");
+    int windowID = glutCreateWindow("RRT* Planner");
     glClear(GL_COLOR_BUFFER_BIT);
 
     // run the planner
@@ -45,7 +45,9 @@ int main(int argc, char** argv) {
 
     // keep the display open
     // closes when the user clicks the GUI's 'x' button
-    glutMainLoop(); // todo: comment this line out if you want to test with valgrind
+    glutMainLoop();
+
+    glutDestroyWindow(windowID);
 
     return 0;
 }
