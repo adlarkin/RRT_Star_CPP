@@ -32,6 +32,7 @@ class MyRtree {
 public:
     void add(RobotState *state);
     void remove(RobotState *state);
+    RobotState* getNearestElement(Location location);
 private:
     Rtree rTree;
 };

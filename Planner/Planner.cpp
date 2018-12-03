@@ -26,13 +26,23 @@ void Planner::findBestPath() {
     // draw the start and end points
     drawer.drawCircle(start, GREEN);
     drawer.drawCircle(end, BLUE);
+    drawer.updateScreen();
 
-    randomTestCode();   // todo: delete this later
+//    randomTestCode();   // todo: delete this later
 
-    int iterations = 0;
+//    int iterations = 0;
     while (allStates.size() < maxIterations) {
         // todo: write the rrt* code here (use rTree?)
         // todo: no obstacles first. add obstacles after the planner works w/o them
+        Location sampledLoc = makeUniqueLocation();
+        RobotState* nearest = rTree.getNearestElement(sampledLoc);
+//        std::cout << "generated location is" << sampledLoc.getXCoord() << ", " << sampledLoc.getYCoord();
+//        std::cout << std::endl << "rTree nearest query location is " << nearest->getLocation().getXCoord();
+//        std::cout << ", " << nearest->getLocation().getYCoord() << std::endl;
+        if (euclideanDistance(nearest->getLocation(), sampledLoc) > epsilon) {
+            sampledLoc = makeLocationWithinEpsilon(nearest, sampledLoc);
+        }
+        // todo: the rest of loop (making a new state, making connections, updating animation)
         break;
     }
 }
@@ -46,11 +56,30 @@ Location Planner::makeUniqueLocation() {
     return location;
 }
 
+Location Planner::makeLocationWithinEpsilon(RobotState *nearest, Location location) {
+    allLocations.erase(location);
+    // todo: make a new location based off of nearest, add it to allLocations, return it
+    // (this probably requires another constructor for location that takes in x,y)
+    double yDiff = location.getYCoord() - nearest->getLocation().getYCoord();
+    double xDiff = location.getXCoord() - nearest->getLocation().getXCoord();
+    double theta = atan2(yDiff, xDiff);    // in radians
+    double xCoord = epsilon * cos(theta);
+    double yCoord = epsilon * sin(theta);
+    // todo: how to make the new xID and yID given a coord? (usually, the coord comes from the ID)
+    return Location(0);
+}
+
 RobotState *Planner::createNewState(RobotState *parent, Location location) {
     auto nextState = new RobotState(parent, location);
     allStates.push_back(nextState);
     rTree.add(nextState);
     return nextState;
+}
+
+double Planner::euclideanDistance(Location start, Location end) {
+    double xDiff = end.getXCoord() - start.getXCoord();
+    double yDiff = end.getYCoord() - start.getYCoord();
+    return sqrt((xDiff * xDiff) + (yDiff * yDiff));
 }
 
 void Planner::pauseAnimation(int milliSec) {
