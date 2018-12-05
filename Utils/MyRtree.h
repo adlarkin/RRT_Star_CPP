@@ -16,7 +16,7 @@
 
 namespace bg = boost::geometry;
 namespace bgi = boost::geometry::index;
-//typedef bg::model::BoostPoint<float, 2, bg::cs::cartesian> BoostPoint;
+//typedef bg::model::BoostPoint<double, 2, bg::cs::cartesian> BoostPoint;
 //typedef bg::model::box<BoostPoint> box;
 typedef std::pair<BoostPoint, RobotState*> Value;
 // need to override the rTree equality operator (used when removing from rTree)

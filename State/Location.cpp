@@ -11,11 +11,11 @@ Location::Location(int pointValRange) :
 
 Location::Location(const Location &l2) : x(l2.x), y(l2.y) {}
 
-float Location::getXCoord() const {
+double Location::getXCoord() const {
     return x.getCoordinate();
 }
 
-float Location::getYCoord() const {
+double Location::getYCoord() const {
     return y.getCoordinate();
 }
 
@@ -43,14 +43,14 @@ Point Location::makeRandomPoint(int pointValRange) {
     int id = rand() % pointRange;
 
     /*
-     * turn this number into a float between -1 and 1 (coordinate range for openGL)
+     * turn this number into a double between -1 and 1 (coordinate range for openGL)
      * this is done the following way:
      * 1) divide id by pointRange
-     *    this will give a float between 0 and 1
-     * 2) multiply this new float by 2 to get a float between 0 and 2
-     * 3) subtract 1 from it to get a float between -1 and 1
+     *    this will give a double between 0 and 1
+     * 2) multiply this new double by 2 to get a double between 0 and 2
+     * 3) subtract 1 from it to get a double between -1 and 1
      */
-    float pos = (((float)id / pointRange) * 2) - 1;
+    double pos = (((double)id / pointRange) * 2) - 1;
 
     return Point{id, pos};
 }

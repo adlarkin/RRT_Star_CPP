@@ -4,7 +4,7 @@
 
 #include "DistancePlanner.h"
 
-DistancePlanner::DistancePlanner(int numPoints, float epsilon) : Planner(numPoints, epsilon) {}
+DistancePlanner::DistancePlanner(int numPoints, double epsilon) : Planner(numPoints, epsilon) {}
 
 double DistancePlanner::cost(RobotState *startState, RobotState *endState) {
     // cost is euclidean distance

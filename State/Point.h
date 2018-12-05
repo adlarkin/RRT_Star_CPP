@@ -8,20 +8,20 @@
 
 class Point {
 public:
-    Point(int ID, float coordinate);
+    Point(int ID, double coordinate);
     Point(const Point &p2);
 
     int getID() const;
 
     void setID(int ID);
 
-    float getCoordinate() const;
+    double getCoordinate() const;
 
-    void setCoordinate(float coordinate);
+    void setCoordinate(double coordinate);
 
 private:
     int ID; // for obstacle hash
-    float coordinate;
+    double coordinate;
 };
 
 

@@ -4,7 +4,7 @@
 
 #include "Point.h"
 
-Point::Point(int ID, float coordinate) : ID(ID), coordinate(coordinate) {}
+Point::Point(int ID, double coordinate) : ID(ID), coordinate(coordinate) {}
 
 Point::Point(const Point &p2) : ID(p2.ID), coordinate(p2.coordinate) {}
 
@@ -16,10 +16,10 @@ void Point::setID(int ID) {
     Point::ID = ID;
 }
 
-float Point::getCoordinate() const {
+double Point::getCoordinate() const {
     return coordinate;
 }
 
-void Point::setCoordinate(float coordinate) {
+void Point::setCoordinate(double coordinate) {
     Point::coordinate = coordinate;
 }

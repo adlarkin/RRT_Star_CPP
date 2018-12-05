@@ -13,15 +13,15 @@
 //#include <boost/geometry/geometries/BoostPoint.hpp>
 #include <boost/geometry.hpp>
 
-typedef boost::geometry::model::point<float, 2, boost::geometry::cs::cartesian> BoostPoint;
+typedef boost::geometry::model::point<double, 2, boost::geometry::cs::cartesian> BoostPoint;
 
 class Location {
 public:
     explicit Location(int pointValRange);
     Location(const Location &l2);
 
-    float getXCoord() const;
-    float getYCoord() const;
+    double getXCoord() const;
+    double getYCoord() const;
 
     BoostPoint getBoostPoint();  // needed for the rTree
 
@@ -29,7 +29,7 @@ public:
     bool operator!=(const Location &rhs) const;
 
 private:
-    static Point makeRandomPoint(int pointValRange);
+    Point makeRandomPoint(int pointValRange);
 
     Point x;
     Point y;
@@ -40,8 +40,8 @@ namespace std {
     template<>
     struct hash<Location> {
         size_t operator()(const Location &obj) const {
-            size_t h1 = hash<float>()(obj.getXCoord());
-            size_t h2 = hash<float >()(obj.getYCoord());
+            size_t h1 = hash<double>()(obj.getXCoord());
+            size_t h2 = hash<double>()(obj.getYCoord());
             return h1 ^ (h2 << 1);
         }
     };

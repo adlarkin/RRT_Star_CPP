@@ -15,7 +15,7 @@ int main(int argc, char** argv) {
     int x_winPos = 850;
     int y_winPos = 200;
     int numPoints = 5000;
-    float epsilon = 5.0;
+    double epsilon = .002;
     PlannerType type = DISTANCE;
 
     // needed this to generate random locations throughout the program

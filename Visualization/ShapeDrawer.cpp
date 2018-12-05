@@ -8,33 +8,31 @@
 
 #define PI 3.14159265359
 
-ShapeDrawer::ShapeDrawer(float radius) : radius(radius) {}
-
-void ShapeDrawer::drawCircle(Location center, Color color) {
+void ShapeDrawer::drawCircle(Location center, Color color, double radius) {
     glBegin(GL_POLYGON);
     setDrawingColor(color);
     for (int theta = 0; theta < 360; ++theta) {
-        glVertex2f(center.getXCoord() + (float)(cos(theta*PI/180)*radius),
-                   center.getYCoord() + (float)(sin(theta*PI/180)*radius));
+        glVertex2f((float)(center.getXCoord() + (cos(theta*PI/180)*radius)),
+                   (float)(center.getYCoord() + (sin(theta*PI/180)*radius)));
     }
     glEnd();
 }
 
-void ShapeDrawer::drawRectangle(float width, Location topLeft, float height, Color color) {
+void ShapeDrawer::drawRectangle(double width, Location topLeft, double height, Color color) {
     glBegin(GL_POLYGON);
     setDrawingColor(color);
-    glVertex2f(topLeft.getXCoord(), topLeft.getYCoord());
-    glVertex2f(topLeft.getXCoord() + width, topLeft.getYCoord());
-    glVertex2f(topLeft.getXCoord() + width, topLeft.getYCoord() - height);
-    glVertex2f(topLeft.getXCoord(), topLeft.getYCoord() - height);
+    glVertex2f((float)topLeft.getXCoord(), (float)topLeft.getYCoord());
+    glVertex2f((float)(topLeft.getXCoord() + width), (float)topLeft.getYCoord());
+    glVertex2f((float)(topLeft.getXCoord() + width), (float)(topLeft.getYCoord() - height));
+    glVertex2f((float)topLeft.getXCoord(), (float)(topLeft.getYCoord() - height));
     glEnd();
 }
 
 void ShapeDrawer::drawLine(Location start, Location end, Color color) {
     glBegin(GL_LINES);
     setDrawingColor(color);
-    glVertex2f(start.getXCoord(), start.getYCoord());
-    glVertex2f(end.getXCoord(), end.getYCoord());
+    glVertex2f((float)start.getXCoord(), (float)start.getYCoord());
+    glVertex2f((float)end.getXCoord(), (float)end.getYCoord());
     glEnd();
 }
 

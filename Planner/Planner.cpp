@@ -9,23 +9,24 @@
 #include <chrono>
 #include <thread>
 
+#define RADIUS .0125
+
 // initializer lists init objects based on the order they're declared in the .h file
 // sets must be initialized first in order for makeUniqueLocation() to work
-Planner::Planner(int numPoints, float epsilon) :
+Planner::Planner(int numPoints, double epsilon) :
         maxIterations(numPoints),
         epsilon(epsilon),
         start(makeUniqueLocation()),
         end(makeUniqueLocation()),
-        // the constructor for the shape drawer takes in a radius (for drawing circles)
-        drawer(.0125) {
+        drawer() {
     this->root = createNewState(nullptr, this->start);  // the root state has no parent
     drawer.updateScreen();  // this opens up an openGL screen with a black background
 }
 
 void Planner::findBestPath() {
     // draw the start and end points
-    drawer.drawCircle(start, GREEN);
-    drawer.drawCircle(end, BLUE);
+    drawer.drawCircle(start, GREEN, RADIUS);
+    drawer.drawCircle(end, BLUE, RADIUS);
     drawer.updateScreen();
 
 //    randomTestCode();   // todo: delete this later
@@ -63,10 +64,10 @@ Location Planner::makeLocationWithinEpsilon(RobotState *nearest, Location locati
     double yDiff = location.getYCoord() - nearest->getLocation().getYCoord();
     double xDiff = location.getXCoord() - nearest->getLocation().getXCoord();
     double theta = atan2(yDiff, xDiff);    // in radians
-    double xCoord = epsilon * cos(theta);
-    double yCoord = epsilon * sin(theta);
+    double xCoord = nearest->getLocation().getXCoord() + (epsilon * cos(theta));
+    double yCoord = nearest->getLocation().getXCoord() + (epsilon * sin(theta));
     // todo: how to make the new xID and yID given a coord? (usually, the coord comes from the ID)
-    return Location(0);
+    return Location(maxIterations);
 }
 
 RobotState *Planner::createNewState(RobotState *parent, Location location) {
@@ -107,7 +108,7 @@ void Planner::randomTestCode() {
 
     // sometimes, the end point is in the rectangle
     // redrawing the end point to make sure it's not off the screen (this is for testing)
-    drawer.drawCircle(end, BLUE);
+    drawer.drawCircle(end, BLUE, RADIUS);
     drawer.updateScreen();
 
     double testCost = cost(root, createNewState(nullptr, this->end));
