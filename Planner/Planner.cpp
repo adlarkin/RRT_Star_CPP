@@ -66,8 +66,7 @@ Location Planner::makeLocationWithinEpsilon(RobotState *nearest, Location locati
     double theta = atan2(yDiff, xDiff);    // in radians
     double xCoord = nearest->getLocation().getXCoord() + (epsilon * cos(theta));
     double yCoord = nearest->getLocation().getXCoord() + (epsilon * sin(theta));
-    // todo: how to make the new xID and yID given a coord? (usually, the coord comes from the ID)
-    return Location(maxIterations);
+    return Location(xCoord, yCoord);
 }
 
 RobotState *Planner::createNewState(RobotState *parent, Location location) {

@@ -5,9 +5,15 @@
 #include "Location.h"
 #include <random>
 
+#define SCALING_FACTOR 4
+
 Location::Location(int pointValRange) :
     x(makeRandomPoint(pointValRange)),
     y(makeRandomPoint(pointValRange)) {}
+
+Location::Location(double xCoord, double yCoord) :
+    x(makeIDFromCoord(xCoord), xCoord),
+    y(makeIDFromCoord(yCoord), yCoord) {}
 
 Location::Location(const Location &l2) : x(l2.x), y(l2.y) {}
 
@@ -32,10 +38,15 @@ bool Location::operator!=(const Location &rhs) const {
     return !(rhs == *this);
 }
 
+
+int Location::getScaledPointRange(int pointValRange) {
+    return SCALING_FACTOR * pointValRange;
+}
+
 Point Location::makeRandomPoint(int pointValRange) {
     // the number of possible points to be sampled from
     // higher pointRange means less chance for randomly sampling duplicate points
-    int pointRange = 4 * pointValRange;
+    int pointRange = getScaledPointRange(pointValRange);
 
     // make a number between 0 and pointRange, exclusive
     // this number is the id of the coordinate
@@ -53,4 +64,14 @@ Point Location::makeRandomPoint(int pointValRange) {
     double pos = (((double)id / pointRange) * 2) - 1;
 
     return Point{id, pos};
+}
+
+/*
+ * this method is the inverse transformation of madeRandomPoint()
+ * (makeRandomPoint() maps an id to a coord ... this method maps a coord to an ID)
+ */
+// TODO: PASS IN POINT VAL RANGE
+int Location::makeIDFromCoord(double coord) {
+    // todo: fill this in
+    return 0;
 }
