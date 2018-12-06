@@ -11,9 +11,9 @@ Location::Location(int pointValRange) :
     x(makeRandomPoint(pointValRange)),
     y(makeRandomPoint(pointValRange)) {}
 
-Location::Location(double xCoord, double yCoord) :
-    x(makeIDFromCoord(xCoord), xCoord),
-    y(makeIDFromCoord(yCoord), yCoord) {}
+Location::Location(double xCoord, double yCoord, int unscaledRange) :
+    x(makeIDFromCoord(xCoord, unscaledRange), xCoord),
+    y(makeIDFromCoord(yCoord, unscaledRange), yCoord) {}
 
 Location::Location(const Location &l2) : x(l2.x), y(l2.y) {}
 
@@ -39,14 +39,14 @@ bool Location::operator!=(const Location &rhs) const {
 }
 
 
-int Location::getScaledPointRange(int pointValRange) {
-    return SCALING_FACTOR * pointValRange;
+int Location::getScaledPointRange(int unscaledRange) {
+    return SCALING_FACTOR * unscaledRange;
 }
 
-Point Location::makeRandomPoint(int pointValRange) {
+Point Location::makeRandomPoint(int unscaledRange) {
     // the number of possible points to be sampled from
     // higher pointRange means less chance for randomly sampling duplicate points
-    int pointRange = getScaledPointRange(pointValRange);
+    int pointRange = getScaledPointRange(unscaledRange);
 
     // make a number between 0 and pointRange, exclusive
     // this number is the id of the coordinate
@@ -70,8 +70,8 @@ Point Location::makeRandomPoint(int pointValRange) {
  * this method is the inverse transformation of madeRandomPoint()
  * (makeRandomPoint() maps an id to a coord ... this method maps a coord to an ID)
  */
-// TODO: PASS IN POINT VAL RANGE
-int Location::makeIDFromCoord(double coord) {
+int Location::makeIDFromCoord(double coord, int unscaledRange) {
     // todo: fill this in
-    return 0;
+    int pointRange = getScaledPointRange(unscaledRange);
+    return (int)((pointRange * (coord + 1)) / 2);
 }

@@ -23,7 +23,7 @@ protected:
 private:
     Location makeUniqueLocation();
     Location makeLocationWithinEpsilon(RobotState *nearest, Location location);
-    RobotState* createNewState(RobotState* parent, Location location);
+    RobotState* createNewState(RobotState* parent, Location location, bool isRoot = false);
     double euclideanDistance(Location start, Location end);
     void pauseAnimation(int milliSec);
     void randomTestCode();  // todo: remove this later

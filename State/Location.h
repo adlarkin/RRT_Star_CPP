@@ -18,7 +18,7 @@ typedef boost::geometry::model::point<double, 2, boost::geometry::cs::cartesian>
 class Location {
 public:
     explicit Location(int pointValRange);
-    Location(double xCoord, double yCoord);
+    Location(double xCoord, double yCoord, int unscaledRange);
     Location(const Location &l2);
 
     double getXCoord() const;
@@ -30,9 +30,9 @@ public:
     bool operator!=(const Location &rhs) const;
 
 private:
-    int getScaledPointRange(int pointValRange);
-    Point makeRandomPoint(int pointValRange);
-    int makeIDFromCoord(double coord);
+    int getScaledPointRange(int unscaledRange);
+    Point makeRandomPoint(int unscaledRange);
+    int makeIDFromCoord(double coord, int unscaledRange);
 
     Point x;
     Point y;

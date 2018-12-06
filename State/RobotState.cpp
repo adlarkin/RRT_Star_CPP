@@ -4,10 +4,10 @@
 
 #include "RobotState.h"
 
-RobotState::RobotState(RobotState *parent, const Location &location, size_t cost) :
+RobotState::RobotState(RobotState *parent, const Location &location) :
         parent(parent),
-        location(location),
-        cost(cost) {}
+        location(location)
+        {}
 
 BoostPoint RobotState::getBoostLocation() {
     return location.getBoostPoint();
@@ -17,11 +17,11 @@ const Location &RobotState::getLocation() const {
     return location;
 }
 
-size_t RobotState::getCost() const {
+double RobotState::getCost() const {
     return cost;
 }
 
-void RobotState::setCost(size_t cost) {
+void RobotState::setCost(double cost) {
     RobotState::cost = cost;
 }
 
@@ -31,4 +31,8 @@ bool RobotState::operator==(const RobotState &rhs) const {
 
 bool RobotState::operator!=(const RobotState &rhs) const {
     return !(rhs == *this);
+}
+
+void RobotState::addNeighbor(RobotState* neighborState) {
+    neighbors.push_back(neighborState);
 }
