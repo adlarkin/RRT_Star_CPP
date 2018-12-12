@@ -73,5 +73,5 @@ Point Location::makeRandomPoint(int unscaledRange) {
 int Location::makeIDFromCoord(double coord, int unscaledRange) {
     // todo: fill this in
     int pointRange = getScaledPointRange(unscaledRange);
-    return (int)((pointRange * (coord + 1)) / 2);
+    return (int) round((pointRange * (coord + 1)) / 2);
 }

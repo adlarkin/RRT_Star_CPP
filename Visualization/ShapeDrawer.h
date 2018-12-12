@@ -10,7 +10,7 @@
 #include <vector>
 #include "../State/Location.h"
 
-enum Color {WHITE, BLACK, RED, GREEN, BLUE};
+enum Color {WHITE, BLACK, RED, GREEN, BLUE, CYAN, PINK};
 
 class ShapeDrawer {
 public:
@@ -27,7 +27,9 @@ private:
             {BLACK, {0.0f, 0.0f, 0.0f}},
             {RED, {1.0f, 0.0f, 0.0f}},
             {GREEN, {0.0f, 1.0f, 0.0f}},
-            {BLUE, {0.0f, 0.0f, 1.0f}}
+            {BLUE, {0.0f, 0.0f, 1.0f}},
+            {CYAN, {0.0f, 0.7f, 1.0f}},
+            {PINK, {1.0f, 0.4f, 0.7f}}
     };
 };
 

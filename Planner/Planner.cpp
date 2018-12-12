@@ -26,13 +26,14 @@ Planner::Planner(int numPoints, double epsilon) :
 void Planner::findBestPath() {
     // draw the start and end points
     drawer.drawCircle(start, GREEN, RADIUS);
-    drawer.drawCircle(end, BLUE, RADIUS);
+    drawer.drawCircle(end, RED, RADIUS);
     drawer.updateScreen();
     pauseAnimation(500);    // let the user see the start and end points
 
 //    randomTestCode();   // todo: delete this later
 
 //    int iterations = 0;
+    int badMatches = 0;
     while (allStates.size() < maxIterations) {
         // todo: write the rrt* code here (use rTree?)
         Location sampledLoc = makeUniqueLocation();
@@ -44,16 +45,22 @@ void Planner::findBestPath() {
         if (euclideanDistance(nearest->getLocation(), sampledLoc) > epsilon) {
             sampledLoc = makeLocationWithinEpsilon(nearest, sampledLoc);
         }
-        drawer.drawLine(nearest->getLocation(), sampledLoc);
+        // todo: the rest of loop (making a new state, making connections, updating animation)
+        RobotState* nextState = createNewState(nearest, sampledLoc);
+        drawer.drawLine(nearest->getLocation(), nextState->getLocation());
         drawer.updateScreen();
-//        std::cout << "Cost from start to end is " << cost(nearest, createNewState(nearest, sampledLoc)) << std::endl;
+//        std::cout << "Cost from start to end is " << cost(nearest, nextState) << std::endl;
 //        std::cout << "new sampledLoc coords are: " << sampledLoc.getXCoord() << ", " << sampledLoc.getYCoord();
 //        std::cout << std::endl;
-        // todo: the rest of loop (making a new state, making connections, updating animation)
-        createNewState(nearest, sampledLoc);
         
 //        break;
+        Location temp(sampledLoc.getXCoord(), sampledLoc.getYCoord(), maxIterations);
+        if (temp != sampledLoc) {
+            badMatches++;
+            Location a(sampledLoc.getXCoord(), sampledLoc.getYCoord(), maxIterations);
+        }
     }
+    std::cout << badMatches << std::endl;
 }
 
 Location Planner::makeUniqueLocation() {
@@ -111,22 +118,27 @@ Planner::~Planner() {
 }
 
 void Planner::randomTestCode() {
-    drawer.drawLine(start, end);
-    drawer.drawRectangle(.3f, start, .1f);
-    drawer.updateScreen();
+    Location checker(start.getXCoord(), start.getYCoord(), maxIterations);
+    Location anotherCheck(end.getXCoord(), end.getYCoord(), maxIterations);
 
-    pauseAnimation(500);
+    std::cout << "hey there" << std::endl;
 
-    drawer.drawLine(makeUniqueLocation(), makeUniqueLocation());
-    drawer.updateScreen();
-
-    // sometimes, the end point is in the rectangle
-    // redrawing the end point to make sure it's not off the screen (this is for testing)
-    drawer.drawCircle(end, BLUE, RADIUS);
-    drawer.updateScreen();
-
-    double testCost = cost(root, createNewState(nullptr, this->end));
-    std::cout << "Cost from start to end is " << testCost << std::endl;
-    std::cout << "size of allStates vector is " << allStates.size() << std::endl;
-    std::cout << "size of allLocations set is " << allLocations.size() << std::endl;
+//    drawer.drawLine(start, end);
+//    drawer.drawRectangle(.3f, start, .1f);
+//    drawer.updateScreen();
+//
+//    pauseAnimation(500);
+//
+//    drawer.drawLine(makeUniqueLocation(), makeUniqueLocation());
+//    drawer.updateScreen();
+//
+//    // sometimes, the end point is in the rectangle
+//    // redrawing the end point to make sure it's not off the screen (this is for testing)
+//    drawer.drawCircle(end, BLUE, RADIUS);
+//    drawer.updateScreen();
+//
+//    double testCost = cost(root, createNewState(nullptr, this->end));
+//    std::cout << "Cost from start to end is " << testCost << std::endl;
+//    std::cout << "size of allStates vector is " << allStates.size() << std::endl;
+//    std::cout << "size of allLocations set is " << allLocations.size() << std::endl;
 }
