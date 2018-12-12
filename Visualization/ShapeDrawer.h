@@ -10,14 +10,22 @@
 #include <vector>
 #include "../State/Location.h"
 
-enum Color {WHITE, BLACK, RED, GREEN, BLUE, CYAN, PINK};
+enum Color {WHITE, BLACK, RED, GREEN, BLUE, LIGHT_BLUE, PINK};
 
 class ShapeDrawer {
 public:
+    // todo: use this (create drawer in planner's constructor)?
+//    ShapeDrawer(std::string title, int winHeight, int winWidth, int x_winPos, int y_winPos);
+//    void initScreen(std::string title, int winHeight, int winWidth, int x_winPos, int y_winPos);
+
     void drawCircle(Location center, Color color, double radius);
-    void drawRectangle(double width, Location topLeft, double height, Color color = WHITE);
-    void drawLine(Location start, Location end, Color color = WHITE);
+    void drawRectangle(double width, Location topLeft, double height, Color color);
+    void drawLine(Location start, Location end, Color color, float lineWidth = 1.0f);
     void updateScreen();
+
+    // todo: use these?
+//    void keepScreenOpen();
+//    void deleteScreen();
 
 private:
     void setDrawingColor(Color color);
@@ -28,9 +36,10 @@ private:
             {RED, {1.0f, 0.0f, 0.0f}},
             {GREEN, {0.0f, 1.0f, 0.0f}},
             {BLUE, {0.0f, 0.0f, 1.0f}},
-            {CYAN, {0.0f, 0.7f, 1.0f}},
-            {PINK, {1.0f, 0.4f, 0.7f}}
+            {LIGHT_BLUE, {0.0f, 0.75f, 1.0f}},
+            {PINK, {1.0f, 0.5f, 0.65f}}
     };
+    int windowID;
 };
 
 

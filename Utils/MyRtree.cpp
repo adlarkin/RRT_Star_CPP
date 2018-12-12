@@ -20,6 +20,10 @@ RobotState *MyRtree::getNearestElement(Location location) {
     return rTreeQueryResults[0].second;
 }
 
+size_t MyRtree::getSize() {
+    return rTree.size();
+}
+
 //shared_ptr<EnergyNode> RrtPlanner::getNearestNode(Coord coord) {
 //    vector<RtreeValue> rtreeQueryResults;
 //    myRtree.query(bgi::nearest(coord.getBoostPoint(), 1), back_inserter(rtreeQueryResults));

@@ -33,6 +33,7 @@ public:
     void add(RobotState *state);
     void remove(RobotState *state);
     RobotState* getNearestElement(Location location);
+    size_t getSize();
 private:
     Rtree rTree;
 };

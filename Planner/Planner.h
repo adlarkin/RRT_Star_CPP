@@ -19,14 +19,15 @@ public:
 protected:
     // the cost method will be determined by the type of planner object that is constructed
     virtual double cost(RobotState *startState, RobotState *endState) = 0;
+    double euclideanDistance(Location start, Location end);
 
 private:
     Location makeUniqueLocation();
     Location makeLocationWithinEpsilon(RobotState *nearest, Location location);
-    RobotState* createNewState(RobotState* parent, Location location, bool isRoot = false);
-    double euclideanDistance(Location start, Location end);
+    RobotState* createNewState(RobotState* parent, Location location);
+    bool foundPath(RobotState* mostRecentState);
+    void displayPath(RobotState* lastState);
     void pauseAnimation(int milliSec);
-    void randomTestCode();  // todo: remove this later
 
     // saving all created states and locations
     // this will make deleting pointers easy in the destructor

@@ -10,6 +10,10 @@
 #include <thread>
 
 #define RADIUS .0085
+#define START_COLOR GREEN
+#define END_COLOR RED
+#define LINE_COLOR WHITE
+#define PATH_COLOR LIGHT_BLUE
 
 // initializer lists init objects based on the order they're declared in the .h file
 // sets must be initialized first in order for makeUniqueLocation() to work
@@ -19,48 +23,37 @@ Planner::Planner(int numPoints, double epsilon) :
         start(makeUniqueLocation()),
         end(makeUniqueLocation()),
         drawer() {
-    this->root = createNewState(nullptr, this->start, true);  // the root state has no parent
+    this->root = createNewState(nullptr, this->start);  // the root state has no parent
     drawer.updateScreen();  // this opens up an openGL screen with a black background
 }
 
 void Planner::findBestPath() {
     // draw the start and end points
-    drawer.drawCircle(start, GREEN, RADIUS);
-    drawer.drawCircle(end, RED, RADIUS);
+    drawer.drawCircle(start, START_COLOR, RADIUS);
+    drawer.drawCircle(end, END_COLOR, RADIUS);
     drawer.updateScreen();
     pauseAnimation(500);    // let the user see the start and end points
 
-//    randomTestCode();   // todo: delete this later
-
-//    int iterations = 0;
-    int badMatches = 0;
     while (allStates.size() < maxIterations) {
-        // todo: write the rrt* code here (use rTree?)
         Location sampledLoc = makeUniqueLocation();
-//        drawer.drawLine(start, sampledLoc, RED);
         RobotState* nearest = rTree.getNearestElement(sampledLoc);
-//        std::cout << "generated location is" << sampledLoc.getXCoord() << ", " << sampledLoc.getYCoord();
-//        std::cout << std::endl << "rTree nearest query location is " << nearest->getLocation().getXCoord();
-//        std::cout << ", " << nearest->getLocation().getYCoord() << std::endl;
         if (euclideanDistance(nearest->getLocation(), sampledLoc) > epsilon) {
             sampledLoc = makeLocationWithinEpsilon(nearest, sampledLoc);
         }
-        // todo: the rest of loop (making a new state, making connections, updating animation)
         RobotState* nextState = createNewState(nearest, sampledLoc);
-        drawer.drawLine(nearest->getLocation(), nextState->getLocation());
+        drawer.drawLine(nearest->getLocation(), nextState->getLocation(), LINE_COLOR);
         drawer.updateScreen();
-//        std::cout << "Cost from start to end is " << cost(nearest, nextState) << std::endl;
-//        std::cout << "new sampledLoc coords are: " << sampledLoc.getXCoord() << ", " << sampledLoc.getYCoord();
-//        std::cout << std::endl;
-        
-//        break;
-        Location temp(sampledLoc.getXCoord(), sampledLoc.getYCoord(), maxIterations);
-        if (temp != sampledLoc) {
-            badMatches++;
-            Location a(sampledLoc.getXCoord(), sampledLoc.getYCoord(), maxIterations);
+        if (foundPath(nextState)) {
+            displayPath(nextState);
+            break;
         }
     }
-    std::cout << badMatches << std::endl;
+}
+
+double Planner::euclideanDistance(Location start, Location end) {
+    double xDiff = end.getXCoord() - start.getXCoord();
+    double yDiff = end.getYCoord() - start.getYCoord();
+    return sqrt((xDiff * xDiff) + (yDiff * yDiff));
 }
 
 Location Planner::makeUniqueLocation() {
@@ -73,8 +66,7 @@ Location Planner::makeUniqueLocation() {
 }
 
 Location Planner::makeLocationWithinEpsilon(RobotState *nearest, Location location) {
-    // todo: make a new location based off of nearest, add it to allLocations, return it
-    allLocations.erase(location);
+    allLocations.erase(location);   // remove the location outside of epsilon since it's not valid
     double yDiff = location.getYCoord() - nearest->getLocation().getYCoord();
     double xDiff = location.getXCoord() - nearest->getLocation().getXCoord();
     double theta = atan2(yDiff, xDiff);    // in radians
@@ -85,12 +77,13 @@ Location Planner::makeLocationWithinEpsilon(RobotState *nearest, Location locati
     return updatedLocation;
 }
 
-RobotState *Planner::createNewState(RobotState *parent, Location location, bool isRoot) {
+RobotState *Planner::createNewState(RobotState *parent, Location location) {
     auto nextState = new RobotState(parent, location);
-    if (isRoot) {
-        nextState->setCost(0);
-    } else {
-        nextState->setCost(cost(parent, nextState));
+    // the root state has a cost of 0
+    nextState->setCost(0);
+    // if nextState is not the root state, adjust the cost accordingly
+    if (parent != nullptr) {
+        nextState->setCost(parent->getCost() + cost(parent, nextState));
         parent->addNeighbor(nextState);
     }
     allStates.push_back(nextState);
@@ -98,10 +91,23 @@ RobotState *Planner::createNewState(RobotState *parent, Location location, bool 
     return nextState;
 }
 
-double Planner::euclideanDistance(Location start, Location end) {
-    double xDiff = end.getXCoord() - start.getXCoord();
-    double yDiff = end.getYCoord() - start.getYCoord();
-    return sqrt((xDiff * xDiff) + (yDiff * yDiff));
+bool Planner::foundPath(RobotState *mostRecentState) {
+    if (euclideanDistance(mostRecentState->getLocation(), end) <= epsilon) {
+        return true;
+    }
+    return false;
+}
+
+void Planner::displayPath(RobotState *lastState) {
+    while (lastState != root) {
+        RobotState* next = lastState->getParent();
+        drawer.drawLine(lastState->getLocation(), next->getLocation(), PATH_COLOR, 5.0f);
+        lastState = next;
+    }
+    // redraw the start/end points so that the path doesn't display over them
+    drawer.drawCircle(start, START_COLOR, RADIUS);
+    drawer.drawCircle(end, END_COLOR, RADIUS);
+    drawer.updateScreen();
 }
 
 void Planner::pauseAnimation(int milliSec) {
@@ -115,30 +121,4 @@ Planner::~Planner() {
         delete state;
         state = nullptr;
     }
-}
-
-void Planner::randomTestCode() {
-    Location checker(start.getXCoord(), start.getYCoord(), maxIterations);
-    Location anotherCheck(end.getXCoord(), end.getYCoord(), maxIterations);
-
-    std::cout << "hey there" << std::endl;
-
-//    drawer.drawLine(start, end);
-//    drawer.drawRectangle(.3f, start, .1f);
-//    drawer.updateScreen();
-//
-//    pauseAnimation(500);
-//
-//    drawer.drawLine(makeUniqueLocation(), makeUniqueLocation());
-//    drawer.updateScreen();
-//
-//    // sometimes, the end point is in the rectangle
-//    // redrawing the end point to make sure it's not off the screen (this is for testing)
-//    drawer.drawCircle(end, BLUE, RADIUS);
-//    drawer.updateScreen();
-//
-//    double testCost = cost(root, createNewState(nullptr, this->end));
-//    std::cout << "Cost from start to end is " << testCost << std::endl;
-//    std::cout << "size of allStates vector is " << allStates.size() << std::endl;
-//    std::cout << "size of allLocations set is " << allLocations.size() << std::endl;
 }

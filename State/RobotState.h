@@ -11,6 +11,7 @@
 class RobotState {
 public:
     RobotState(RobotState *parent, const Location &location);
+    RobotState *getParent() const;
     BoostPoint getBoostLocation();
     const Location &getLocation() const;
     double getCost() const;
