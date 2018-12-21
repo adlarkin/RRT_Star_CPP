@@ -20,7 +20,7 @@ public:
     void setCoordinate(double coordinate);
 
 private:
-    int ID; // for obstacle hash
+    int ID; // for obstacle hashing
     double coordinate;
 };
 

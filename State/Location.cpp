@@ -9,11 +9,13 @@
 
 Location::Location(int pointValRange) :
     x(makeRandomPoint(pointValRange)),
-    y(makeRandomPoint(pointValRange)) {}
+    y(makeRandomPoint(pointValRange))
+    {}
 
 Location::Location(double xCoord, double yCoord, int unscaledRange) :
     x(makeIDFromCoord(xCoord, unscaledRange), xCoord),
-    y(makeIDFromCoord(yCoord, unscaledRange), yCoord) {}
+    y(makeIDFromCoord(yCoord, unscaledRange), yCoord)
+    {}
 
 Location::Location(const Location &l2) : x(l2.x), y(l2.y) {}
 
@@ -23,10 +25,6 @@ double Location::getXCoord() const {
 
 double Location::getYCoord() const {
     return y.getCoordinate();
-}
-
-BoostPoint Location::getBoostPoint() {
-    return BoostPoint{x.getCoordinate(), y.getCoordinate()};
 }
 
 bool Location::operator==(const Location &rhs) const {

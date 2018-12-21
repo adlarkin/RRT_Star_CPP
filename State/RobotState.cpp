@@ -13,10 +13,6 @@ RobotState *RobotState::getParent() const {
     return parent;
 }
 
-BoostPoint RobotState::getBoostLocation() {
-    return location.getBoostPoint();
-}
-
 const Location &RobotState::getLocation() const {
     return location;
 }

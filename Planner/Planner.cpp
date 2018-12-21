@@ -2,7 +2,7 @@
 // Created by adlarkin on 10/29/18.
 //
 
-#include <GL/gl.h>
+//#include <GL/gl.h>
 #include <iostream>
 #include "Planner.h"
 #include <set>
@@ -16,15 +16,15 @@
 #define PATH_COLOR LIGHT_BLUE
 
 // initializer lists init objects based on the order they're declared in the .h file
-// sets must be initialized first in order for makeUniqueLocation() to work
-Planner::Planner(int numPoints, double epsilon) :
+// allLocations must be initialized before start/end in order for makeUniqueLocation() to work
+Planner::Planner(WindowParamsDTO screenParams, int numPoints, double epsilon) :
         maxIterations(numPoints),
         epsilon(epsilon),
         start(makeUniqueLocation()),
         end(makeUniqueLocation()),
-        drawer() {
+        drawer(screenParams)    // initializing the drawer also sets up a blank screen
+        {
     this->root = createNewState(nullptr, this->start);  // the root state has no parent
-    drawer.updateScreen();  // this opens up an openGL screen with a black background
 }
 
 void Planner::findBestPath() {
@@ -32,7 +32,7 @@ void Planner::findBestPath() {
     drawer.drawCircle(start, START_COLOR, RADIUS);
     drawer.drawCircle(end, END_COLOR, RADIUS);
     drawer.updateScreen();
-    pauseAnimation(500);    // let the user see the start and end points
+    pauseAnimation(500);    // let the client see the start and end points
 
     while (allStates.size() < maxIterations) {
         Location sampledLoc = makeUniqueLocation();
@@ -48,6 +48,8 @@ void Planner::findBestPath() {
             break;
         }
     }
+
+    drawer.keepScreenOpen();    // let the client see the (possible) resulting path
 }
 
 double Planner::euclideanDistance(Location start, Location end) {
@@ -116,7 +118,10 @@ void Planner::pauseAnimation(int milliSec) {
     std::this_thread::sleep_for(waitTime);
 }
 
+// TODO: make sure this gets called ... do I need to put destructors in the child classes too?
 Planner::~Planner() {
+    drawer.deleteScreen();
+
     for (auto state : allStates) {
         delete state;
         state = nullptr;

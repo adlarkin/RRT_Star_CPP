@@ -8,11 +8,11 @@
 #include <set>
 #include <unordered_set>
 #include "../Utils/MyRtree.h"
-#include "../Visualization/ShapeDrawer.h"
+#include "../Visualization/Drawer.h"
 
 class Planner {
 public:
-    Planner(int numPoints, double epsilon);
+    Planner(WindowParamsDTO screenParams, int numPoints, double epsilon);
     void findBestPath();
     virtual ~Planner(); // todo: smart pointers? (avoid deletion)
 
@@ -40,8 +40,8 @@ private:
     double epsilon;
     Location start;
     Location end;
-    ShapeDrawer drawer;
     MyRtree rTree;
+    Drawer drawer;
 };
 
 #endif //RRT_PROJECT_PLANNER_H

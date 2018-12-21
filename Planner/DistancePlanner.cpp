@@ -4,7 +4,9 @@
 
 #include "DistancePlanner.h"
 
-DistancePlanner::DistancePlanner(int numPoints, double epsilon) : Planner(numPoints, epsilon) {}
+DistancePlanner::DistancePlanner(WindowParamsDTO screenParams, int numPoints, double epsilon) :
+    Planner(screenParams, numPoints, epsilon)
+    {}
 
 double DistancePlanner::cost(RobotState *startState, RobotState *endState) {
     return euclideanDistance(startState->getLocation(), endState->getLocation());
