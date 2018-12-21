@@ -5,22 +5,26 @@
 #include "Location.h"
 #include <random>
 
+#define SCALING_FACTOR 4
+
 Location::Location(int pointValRange) :
     x(makeRandomPoint(pointValRange)),
-    y(makeRandomPoint(pointValRange)) {}
+    y(makeRandomPoint(pointValRange))
+    {}
+
+Location::Location(double xCoord, double yCoord, int unscaledRange) :
+    x(makeIDFromCoord(xCoord, unscaledRange), xCoord),
+    y(makeIDFromCoord(yCoord, unscaledRange), yCoord)
+    {}
 
 Location::Location(const Location &l2) : x(l2.x), y(l2.y) {}
 
-float Location::getXCoord() const {
+double Location::getXCoord() const {
     return x.getCoordinate();
 }
 
-float Location::getYCoord() const {
+double Location::getYCoord() const {
     return y.getCoordinate();
-}
-
-BoostPoint Location::getBoostPoint() {
-    return BoostPoint{x.getCoordinate(), y.getCoordinate()};
 }
 
 bool Location::operator==(const Location &rhs) const {
@@ -32,10 +36,15 @@ bool Location::operator!=(const Location &rhs) const {
     return !(rhs == *this);
 }
 
-Point Location::makeRandomPoint(int pointValRange) {
+
+int Location::getScaledPointRange(int unscaledRange) {
+    return SCALING_FACTOR * unscaledRange;
+}
+
+Point Location::makeRandomPoint(int unscaledRange) {
     // the number of possible points to be sampled from
     // higher pointRange means less chance for randomly sampling duplicate points
-    int pointRange = 4 * pointValRange;
+    int pointRange = getScaledPointRange(unscaledRange);
 
     // make a number between 0 and pointRange, exclusive
     // this number is the id of the coordinate
@@ -43,14 +52,23 @@ Point Location::makeRandomPoint(int pointValRange) {
     int id = rand() % pointRange;
 
     /*
-     * turn this number into a float between -1 and 1 (coordinate range for openGL)
+     * turn this number into a double between -1 and 1 (coordinate range for openGL)
      * this is done the following way:
      * 1) divide id by pointRange
-     *    this will give a float between 0 and 1
-     * 2) multiply this new float by 2 to get a float between 0 and 2
-     * 3) subtract 1 from it to get a float between -1 and 1
+     *    this will give a double between 0 and 1
+     * 2) multiply this new double by 2 to get a double between 0 and 2
+     * 3) subtract 1 from it to get a double between -1 and 1
      */
-    float pos = (((float)id / pointRange) * 2) - 1;
+    double pos = (((double)id / pointRange) * 2) - 1;
 
     return Point{id, pos};
+}
+
+/*
+ * this method is the inverse transformation of madeRandomPoint()
+ * (makeRandomPoint() maps an id to a coord ... this method maps a coord to an ID)
+ */
+int Location::makeIDFromCoord(double coord, int unscaledRange) {
+    int pointRange = getScaledPointRange(unscaledRange);
+    return (int) round((pointRange * (coord + 1)) / 2);
 }

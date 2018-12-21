@@ -8,23 +8,26 @@
 #include <set>
 #include <unordered_set>
 #include "../Utils/MyRtree.h"
-#include "../Visualization/ShapeDrawer.h"
+#include "../Visualization/Drawer.h"
 
 class Planner {
 public:
-    Planner(int numPoints, float epsilon);
+    Planner(WindowParamsDTO screenParams, int numPoints, double epsilon);
     void findBestPath();
     virtual ~Planner(); // todo: smart pointers? (avoid deletion)
 
 protected:
     // the cost method will be determined by the type of planner object that is constructed
     virtual double cost(RobotState *startState, RobotState *endState) = 0;
+    double euclideanDistance(Location start, Location end);
 
 private:
     Location makeUniqueLocation();
+    Location makeLocationWithinEpsilon(RobotState *nearest, Location location);
     RobotState* createNewState(RobotState* parent, Location location);
+    bool foundPath(RobotState* mostRecentState);
+    void displayPath(RobotState* lastState);
     void pauseAnimation(int milliSec);
-    void randomTestCode();  // todo: remove this later
 
     // saving all created states and locations
     // this will make deleting pointers easy in the destructor
@@ -34,11 +37,11 @@ private:
 
     RobotState* root;
     int maxIterations;
-    float epsilon;
+    double epsilon;
     Location start;
     Location end;
-    ShapeDrawer drawer;
     MyRtree rTree;
+    Drawer drawer;
 };
 
 #endif //RRT_PROJECT_PLANNER_H
