@@ -21,8 +21,8 @@ int main(int argc, char** argv) {
     std::string title = "RRT* Planner";
     PlannerType type = DISTANCE;
     WindowParamsDTO screenParams(winWidth, winHeight, x_winPos, y_winPos, title);
-    int numPoints = 5000000;
-    double epsilon = .0075;
+    int numPoints = 50000;
+    double epsilon = .015;
 
     // needed this to generate random locations throughout the program
     srand(time(nullptr));
