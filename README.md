@@ -14,3 +14,7 @@ In order to use the rTree data structure, ensure that boost is installed:
 
 More info on rTree can be found here:
 - https://www.boost.org/doc/libs/1_68_0/libs/geometry/doc/html/geometry/spatial_indexes/introduction.html
+
+Using double buffer for the drawer (openGL-based) because of dedicated graphics cards:
+- https://stackoverflow.com/questions/18816882/no-display-transparent-window-with-opengl-2-and-primusrun-on-single-buffer
+- https://stackoverflow.com/questions/28298540/difference-between-single-bufferedglut-single-and-double-buffered-drawingglut
