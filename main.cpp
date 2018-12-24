@@ -14,15 +14,15 @@ int main(int argc, char** argv) {
     // define program inputs (from the commandLine)
     // todo: figure out how to turn strings to ints in c++
     // todo: make all variables below command line arguments
-    int winWidth = 1500;
-    int winHeight = 1200;
-    int x_winPos = 850;
-    int y_winPos = 200;
+    int winWidth = 1000;
+    int winHeight = 900;
+    int x_winPos = 450;
+    int y_winPos = 70;
     std::string title = "RRT* Planner";
     PlannerType type = DISTANCE;
     WindowParamsDTO screenParams(winWidth, winHeight, x_winPos, y_winPos, title);
-    int numPoints = 5000;
-    double epsilon = .025;
+    int numPoints = 5000000;
+    double epsilon = .0075;
 
     // needed this to generate random locations throughout the program
     srand(time(nullptr));

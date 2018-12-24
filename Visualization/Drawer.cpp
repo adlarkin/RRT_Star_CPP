@@ -28,7 +28,7 @@ void Drawer::initScreen(WindowParamsDTO screenParams) {
     int fakeArgc = 1;
 
     glutInit( &fakeArgc, fakeArgv );
-    glutInitDisplayMode(GLUT_SINGLE);
+    glutInitDisplayMode(GLUT_DOUBLE);   // double buffer works well with dedicated graphics cards
     glutInitWindowSize(screenParams.getWinWidth(), screenParams.getWinHeight());
     glutInitWindowPosition(screenParams.getX_winPos(), screenParams.getY_winPos());
     windowID = glutCreateWindow(screenParams.getTitle().c_str());
@@ -67,7 +67,8 @@ void Drawer::drawLine(Location start, Location end, Color color, float lineWidth
 }
 
 void Drawer::updateScreen() {
-    glFlush();
+    // doing this instead of glFlush()/glFinish() since a double duffer implementation is used (see link in README)
+    glutSwapBuffers();
 }
 
 void Drawer::keepScreenOpen() {

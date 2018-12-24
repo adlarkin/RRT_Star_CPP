@@ -103,7 +103,7 @@ bool Planner::foundPath(RobotState *mostRecentState) {
 void Planner::displayPath(RobotState *lastState) {
     while (lastState != root) {
         RobotState* next = lastState->getParent();
-        drawer.drawLine(lastState->getLocation(), next->getLocation(), PATH_COLOR, 5.0f);
+        drawer.drawLine(lastState->getLocation(), next->getLocation(), PATH_COLOR, 4.5f);
         lastState = next;
     }
     // redraw the start/end points so that the path doesn't display over them
