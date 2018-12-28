@@ -12,7 +12,8 @@ add_executable(RRT_Star_CPP main.cpp
         State/Point.cpp State/Point.h
         Planner/DistancePlanner.cpp Planner/DistancePlanner.h
         Planner/EnergyPlanner.cpp Planner/EnergyPlanner.h
-        Visualization/WindowParamsDTO.cpp Visualization/WindowParamsDTO.h)
+        Visualization/WindowParamsDTO.cpp Visualization/WindowParamsDTO.h
+        Utils/StringParser.cpp Utils/StringParser.h)
 
 # added this in so that openGL works with the project
 target_link_libraries(RRT_Star_CPP -lglut -lGL -lGLU)
