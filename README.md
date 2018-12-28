@@ -12,6 +12,11 @@ In order to use the rTree data structure, ensure that boost is installed:
 - https://www.boost.org/doc/libs/1_68_0/more/getting_started/index.html
 - https://www.boost.org/doc/libs/1_69_0/more/getting_started/unix-variants.html
 
+To run the program, you must pass in command-line parameters. The parameter list is as follows:
+- executable x_winPos y_winPos winWidth winHeight numPoints epsilon plannerType
+'plannerType' should be either "distance" or "energy" (it is not case sensitive)
+
+
 More info on rTree can be found here:
 - https://www.boost.org/doc/libs/1_68_0/libs/geometry/doc/html/geometry/spatial_indexes/introduction.html
 
