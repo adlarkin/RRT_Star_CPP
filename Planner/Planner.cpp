@@ -25,7 +25,6 @@ Planner::Planner(WindowParamsDTO screenParams, int numPoints, double epsilon) :
         end(makeUniqueLocation()),
         drawer(screenParams)    // initializing the drawer also sets up a blank screen
         {
-    neighborhoodEpsilon = 1.5 * epsilon;    // todo: make a more dynamic way of setting the multiplicative factor
     this->root = createNewState(nullptr, this->start);  // the root state has no parent
 }
 
@@ -66,7 +65,6 @@ RobotState * Planner::rewire(RobotState *nearest, Location nextLocation) {
     // todo: use polymorphic cost function instead of euclidean distance for minCost (create a cost(state, location) method?)
     // todo: the above line requires changes in the below lines for minCost and tempCost
     double minCost = nearest->getCost() + euclideanDistance(nearest->getLocation(), nextLocation);
-//    std::vector<RobotState*> stateNeighborhood = rTree.getNeighboringElements(nextLocation, neighborhoodEpsilon);
     std::vector<RobotState*> stateNeighborhood =
             rTree.getKNearestNeighbors(nextLocation, NEIGHBORHOOD_SIZE, epsilon);
     // connect along a minimum-cost path

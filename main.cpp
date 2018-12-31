@@ -52,8 +52,8 @@ int main(int argc, char** argv) {
 
     // todo: make the user pass in a command line argument asking for a certain seed or not?
     // needed this to generate random locations throughout the program
-//    srand(time(nullptr));
-    srand(150);
+    srand(time(nullptr));
+//    srand(150);
 
     // run the planner
     Planner* planner;
