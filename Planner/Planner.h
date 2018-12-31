@@ -23,11 +23,13 @@ protected:
 
 private:
     RobotState * rewire(RobotState *nearest, Location nextLocation);
+    void updateNeighboringStateCosts(RobotState *parent);
     Location makeUniqueLocation();
     Location makeLocationWithinEpsilon(RobotState *nearest, Location location);
     RobotState* createNewState(RobotState* parent, Location location);
     bool foundPath(RobotState* mostRecentState);
     void displayPath(RobotState* lastState);
+    void redrawTree(RobotState* beginningState);
     void pauseAnimation(int milliSec);
 
     // saving all created states and locations

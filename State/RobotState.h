@@ -17,6 +17,7 @@ public:
     void setCost(double cost);
     void addNeighbor(RobotState* neighborState);
     void updateParent(RobotState *diffParent, double updatedCost);
+    const std::vector<RobotState *> &getNeighbors() const;
 
     bool operator==(const RobotState &rhs) const;
     bool operator!=(const RobotState &rhs) const;

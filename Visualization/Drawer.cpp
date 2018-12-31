@@ -71,6 +71,13 @@ void Drawer::updateScreen() {
     glutSwapBuffers();
 }
 
+void Drawer::clearScreen() {
+    // resetting the screen to be blank and black
+    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+    glClear(GL_COLOR_BUFFER_BIT);
+    updateScreen();
+}
+
 void Drawer::keepScreenOpen() {
     glutMainLoop();
 }

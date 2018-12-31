@@ -14,6 +14,7 @@
 #define END_COLOR RED
 #define LINE_COLOR WHITE
 #define PATH_COLOR LIGHT_BLUE
+#define NEIGHBORHOOD_SIZE 10
 
 // initializer lists init objects based on the order they're declared in the .h file
 // allLocations must be initialized before start/end in order for makeUniqueLocation() to work
@@ -47,7 +48,8 @@ void Planner::findBestPath() {
 //        drawer.updateScreen();
         if (foundPath(nextState)) {
             displayPath(nextState);
-            break;
+            std::cout << "PATH FOUND! Cost is: " << nextState->getCost() << std::endl;
+//            break;
         }
     }
 
@@ -64,7 +66,9 @@ RobotState * Planner::rewire(RobotState *nearest, Location nextLocation) {
     // todo: use polymorphic cost function instead of euclidean distance for minCost (create a cost(state, location) method?)
     // todo: the above line requires changes in the below lines for minCost and tempCost
     double minCost = nearest->getCost() + euclideanDistance(nearest->getLocation(), nextLocation);
-    std::vector<RobotState*> stateNeighborhood = rTree.getNeighborhoodElements(nextLocation, neighborhoodEpsilon);
+//    std::vector<RobotState*> stateNeighborhood = rTree.getNeighboringElements(nextLocation, neighborhoodEpsilon);
+    std::vector<RobotState*> stateNeighborhood =
+            rTree.getKNearestNeighbors(nextLocation, NEIGHBORHOOD_SIZE, epsilon);
     // connect along a minimum-cost path
     for (auto state : stateNeighborhood) {
         double tempCost = state->getCost() + euclideanDistance(state->getLocation(), nextLocation);
@@ -83,16 +87,25 @@ RobotState * Planner::rewire(RobotState *nearest, Location nextLocation) {
             drawer.drawLine(state->getLocation(), state->getParent()->getLocation(), BLACK);
             state->updateParent(nextState, tempCost);
             drawer.drawLine(state->getLocation(), state->getParent()->getLocation(), LINE_COLOR);
-            // todo: update the costs for the children of 'state' (another method for this)?
+            updateNeighboringStateCosts(state); // todo: see if this is really needed
             // todo: make sure the old parent isn't an empty node? (this shouldn't happen, just think about it some more)
         }
     }
 
-    // re-draw the start in case lines drew over it
+    // re-draw the start/end in case lines drew over them
     drawer.drawCircle(start, START_COLOR, RADIUS);
+    drawer.drawCircle(end, END_COLOR, RADIUS);
     drawer.updateScreen();
     
     return nextState;
+}
+
+void Planner::updateNeighboringStateCosts(RobotState *parent) {
+    std::vector<RobotState*> oldCostStates = parent->getNeighbors();
+    for (auto state : oldCostStates) {
+        state->setCost(parent->getCost() + cost(parent, state));
+        updateNeighboringStateCosts(state);
+    }
 }
 
 Location Planner::makeUniqueLocation() {
@@ -138,6 +151,11 @@ bool Planner::foundPath(RobotState *mostRecentState) {
 }
 
 void Planner::displayPath(RobotState *lastState) {
+    // this clears the old path (if one exists) and makes the re-wiring more clear
+    // (sometimes, black lines that are drawn to erase old parents override connections that still exist)
+    drawer.clearScreen();
+    redrawTree(root);
+
     while (lastState != root) {
         RobotState* next = lastState->getParent();
         drawer.drawLine(lastState->getLocation(), next->getLocation(), PATH_COLOR, 4.5f);
@@ -147,6 +165,14 @@ void Planner::displayPath(RobotState *lastState) {
     drawer.drawCircle(start, START_COLOR, RADIUS);
     drawer.drawCircle(end, END_COLOR, RADIUS);
     drawer.updateScreen();
+}
+
+void Planner::redrawTree(RobotState *beginningState) {
+    std::vector<RobotState*> connectingStates = beginningState->getNeighbors();
+    for (auto state : connectingStates) {
+        drawer.drawLine(beginningState->getLocation(), state->getLocation(), LINE_COLOR);
+        redrawTree(state);
+    }
 }
 
 void Planner::pauseAnimation(int milliSec) {

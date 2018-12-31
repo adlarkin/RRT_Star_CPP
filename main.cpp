@@ -50,8 +50,10 @@ int main(int argc, char** argv) {
     std::string title = "RRT* Planner";
     WindowParamsDTO screenParams(winWidth, winHeight, x_winPos, y_winPos, title);
 
+    // todo: make the user pass in a command line argument asking for a certain seed or not?
     // needed this to generate random locations throughout the program
-    srand(time(nullptr));
+//    srand(time(nullptr));
+    srand(150);
 
     // run the planner
     Planner* planner;

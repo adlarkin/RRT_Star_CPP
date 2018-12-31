@@ -21,6 +21,7 @@ public:
     void drawRectangle(double width, Location topLeft, double height, Color color);
     void drawLine(Location start, Location end, Color color, float lineWidth = 1.0f);
     void updateScreen();
+    void clearScreen();
 
     void keepScreenOpen();
     void deleteScreen();    // todo: maybe make a constructor & call this there instead of having another class call it

@@ -34,6 +34,10 @@ void RobotState::updateParent(RobotState *diffParent, double updatedCost) {
     this->cost = updatedCost;
 }
 
+const std::vector<RobotState *> &RobotState::getNeighbors() const {
+    return neighbors;
+}
+
 bool RobotState::operator==(const RobotState &rhs) const {
     return this->location == rhs.location;
 }

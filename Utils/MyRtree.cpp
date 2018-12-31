@@ -20,7 +20,7 @@ RobotState *MyRtree::getNearestElement(Location location) {
     return queryResults[0].second;
 }
 
-std::vector<RobotState *> MyRtree::getNeighborhoodElements(Location center, double neighborhoodRadius) {
+std::vector<RobotState *> MyRtree::getNeighboringElements(Location center, double neighborhoodRadius) {
     std::vector<Value> queryResults;
     // user-defined unary predicate is needed to query the rTree...
     // https://www.boost.org/doc/libs/1_68_0/libs/geometry/doc/html/geometry/spatial_indexes/queries.html
@@ -30,6 +30,18 @@ std::vector<RobotState *> MyRtree::getNeighborhoodElements(Location center, doub
     std::vector<RobotState*> neighboringStates;
     for (auto pair : queryResults) {
         neighboringStates.push_back(pair.second);
+    }
+    return neighboringStates;
+}
+
+std::vector<RobotState *> MyRtree::getKNearestNeighbors(Location center, int k, double neighborhoodRadius) {
+    std::vector<Value> queryResults;
+    rTree.query(bgi::nearest(getBoostLocation(center), k), back_inserter(queryResults));
+    std::vector<RobotState*> neighboringStates;
+    for (auto pair : queryResults) {
+        if (bg::distance(pair.first, getBoostLocation(center)) <= neighborhoodRadius) {
+            neighboringStates.push_back(pair.second);
+        }
     }
     return neighboringStates;
 }
