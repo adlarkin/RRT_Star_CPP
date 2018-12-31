@@ -31,6 +31,7 @@ public:
     void add(RobotState *state);
     void remove(RobotState *state);
     RobotState* getNearestElement(Location location);
+    std::vector<RobotState*> getNeighborhoodElements(Location center, double neighborhoodRadius);
     size_t getSize();
 private:
     BoostPoint getBoostLocation(Location location);

@@ -24,6 +24,7 @@ Planner::Planner(WindowParamsDTO screenParams, int numPoints, double epsilon) :
         end(makeUniqueLocation()),
         drawer(screenParams)    // initializing the drawer also sets up a blank screen
         {
+    neighborhoodEpsilon = 1.5 * epsilon;    // todo: make a more dynamic way of setting the multiplicative factor
     this->root = createNewState(nullptr, this->start);  // the root state has no parent
 }
 
@@ -40,9 +41,10 @@ void Planner::findBestPath() {
         if (euclideanDistance(nearest->getLocation(), sampledLoc) > epsilon) {
             sampledLoc = makeLocationWithinEpsilon(nearest, sampledLoc);
         }
-        RobotState* nextState = createNewState(nearest, sampledLoc);
-        drawer.drawLine(nearest->getLocation(), nextState->getLocation(), LINE_COLOR);
-        drawer.updateScreen();
+        RobotState* nextState = rewire(nearest, sampledLoc);
+//        RobotState* nextState = createNewState(nearest, sampledLoc);
+//        drawer.drawLine(nearest->getLocation(), nextState->getLocation(), LINE_COLOR);
+//        drawer.updateScreen();
         if (foundPath(nextState)) {
             displayPath(nextState);
             break;
@@ -56,6 +58,38 @@ double Planner::euclideanDistance(Location start, Location end) {
     double xDiff = end.getXCoord() - start.getXCoord();
     double yDiff = end.getYCoord() - start.getYCoord();
     return sqrt((xDiff * xDiff) + (yDiff * yDiff));
+}
+
+RobotState * Planner::rewire(RobotState *nearest, Location nextLocation) {
+    // todo: use polymorphic cost function instead of euclidean distance for minCost (create a makeTempState method?)
+    // todo: the above line requires changes in the below lines for minCost and tempCost
+    double minCost = nearest->getCost() + euclideanDistance(nearest->getLocation(), nextLocation);
+    std::vector<RobotState*> stateNeighborhood = rTree.getNeighborhoodElements(nextLocation, neighborhoodEpsilon);
+    // connect along a minimum-cost path
+    for (auto state : stateNeighborhood) {
+        double tempCost = state->getCost() + euclideanDistance(state->getLocation(), nextLocation);
+        if (tempCost < minCost) {
+            nearest = state;
+            minCost = tempCost;
+        }
+    }
+    RobotState* nextState = createNewState(nearest, nextLocation);
+    drawer.drawLine(nearest->getLocation(), nextLocation, LINE_COLOR);
+    // re-wire the tree
+    for (auto state : stateNeighborhood) {
+        double tempCost = nextState->getCost() + cost(nextState, state);
+        if (tempCost < state->getCost()) {
+            // update the parent of 'state' to the newly created state
+            drawer.drawLine(state->getLocation(), state->getParent()->getLocation(), BLACK);
+            state->updateParent(nextState, tempCost);
+            drawer.drawLine(state->getLocation(), state->getParent()->getLocation(), LINE_COLOR);
+            // todo: update the costs for the children of 'state' (another method for this)?
+            // todo: make sure the old parent isn't an empty node? (this shouldn't happen, just think about it some more)
+        }
+    }
+    drawer.updateScreen();
+    
+    return nextState;
 }
 
 Location Planner::makeUniqueLocation() {

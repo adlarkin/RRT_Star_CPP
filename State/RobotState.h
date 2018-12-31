@@ -16,6 +16,7 @@ public:
     double getCost() const;
     void setCost(double cost);
     void addNeighbor(RobotState* neighborState);
+    void updateParent(RobotState *diffParent, double updatedCost);
 
     bool operator==(const RobotState &rhs) const;
     bool operator!=(const RobotState &rhs) const;

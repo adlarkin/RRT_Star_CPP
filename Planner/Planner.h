@@ -22,6 +22,7 @@ protected:
     double euclideanDistance(Location start, Location end);
 
 private:
+    RobotState * rewire(RobotState *nearest, Location nextLocation);
     Location makeUniqueLocation();
     Location makeLocationWithinEpsilon(RobotState *nearest, Location location);
     RobotState* createNewState(RobotState* parent, Location location);
@@ -38,6 +39,7 @@ private:
     RobotState* root;
     int maxIterations;
     double epsilon;
+    double neighborhoodEpsilon;
     Location start;
     Location end;
     MyRtree rTree;
