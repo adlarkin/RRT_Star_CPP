@@ -61,7 +61,7 @@ double Planner::euclideanDistance(Location start, Location end) {
 }
 
 RobotState * Planner::rewire(RobotState *nearest, Location nextLocation) {
-    // todo: use polymorphic cost function instead of euclidean distance for minCost (create a makeTempState method?)
+    // todo: use polymorphic cost function instead of euclidean distance for minCost (create a cost(state, location) method?)
     // todo: the above line requires changes in the below lines for minCost and tempCost
     double minCost = nearest->getCost() + euclideanDistance(nearest->getLocation(), nextLocation);
     std::vector<RobotState*> stateNeighborhood = rTree.getNeighborhoodElements(nextLocation, neighborhoodEpsilon);
@@ -87,6 +87,9 @@ RobotState * Planner::rewire(RobotState *nearest, Location nextLocation) {
             // todo: make sure the old parent isn't an empty node? (this shouldn't happen, just think about it some more)
         }
     }
+
+    // re-draw the start in case lines drew over it
+    drawer.drawCircle(start, START_COLOR, RADIUS);
     drawer.updateScreen();
     
     return nextState;
