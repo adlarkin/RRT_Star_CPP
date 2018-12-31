@@ -31,7 +31,6 @@ public:
     void add(RobotState *state);
     void remove(RobotState *state);
     RobotState* getNearestElement(Location location);
-    std::vector<RobotState*> getNeighboringElements(Location center, double neighborhoodRadius);
     std::vector<RobotState *> getKNearestNeighbors(Location center, int k, double neighborhoodRadius);
     size_t getSize();
 private:
