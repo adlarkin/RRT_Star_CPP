@@ -24,7 +24,7 @@ public:
     void clearScreen();
 
     void keepScreenOpen();
-    void deleteScreen();    // todo: maybe make a constructor & call this there instead of having another class call it
+    void deleteScreen();    // todo: maybe make a destructor & call this there instead of having another class call it
 
 private:
     void initScreen(WindowParamsDTO screenParams);

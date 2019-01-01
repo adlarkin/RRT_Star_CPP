@@ -41,11 +41,13 @@ private:
     RobotState* root;
     int maxIterations;
     double epsilon;
-    double neighborhoodEpsilon;
     Location start;
     Location end;
     MyRtree rTree;
     Drawer drawer;
+
+    RobotState* currSolutionState;
+    double bestCostSoFar;
 };
 
 #endif //RRT_PROJECT_PLANNER_H

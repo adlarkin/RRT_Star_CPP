@@ -26,6 +26,10 @@ Planner::Planner(WindowParamsDTO screenParams, int numPoints, double epsilon) :
         drawer(screenParams)    // initializing the drawer also sets up a blank screen
         {
     this->root = createNewState(nullptr, this->start);  // the root state has no parent
+
+    // todo: USE THESE
+    currSolutionState = nullptr;
+    bestCostSoFar = std::numeric_limits<double>::infinity();
 }
 
 void Planner::findBestPath() {
@@ -42,13 +46,9 @@ void Planner::findBestPath() {
             sampledLoc = makeLocationWithinEpsilon(nearest, sampledLoc);
         }
         RobotState* nextState = rewire(nearest, sampledLoc);
-//        RobotState* nextState = createNewState(nearest, sampledLoc);
-//        drawer.drawLine(nearest->getLocation(), nextState->getLocation(), LINE_COLOR);
-//        drawer.updateScreen();
         if (foundPath(nextState)) {
             displayPath(nextState);
             std::cout << "PATH FOUND! Cost is: " << nextState->getCost() << std::endl;
-//            break;
         }
     }
 
