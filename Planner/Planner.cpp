@@ -9,7 +9,7 @@
 #include <chrono>
 #include <thread>
 
-#define RADIUS .0085
+#define CIRCLE_RADIUS .0085
 #define START_COLOR GREEN
 #define END_COLOR RED
 #define LINE_COLOR WHITE
@@ -34,8 +34,8 @@ Planner::Planner(WindowParamsDTO screenParams, int numPoints, double epsilon) :
 
 void Planner::findBestPath() {
     // draw the start and end points
-    drawer.drawCircle(start, START_COLOR, RADIUS);
-    drawer.drawCircle(end, END_COLOR, RADIUS);
+    drawer.drawCircle(start, START_COLOR, CIRCLE_RADIUS);
+    drawer.drawCircle(end, END_COLOR, CIRCLE_RADIUS);
     drawer.updateScreen();
     pauseAnimation(500);    // let the client see the start and end points
 
@@ -77,11 +77,13 @@ RobotState * Planner::rewire(RobotState *nearest, Location nextLocation) {
     }
     RobotState* nextState = createNewState(nearest, nextLocation);
     drawer.drawLine(nearest->getLocation(), nextLocation, LINE_COLOR);
+    
     // re-wire the tree
     for (auto state : stateNeighborhood) {
         double tempCost = nextState->getCost() + cost(nextState, state);
         if (tempCost < state->getCost()) {
             // update the parent of 'state' to the newly created state
+            // (make sure we remove the old connection in the visualization as well)
             drawer.drawLine(state->getLocation(), state->getParent()->getLocation(), BLACK);
             state->updateParent(nextState, tempCost);
             drawer.drawLine(state->getLocation(), state->getParent()->getLocation(), LINE_COLOR);
@@ -91,8 +93,8 @@ RobotState * Planner::rewire(RobotState *nearest, Location nextLocation) {
     }
 
     // re-draw the start/end in case lines drew over them
-    drawer.drawCircle(start, START_COLOR, RADIUS);
-    drawer.drawCircle(end, END_COLOR, RADIUS);
+    drawer.drawCircle(start, START_COLOR, CIRCLE_RADIUS);
+    drawer.drawCircle(end, END_COLOR, CIRCLE_RADIUS);
     drawer.updateScreen();
     
     return nextState;
@@ -160,8 +162,8 @@ void Planner::displayPath(RobotState *lastState) {
         lastState = next;
     }
     // redraw the start/end points so that the path doesn't display over them
-    drawer.drawCircle(start, START_COLOR, RADIUS);
-    drawer.drawCircle(end, END_COLOR, RADIUS);
+    drawer.drawCircle(start, START_COLOR, CIRCLE_RADIUS);
+    drawer.drawCircle(end, END_COLOR, CIRCLE_RADIUS);
     drawer.updateScreen();
 }
 

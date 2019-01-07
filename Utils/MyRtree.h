@@ -31,7 +31,8 @@ public:
     void add(RobotState *state);
     void remove(RobotState *state);
     RobotState* getNearestElement(Location location);
-    std::vector<RobotState *> getKNearestNeighbors(Location center, int k, double neighborhoodRadius);
+    std::vector<RobotState *> getKNearestNeighbors(Location center, int k,
+            double neighborhoodRadius = std::numeric_limits<double>::infinity());
     size_t getSize();
 private:
     BoostPoint getBoostLocation(Location location);

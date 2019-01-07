@@ -25,7 +25,7 @@ std::vector<RobotState *> MyRtree::getKNearestNeighbors(Location center, int k, 
     rTree.query(bgi::nearest(getBoostLocation(center), k), back_inserter(queryResults));
     std::vector<RobotState*> neighboringStates;
     for (auto pair : queryResults) {
-        // only taking neighbors out of the initial k that are within 'epsilon'
+        // only taking neighbors out of the initial k that are within the neighborhood radius
         if (bg::distance(pair.first, getBoostLocation(center)) <= neighborhoodRadius) {
             neighboringStates.push_back(pair.second);
         }
