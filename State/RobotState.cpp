@@ -26,15 +26,21 @@ void RobotState::setCost(double cost) {
 }
 
 void RobotState::addNeighbor(RobotState* neighborState) {
-    neighbors.push_back(neighborState);
+    neighbors.insert(neighborState);
+}
+
+void RobotState::removeNeighbor(RobotState *exNeighbor) {
+    neighbors.erase(exNeighbor);
 }
 
 void RobotState::updateParent(RobotState *diffParent, double updatedCost) {
+    this->parent->removeNeighbor(this);
     this->parent = diffParent;
+    diffParent->addNeighbor(this);
     this->cost = updatedCost;
 }
 
-const std::vector<RobotState *> &RobotState::getNeighbors() const {
+const std::unordered_set<RobotState *> &RobotState::getNeighbors() const {
     return neighbors;
 }
 

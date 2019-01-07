@@ -77,9 +77,9 @@ void Drawer::updateScreen() {
 
 void Drawer::clearScreen() {
     // resetting the screen to be blank and black
+    // ** call updateScreen() after this to see the change **
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
-    updateScreen();
 }
 
 void Drawer::keepScreenOpen() {

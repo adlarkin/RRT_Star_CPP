@@ -14,7 +14,7 @@
 #define END_COLOR RED
 #define LINE_COLOR WHITE
 #define PATH_COLOR LIGHT_BLUE
-#define NEIGHBORHOOD_SIZE 10
+#define NEIGHBORHOOD_SIZE 25
 
 // initializer lists init objects based on the order they're declared in the .h file
 // allLocations must be initialized before start/end in order for makeUniqueLocation() to work
@@ -100,7 +100,7 @@ RobotState * Planner::rewire(RobotState *nearest, Location nextLocation) {
 }
 
 void Planner::updateNeighboringStateCosts(RobotState *parent) {
-    std::vector<RobotState*> oldCostStates = parent->getNeighbors();
+    std::unordered_set<RobotState*> oldCostStates = parent->getNeighbors();
     for (auto state : oldCostStates) {
         state->setCost(parent->getCost() + cost(parent, state));
         updateNeighboringStateCosts(state);
@@ -151,7 +151,7 @@ bool Planner::foundPath(RobotState *mostRecentState) {
 
 void Planner::displayPath(RobotState *lastState) {
     // this clears the old path (if one exists) and makes the re-wiring more clear
-    // (sometimes, black lines that are drawn to erase old parents override connections that still exist)
+    // (sometimes, black lines that are drawn to erase old parents over-write connections that still exist)
     drawer.clearScreen();
     redrawTree(root);
 
@@ -167,7 +167,7 @@ void Planner::displayPath(RobotState *lastState) {
 }
 
 void Planner::redrawTree(RobotState *beginningState) {
-    std::vector<RobotState*> connectingStates = beginningState->getNeighbors();
+    std::unordered_set<RobotState*> connectingStates = beginningState->getNeighbors();
     for (auto state : connectingStates) {
         drawer.drawLine(beginningState->getLocation(), state->getLocation(), LINE_COLOR);
         redrawTree(state);
