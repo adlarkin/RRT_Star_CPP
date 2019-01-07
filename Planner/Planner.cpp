@@ -77,14 +77,13 @@ RobotState * Planner::rewire(RobotState *nearest, Location nextLocation) {
     }
     RobotState* nextState = createNewState(nearest, nextLocation);
     drawer.drawLine(nearest->getLocation(), nextLocation, LINE_COLOR);
-    
+
     // re-wire the tree
     for (auto state : stateNeighborhood) {
         double tempCost = nextState->getCost() + cost(nextState, state);
         if (tempCost < state->getCost()) {
             // update the parent of 'state' to the newly created state
-            // (make sure we remove the old connection in the visualization as well)
-            drawer.drawLine(state->getLocation(), state->getParent()->getLocation(), BLACK);
+            drawer.eraseLine(state->getLocation(), state->getParent()->getLocation());
             state->updateParent(nextState, tempCost);
             drawer.drawLine(state->getLocation(), state->getParent()->getLocation(), LINE_COLOR);
             updateNeighboringStateCosts(state); // todo: see if this is really needed

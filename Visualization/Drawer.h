@@ -13,13 +13,16 @@
 
 enum Color {WHITE, BLACK, RED, GREEN, BLUE, LIGHT_BLUE, PINK};
 
+#define DEFAULT_WIDTH 1.0f
+
 class Drawer {
 public:
     explicit Drawer(WindowParamsDTO screenParams);
 
     void drawCircle(Location center, Color color, double radius);
     void drawRectangle(double width, Location topLeft, double height, Color color);
-    void drawLine(Location start, Location end, Color color, float lineWidth = 1.0f);
+    void drawLine(Location start, Location end, Color color, float lineWidth = DEFAULT_WIDTH);
+    void eraseLine(Location start, Location end, float lineWidth = DEFAULT_WIDTH);
     void updateScreen();
     void clearScreen();
 

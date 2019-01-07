@@ -66,6 +66,10 @@ void Drawer::drawLine(Location start, Location end, Color color, float lineWidth
     glEnd();
 }
 
+void Drawer::eraseLine(Location start, Location end, float lineWidth) {
+    drawLine(start, end, BLACK);
+}
+
 void Drawer::updateScreen() {
     // doing this instead of glFlush()/glFinish() since a double duffer implementation is used (see link in README)
     glutSwapBuffers();
