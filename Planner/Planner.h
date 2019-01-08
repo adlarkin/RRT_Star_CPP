@@ -29,8 +29,7 @@ private:
     RobotState* createNewState(RobotState* parent, Location location);
     bool isInGoalSpace(RobotState *mostRecentState);
     void displayPath(RobotState* lastState);
-    void redrawTree();
-    void redrawTreeHelper(RobotState *beginningState);
+    void redrawTree(RobotState *beginningState);
     void pauseAnimation(int milliSec);
 
     // saving all created states and locations

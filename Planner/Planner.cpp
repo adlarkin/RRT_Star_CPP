@@ -53,7 +53,7 @@ void Planner::findBestPath() {
 //            // this clears the old path (if one exists) and makes the re-wiring more clear
 //            // (sometimes, black lines that are drawn to erase old parents over-write connections that still exist)
 //            drawer.clearScreen();
-//            redrawTree();
+//            redrawTree(root);
 //            displayPath(nextState);
 //            std::cout << "PATH FOUND! Cost is: " << nextState->getCost() << std::endl;
 //        }
@@ -69,7 +69,7 @@ void Planner::findBestPath() {
         }
         if (foundBetterPath) {
             drawer.clearScreen();
-            redrawTree();
+            redrawTree(root);
             displayPath(currSolutionState);
             std::cout << "PATH FOUND! Cost is: " << bestCostSoFar << std::endl;
 
@@ -190,15 +190,11 @@ void Planner::displayPath(RobotState *lastState) {
     drawer.drawCircle(goal, END_COLOR, CIRCLE_RADIUS);
 }
 
-void Planner::redrawTree() {
-    redrawTreeHelper(root);
-}
-
-void Planner::redrawTreeHelper(RobotState *beginningState) {
+void Planner::redrawTree(RobotState *beginningState) {
     std::unordered_set<RobotState*> connectingStates = beginningState->getNeighbors();
     for (auto state : connectingStates) {
         drawer.drawLine(beginningState->getLocation(), state->getLocation(), LINE_COLOR);
-        redrawTreeHelper(state);
+        redrawTree(state);
     }
 }
 
