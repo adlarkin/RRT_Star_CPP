@@ -6,6 +6,7 @@
 #define RRT_PROJECT_ROBOTSTATE_H
 
 #include <set>
+#include <unordered_set>
 #include "Location.h"
 
 class RobotState {
@@ -16,12 +17,15 @@ public:
     double getCost() const;
     void setCost(double cost);
     void addNeighbor(RobotState* neighborState);
+    void removeNeighbor(RobotState* exNeighbor);
+    void updateParent(RobotState *diffParent, double updatedCost);
+    const std::unordered_set<RobotState *> &getNeighbors() const;
 
     bool operator==(const RobotState &rhs) const;
     bool operator!=(const RobotState &rhs) const;
 private:
     RobotState* parent;
-    std::vector<RobotState*> neighbors;
+    std::unordered_set<RobotState*> neighbors;
     Location location;
     double cost;
 };

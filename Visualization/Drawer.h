@@ -11,7 +11,9 @@
 #include "../State/Location.h"
 #include "WindowParamsDTO.h"
 
-enum Color {WHITE, BLACK, RED, GREEN, BLUE, LIGHT_BLUE, PINK};
+enum Color {WHITE, BLACK, GREY, RED, GREEN, BLUE, LIGHT_BLUE, PINK};
+
+#define DEFAULT_WIDTH 1.0f
 
 class Drawer {
 public:
@@ -19,11 +21,13 @@ public:
 
     void drawCircle(Location center, Color color, double radius);
     void drawRectangle(double width, Location topLeft, double height, Color color);
-    void drawLine(Location start, Location end, Color color, float lineWidth = 1.0f);
+    void drawLine(Location start, Location end, Color color, float lineWidth = DEFAULT_WIDTH);
+    void eraseLine(Location start, Location end, float lineWidth = DEFAULT_WIDTH);
     void updateScreen();
+    void clearScreen();
 
     void keepScreenOpen();
-    void deleteScreen();    // todo: maybe make a constructor & call this there instead of having another class call it
+    void deleteScreen();    // todo: maybe make a destructor & call this there instead of having another class call it
 
 private:
     void initScreen(WindowParamsDTO screenParams);
@@ -32,6 +36,7 @@ private:
     std::map<Color, std::vector<float> > colorMap {
             {WHITE, {1.0f, 1.0f, 1.0f}},
             {BLACK, {0.0f, 0.0f, 0.0f}},
+            {GREY, {.5f, .5f, .5f}},
             {RED, {1.0f, 0.0f, 0.0f}},
             {GREEN, {0.0f, 1.0f, 0.0f}},
             {BLUE, {0.0f, 0.0f, 1.0f}},

@@ -66,9 +66,20 @@ void Drawer::drawLine(Location start, Location end, Color color, float lineWidth
     glEnd();
 }
 
+void Drawer::eraseLine(Location start, Location end, float lineWidth) {
+    drawLine(start, end, BLACK);
+}
+
 void Drawer::updateScreen() {
     // doing this instead of glFlush()/glFinish() since a double duffer implementation is used (see link in README)
     glutSwapBuffers();
+}
+
+void Drawer::clearScreen() {
+    // resetting the screen to be blank and black
+    // ** call updateScreen() after this to see the change **
+    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+    glClear(GL_COLOR_BUFFER_BIT);
 }
 
 void Drawer::keepScreenOpen() {
