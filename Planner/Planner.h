@@ -27,9 +27,10 @@ private:
     Location makeUniqueLocation();
     Location makeLocationWithinEpsilon(RobotState *nearest, Location location);
     RobotState* createNewState(RobotState* parent, Location location);
-    bool foundPath(RobotState* mostRecentState);
+    bool isInGoalSpace(RobotState *mostRecentState);
     void displayPath(RobotState* lastState);
-    void redrawTree(RobotState* beginningState);
+    void redrawTree();
+    void redrawTreeHelper(RobotState *beginningState);
     void pauseAnimation(int milliSec);
 
     // saving all created states and locations
@@ -42,7 +43,7 @@ private:
     int maxIterations;
     double epsilon;
     Location start;
-    Location end;
+    Location goal;
     MyRtree rTree;
     Drawer drawer;
 

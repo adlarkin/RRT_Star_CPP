@@ -15,14 +15,15 @@
 #define LINE_COLOR WHITE
 #define PATH_COLOR LIGHT_BLUE
 #define NEIGHBORHOOD_SIZE 25
+#define KNN_NBHOOD_RADIUS_FACTOR 1.75
 
 // initializer lists init objects based on the order they're declared in the .h file
-// allLocations must be initialized before start/end in order for makeUniqueLocation() to work
+// allLocations must be initialized before start/goal in order for makeUniqueLocation() to work
 Planner::Planner(WindowParamsDTO screenParams, int numPoints, double epsilon) :
         maxIterations(numPoints),
         epsilon(epsilon),
         start(makeUniqueLocation()),
-        end(makeUniqueLocation()),
+        goal(makeUniqueLocation()),
         drawer(screenParams)    // initializing the drawer also sets up a blank screen
         {
     this->root = createNewState(nullptr, this->start);  // the root state has no parent
@@ -33,11 +34,13 @@ Planner::Planner(WindowParamsDTO screenParams, int numPoints, double epsilon) :
 }
 
 void Planner::findBestPath() {
-    // draw the start and end points
+    // draw the start and goal points
     drawer.drawCircle(start, START_COLOR, CIRCLE_RADIUS);
-    drawer.drawCircle(end, END_COLOR, CIRCLE_RADIUS);
+    drawer.drawCircle(goal, END_COLOR, CIRCLE_RADIUS);
     drawer.updateScreen();
-    pauseAnimation(500);    // let the client see the start and end points
+    pauseAnimation(500);    // let the client see the start and goal points
+
+    size_t pathsFound = 0;
 
     while (allStates.size() < maxIterations) {
         Location sampledLoc = makeUniqueLocation();
@@ -46,11 +49,39 @@ void Planner::findBestPath() {
             sampledLoc = makeLocationWithinEpsilon(nearest, sampledLoc);
         }
         RobotState* nextState = rewire(nearest, sampledLoc);
-        if (foundPath(nextState)) {
-            displayPath(nextState);
-            std::cout << "PATH FOUND! Cost is: " << nextState->getCost() << std::endl;
+//        if (isInGoalSpace(nextState)) {
+//            // this clears the old path (if one exists) and makes the re-wiring more clear
+//            // (sometimes, black lines that are drawn to erase old parents over-write connections that still exist)
+//            drawer.clearScreen();
+//            redrawTree();
+//            displayPath(nextState);
+//            std::cout << "PATH FOUND! Cost is: " << nextState->getCost() << std::endl;
+//        }
+
+        bool foundBetterPath = false;
+        if ((nextState->getCost() < bestCostSoFar) && isInGoalSpace(nextState)) {
+            currSolutionState = nextState;
+            bestCostSoFar = nextState->getCost();
+            foundBetterPath = true;
+        } else if ((currSolutionState != nullptr) && (currSolutionState->getCost() < bestCostSoFar)) {
+            bestCostSoFar = currSolutionState->getCost();
+            foundBetterPath = true;
         }
+        if (foundBetterPath) {
+            drawer.clearScreen();
+            redrawTree();
+            displayPath(currSolutionState);
+            std::cout << "PATH FOUND! Cost is: " << bestCostSoFar << std::endl;
+
+            pathsFound++;
+        } else if (currSolutionState != nullptr) {
+            displayPath(currSolutionState);
+        }
+
+        drawer.updateScreen();
     }
+
+    std::cout << std::endl << "Found a total of " << pathsFound << " paths" << std::endl;
 
     drawer.keepScreenOpen();    // let the client see the (possible) resulting path
 }
@@ -66,7 +97,7 @@ RobotState * Planner::rewire(RobotState *nearest, Location nextLocation) {
     // todo: the above line requires changes in the below lines for minCost and tempCost
     double minCost = nearest->getCost() + euclideanDistance(nearest->getLocation(), nextLocation);
     std::vector<RobotState*> stateNeighborhood =
-            rTree.getKNearestNeighbors(nextLocation, NEIGHBORHOOD_SIZE, epsilon);
+            rTree.getKNearestNeighbors(nextLocation, NEIGHBORHOOD_SIZE, KNN_NBHOOD_RADIUS_FACTOR * epsilon);
     // connect along a minimum-cost path
     for (auto state : stateNeighborhood) {
         double tempCost = state->getCost() + euclideanDistance(state->getLocation(), nextLocation);
@@ -91,10 +122,9 @@ RobotState * Planner::rewire(RobotState *nearest, Location nextLocation) {
         }
     }
 
-    // re-draw the start/end in case lines drew over them
+    // re-draw the start/goal in case lines drew over them
     drawer.drawCircle(start, START_COLOR, CIRCLE_RADIUS);
-    drawer.drawCircle(end, END_COLOR, CIRCLE_RADIUS);
-    drawer.updateScreen();
+    drawer.drawCircle(goal, END_COLOR, CIRCLE_RADIUS);
     
     return nextState;
 }
@@ -142,35 +172,33 @@ RobotState *Planner::createNewState(RobotState *parent, Location location) {
     return nextState;
 }
 
-bool Planner::foundPath(RobotState *mostRecentState) {
-    if (euclideanDistance(mostRecentState->getLocation(), end) <= epsilon) {
+bool Planner::isInGoalSpace(RobotState *mostRecentState) {
+    if (euclideanDistance(mostRecentState->getLocation(), goal) <= epsilon) {
         return true;
     }
     return false;
 }
 
 void Planner::displayPath(RobotState *lastState) {
-    // this clears the old path (if one exists) and makes the re-wiring more clear
-    // (sometimes, black lines that are drawn to erase old parents over-write connections that still exist)
-    drawer.clearScreen();
-    redrawTree(root);
-
     while (lastState != root) {
         RobotState* next = lastState->getParent();
         drawer.drawLine(lastState->getLocation(), next->getLocation(), PATH_COLOR, 4.5f);
         lastState = next;
     }
-    // redraw the start/end points so that the path doesn't display over them
+    // redraw the start/goal points so that the path doesn't display over them
     drawer.drawCircle(start, START_COLOR, CIRCLE_RADIUS);
-    drawer.drawCircle(end, END_COLOR, CIRCLE_RADIUS);
-    drawer.updateScreen();
+    drawer.drawCircle(goal, END_COLOR, CIRCLE_RADIUS);
 }
 
-void Planner::redrawTree(RobotState *beginningState) {
+void Planner::redrawTree() {
+    redrawTreeHelper(root);
+}
+
+void Planner::redrawTreeHelper(RobotState *beginningState) {
     std::unordered_set<RobotState*> connectingStates = beginningState->getNeighbors();
     for (auto state : connectingStates) {
         drawer.drawLine(beginningState->getLocation(), state->getLocation(), LINE_COLOR);
-        redrawTree(state);
+        redrawTreeHelper(state);
     }
 }
 
