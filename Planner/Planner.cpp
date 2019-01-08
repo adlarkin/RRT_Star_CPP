@@ -12,8 +12,9 @@
 #define CIRCLE_RADIUS .0085
 #define START_COLOR GREEN
 #define END_COLOR RED
-#define LINE_COLOR WHITE
+#define LINE_COLOR GREY
 #define PATH_COLOR LIGHT_BLUE
+#define PATH_WIDTH 4.5f
 #define NEIGHBORHOOD_SIZE 25
 #define KNN_NBHOOD_RADIUS_FACTOR 1.75
 
@@ -40,8 +41,7 @@ void Planner::findBestPath() {
     drawer.updateScreen();
     pauseAnimation(500);    // let the client see the start and goal points
 
-    size_t pathsFound = 0;
-
+    size_t numBetterPathsFound = 0;
     while (allStates.size() < maxIterations) {
         Location sampledLoc = makeUniqueLocation();
         RobotState* nearest = rTree.getNearestElement(sampledLoc);
@@ -49,41 +49,42 @@ void Planner::findBestPath() {
             sampledLoc = makeLocationWithinEpsilon(nearest, sampledLoc);
         }
         RobotState* nextState = rewire(nearest, sampledLoc);
-//        if (isInGoalSpace(nextState)) {
-//            // this clears the old path (if one exists) and makes the re-wiring more clear
-//            // (sometimes, black lines that are drawn to erase old parents over-write connections that still exist)
-//            drawer.clearScreen();
-//            redrawTree(root);
-//            displayPath(nextState);
-//            std::cout << "PATH FOUND! Cost is: " << nextState->getCost() << std::endl;
-//        }
-
-        bool foundBetterPath = false;
-        if ((nextState->getCost() < bestCostSoFar) && isInGoalSpace(nextState)) {
-            currSolutionState = nextState;
-            bestCostSoFar = nextState->getCost();
-            foundBetterPath = true;
-        } else if ((currSolutionState != nullptr) && (currSolutionState->getCost() < bestCostSoFar)) {
-            bestCostSoFar = currSolutionState->getCost();
-            foundBetterPath = true;
-        }
-        if (foundBetterPath) {
-            drawer.clearScreen();
-            redrawTree(root);
-            displayPath(currSolutionState);
-            std::cout << "PATH FOUND! Cost is: " << bestCostSoFar << std::endl;
-
-            pathsFound++;
-        } else if (currSolutionState != nullptr) {
-            displayPath(currSolutionState);
-        }
-
+        updatePath(nextState, numBetterPathsFound);
         drawer.updateScreen();
     }
 
-    std::cout << std::endl << "Found a total of " << pathsFound << " paths" << std::endl;
-
+    std::cout << std::endl << "Found a total of " << numBetterPathsFound << " paths" << std::endl;
     drawer.keepScreenOpen();    // let the client see the (possible) resulting path
+}
+
+void Planner::updatePath(RobotState *possibleSolution, size_t &pathsFound) {
+    bool foundBetterPath = false;
+
+    // is there a better path, and if so, is that from the same or different solution state?
+    if ((currSolutionState != nullptr) && (currSolutionState->getCost() < bestCostSoFar)) {
+        // rewiring created a better way to get to the current solution state
+        foundBetterPath = true;
+    }
+    if ((possibleSolution->getCost() < bestCostSoFar) && isInGoalSpace(possibleSolution)) {
+        // the new state is a valid one with a better cost than the current solution state
+        currSolutionState = possibleSolution;
+        foundBetterPath = true;
+    }
+
+    if (foundBetterPath) {
+        // update the cost and redraw the tree to make the rewiring more clear
+        // (sometimes, erasing old connections can (partially) erase other valid connections)
+        bestCostSoFar = currSolutionState->getCost();
+        drawer.clearScreen();
+        redrawTree(root);
+        pathsFound++;
+        std::cout << "PATH FOUND! Cost is: " << bestCostSoFar << std::endl;
+    }
+
+    // redraw the path in case newly created connections drew over it
+    if (currSolutionState != nullptr) {
+        displayPath(currSolutionState);
+    }
 }
 
 double Planner::euclideanDistance(Location start, Location end) {
@@ -182,7 +183,7 @@ bool Planner::isInGoalSpace(RobotState *mostRecentState) {
 void Planner::displayPath(RobotState *lastState) {
     while (lastState != root) {
         RobotState* next = lastState->getParent();
-        drawer.drawLine(lastState->getLocation(), next->getLocation(), PATH_COLOR, 4.5f);
+        drawer.drawLine(lastState->getLocation(), next->getLocation(), PATH_COLOR, PATH_WIDTH);
         lastState = next;
     }
     // redraw the start/goal points so that the path doesn't display over them

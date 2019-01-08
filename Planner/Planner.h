@@ -22,6 +22,7 @@ protected:
     double euclideanDistance(Location start, Location end);
 
 private:
+    void updatePath(RobotState *possibleSolution, size_t &pathsFound);
     RobotState * rewire(RobotState *nearest, Location nextLocation);
     void updateNeighboringStateCosts(RobotState *parent);
     Location makeUniqueLocation();
