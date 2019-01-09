@@ -30,12 +30,12 @@ class MyRtree {
 public:
     void add(RobotState *state);
     void remove(RobotState *state);
-    RobotState* getNearestElement(Location location);
-    std::vector<RobotState *> getKNearestNeighbors(Location center, int k,
+    RobotState* getNearestElement(const Location &location);
+    std::vector<RobotState *> getKNearestNeighbors(const Location &center, int k,
             double neighborhoodRadius = std::numeric_limits<double>::infinity());
     size_t getSize();
 private:
-    BoostPoint getBoostLocation(Location location);
+    BoostPoint getBoostLocation(const Location &location);
 
     Rtree rTree;
 };
