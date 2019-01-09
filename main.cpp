@@ -1,7 +1,5 @@
-//#include <GL/glut.h>
 #include <string>
 #include <iostream>
-//#include <assert.h>
 #include "Planner/Planner.h"
 #include "Planner/DistancePlanner.h"
 #include "Planner/EnergyPlanner.h"
@@ -13,13 +11,16 @@ enum PlannerType {DISTANCE, ENERGY};
 
 int main(int argc, char** argv) {
     // define program inputs (from the commandLine)
-    int x_winPos, y_winPos, winWidth, winHeight, numPoints;
-    double epsilon;
+    int x_winPos, y_winPos, winWidth, winHeight, numPoints, neighborhoodSize;
+    size_t testSeed = time(nullptr);
+    double epsilon, knnNeighborhoodRadiusFactor;
     PlannerType plannerType;
 
     // parse the command line inputs and initialize the variables
+    int minNumArgs = 10;
+    int maxNumArgs = 11;
     try {
-        if (argc != 8) {
+        if ((argc < minNumArgs) || (argc > maxNumArgs)) {
             throw argc;
         }
         StringParser parser;
@@ -32,15 +33,31 @@ int main(int argc, char** argv) {
         std::string inputType = parser.toLowerCase(argv[7]);
         if (inputType == "energy") {
             plannerType = ENERGY;
-        } else {
+        } else if (inputType == "distance") {
             plannerType = DISTANCE;
+        } else {
+            throw inputType;
+        }
+        neighborhoodSize = parser.parseInt(argv[8]);
+        knnNeighborhoodRadiusFactor = parser.parseDouble(argv[9]);
+        if (argc == maxNumArgs) {
+            testSeed = parser.parseInt(argv[10]);
+            std::cout << "using the INPUT seed, " << testSeed << "..." << std::endl;
+        } else {
+            std::cout << "using a RANDOM seed, " << testSeed << "..." << std::endl;
         }
     } catch (int invalidNumOfParams) {
         std::cerr << "Invalid number of arguments passed in. ";
         std::cerr << "You passed in " << argc << " argument(s)." << std::endl;
-        std::cerr << "Must have 8 arguments passed in ";
-        std::cerr << "(executable x_winPos y_winPos winWidth winHeight numPoints epsilon plannerType).";
-        std::cerr << std::endl;
+        std::cerr << "Must have " << minNumArgs << " (or " << maxNumArgs << ") arguments passed in:" << std::endl;
+        std::cerr << "executable x_winPos y_winPos winWidth winHeight numPoints epsilon plannerType ";
+        std::cerr << "neighborhoodSize knnNeighborhoodRadiusFactor testSeed" << std::endl;
+        std::cerr << "(the 'testSeed' parameter is optional)" << std::endl;
+        return 1;
+    } catch (std::string &invalidPlannerType) {
+        std::cerr << "invalid planner type was passed in" << std::endl;
+        std::cerr << "you passed in '" << invalidPlannerType << "' (in lowercase)" << std::endl;
+        std::cerr << "you must pass in either 'distance' or 'energy'" << std::endl;
         return 1;
     } catch (...) {
         std::cerr << "some other error occurred!" << std::endl;
@@ -50,19 +67,21 @@ int main(int argc, char** argv) {
     std::string title = "RRT* Planner";
     WindowParamsDTO screenParams(winWidth, winHeight, x_winPos, y_winPos, title);
 
-    // todo: make the user pass in a command line argument asking for a certain seed or not?
     // needed this to generate random locations throughout the program
-    srand(time(nullptr));
-//    srand(150);
+    srand(testSeed);
 
     // run the planner
     Planner* planner;
     switch (plannerType) {
         case ENERGY:
-            planner = new EnergyPlanner(screenParams, numPoints, epsilon);
+            std::cout << "using the energy planner..." << std::endl;
+            planner = new EnergyPlanner(screenParams, numPoints, epsilon, neighborhoodSize,
+                    knnNeighborhoodRadiusFactor);
             break;
         default:
-            planner = new DistancePlanner(screenParams, numPoints, epsilon);
+            std::cout << "using the distance planner..." << std::endl;
+            planner = new DistancePlanner(screenParams, numPoints, epsilon, neighborhoodSize,
+                    knnNeighborhoodRadiusFactor);
             break;
     }
     planner->findBestPath();

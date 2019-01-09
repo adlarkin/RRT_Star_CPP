@@ -10,8 +10,12 @@
 
 class EnergyPlanner : public Planner {
 public:
-    EnergyPlanner(const WindowParamsDTO &screenParams, int numPoints, double epsilon);
+    EnergyPlanner(const WindowParamsDTO &screenParams, int numPoints, double epsilon, int neighborhoodSize,
+                  double knnNeighborhoodRadiusFactor);
+
+protected:
     double cost(RobotState *startState, RobotState *endState) override;
+    double cost(RobotState *startState, const Location &end) override;
 };
 
 

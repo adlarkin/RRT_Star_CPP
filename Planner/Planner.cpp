@@ -15,14 +15,15 @@
 #define LINE_COLOR GREY
 #define PATH_COLOR PINK
 #define PATH_WIDTH 3.5f
-#define NEIGHBORHOOD_SIZE 25
-#define KNN_NBHOOD_RADIUS_FACTOR 1.75
 
 // initializer lists init objects based on the order they're declared in the .h file
 // allLocations must be initialized before start/goal in order for makeUniqueLocation() to work
-Planner::Planner(const WindowParamsDTO &screenParams, int numPoints, double epsilon) :
+Planner::Planner(const WindowParamsDTO &screenParams, int numPoints, double epsilon, int neighborhoodSize,
+                 double knnNeighborhoodRadiusFactor) :
         maxIterations(numPoints),
         epsilon(epsilon),
+        neighborhoodSize(neighborhoodSize),
+        knnNeighborhoodRadius(knnNeighborhoodRadiusFactor * epsilon),
         start(makeUniqueLocation()),
         goal(makeUniqueLocation()),
         drawer(screenParams)    // initializing the drawer also sets up a blank screen
@@ -92,14 +93,12 @@ double Planner::euclideanDistance(const Location &start, const Location &end) {
 }
 
 RobotState * Planner::rewire(RobotState *nearest, const Location &nextLocation) {
-    // todo: use polymorphic cost function instead of euclidean distance for minCost (create a cost(state, location) method?)
-    // todo: the above line requires changes in the below lines for minCost and tempCost
-    double minCost = nearest->getCost() + euclideanDistance(nearest->getLocation(), nextLocation);
+    double minCost = nearest->getCost() + cost(nearest, nextLocation);
     std::vector<RobotState*> stateNeighborhood =
-            rTree.getKNearestNeighbors(nextLocation, NEIGHBORHOOD_SIZE, KNN_NBHOOD_RADIUS_FACTOR * epsilon);
+            rTree.getKNearestNeighbors(nextLocation, neighborhoodSize, knnNeighborhoodRadius);
     // connect along a minimum-cost path
     for (auto state : stateNeighborhood) {
-        double tempCost = state->getCost() + euclideanDistance(state->getLocation(), nextLocation);
+        double tempCost = state->getCost() + cost(state, nextLocation);
         if (tempCost < minCost) {
             nearest = state;
             minCost = tempCost;

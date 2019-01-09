@@ -4,10 +4,16 @@
 
 #include "DistancePlanner.h"
 
-DistancePlanner::DistancePlanner(const WindowParamsDTO &screenParams, int numPoints, double epsilon) :
-    Planner(screenParams, numPoints, epsilon)
-    {}
+
+DistancePlanner::DistancePlanner(const WindowParamsDTO &screenParams, int numPoints, double epsilon,
+        int neighborhoodSize, double knnNeighborhoodRadiusFactor) :
+        Planner(screenParams, numPoints, epsilon, neighborhoodSize, knnNeighborhoodRadiusFactor)
+        {}
 
 double DistancePlanner::cost(RobotState *startState, RobotState *endState) {
     return euclideanDistance(startState->getLocation(), endState->getLocation());
+}
+
+double DistancePlanner::cost(RobotState *startState, const Location &end) {
+    return euclideanDistance(startState->getLocation(), end);
 }

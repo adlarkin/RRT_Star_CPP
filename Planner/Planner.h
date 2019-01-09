@@ -12,13 +12,15 @@
 
 class Planner {
 public:
-    Planner(const WindowParamsDTO &screenParams, int numPoints, double epsilon);
+    Planner(const WindowParamsDTO &screenParams, int numPoints, double epsilon, int neighborhoodSize,
+                double knnNeighborhoodRadiusFactor);
     void findBestPath();
     virtual ~Planner(); // todo: smart pointers? (avoid deletion)
 
 protected:
     // the cost method will be determined by the type of planner object that is constructed
     virtual double cost(RobotState *startState, RobotState *endState) = 0;
+    virtual double cost(RobotState* startState, const Location &end) = 0;
     double euclideanDistance(const Location &start, const Location &end);
 
 private:
@@ -43,6 +45,8 @@ private:
     RobotState* root;
     int maxIterations;
     double epsilon;
+    int neighborhoodSize;
+    double knnNeighborhoodRadius;
     Location start;
     Location goal;
     MyRtree rTree;

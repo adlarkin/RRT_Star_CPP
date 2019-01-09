@@ -4,11 +4,17 @@
 
 #include "EnergyPlanner.h"
 
-EnergyPlanner::EnergyPlanner(const WindowParamsDTO &screenParams, int numPoints, double epsilon) :
-    Planner(screenParams, numPoints, epsilon)
-    {}
+EnergyPlanner::EnergyPlanner(const WindowParamsDTO &screenParams, int numPoints, double epsilon,
+        int neighborhoodSize, double knnNeighborhoodRadiusFactor) :
+        Planner(screenParams, numPoints, epsilon, neighborhoodSize, knnNeighborhoodRadiusFactor)
+        {}
 
 double EnergyPlanner::cost(RobotState *startState, RobotState *endState) {
     // todo: fill this in (using euclidean distance for now so that I have something)!
     return euclideanDistance(startState->getLocation(), endState->getLocation());
+}
+
+double EnergyPlanner::cost(RobotState *startState, const Location &end) {
+    // todo: fill this in (using euclidean distance for now so that I have something)!
+    return euclideanDistance(startState->getLocation(), end);
 }

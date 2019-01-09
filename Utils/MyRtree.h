@@ -15,7 +15,7 @@
 // setting up the rTree so that it can be wrapped for simplicity
 namespace bg = boost::geometry;
 namespace bgi = boost::geometry::index;
-typedef bg::model::point<double, 2, boost::geometry::cs::cartesian> BoostPoint;
+typedef bg::model::point<double, 2, bg::cs::cartesian> BoostPoint;
 typedef std::pair<BoostPoint, RobotState*> Value;
 // need to override the rTree equality operator (used when removing from rTree)
 struct equal_to {

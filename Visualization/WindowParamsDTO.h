@@ -9,7 +9,7 @@
 
 class WindowParamsDTO {
 public:
-    WindowParamsDTO(int winWidth, int winHeight, int x_winPos, int y_winPos, std::string title);
+    WindowParamsDTO(int winWidth, int winHeight, int x_winPos, int y_winPos, const std::string &title);
     int getWinWidth() const;
     int getWinHeight() const;
     int getX_winPos() const;

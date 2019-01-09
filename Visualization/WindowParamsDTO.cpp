@@ -4,7 +4,7 @@
 
 #include "WindowParamsDTO.h"
 
-WindowParamsDTO::WindowParamsDTO(int winWidth, int winHeight, int x_winPos, int y_winPos, std::string title) :
+WindowParamsDTO::WindowParamsDTO(int winWidth, int winHeight, int x_winPos, int y_winPos, const std::string &title) :
     winWidth(winWidth),
     winHeight(winHeight),
     x_winPos(x_winPos),
