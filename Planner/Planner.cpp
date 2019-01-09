@@ -29,17 +29,15 @@ Planner::Planner(WindowParamsDTO screenParams, int numPoints, double epsilon) :
         {
     this->root = createNewState(nullptr, this->start);  // the root state has no parent
 
-    // todo: USE THESE
     currSolutionState = nullptr;
     bestCostSoFar = std::numeric_limits<double>::infinity();
 }
 
 void Planner::findBestPath() {
-    // draw the start and goal points
-    drawer.drawCircle(start, START_COLOR, CIRCLE_RADIUS);
-    drawer.drawCircle(goal, END_COLOR, CIRCLE_RADIUS);
+    // let the client see the start and goal points
+    showStartAndGoal();
     drawer.updateScreen();
-    pauseAnimation(500);    // let the client see the start and goal points
+    pauseAnimation(500);
 
     size_t numBetterPathsFound = 0;
     while (allStates.size() < maxIterations) {
@@ -83,7 +81,7 @@ void Planner::updatePath(RobotState *possibleSolution, size_t &pathsFound) {
 
     // redraw the path in case newly created connections drew over it
     if (currSolutionState != nullptr) {
-        displayPath(currSolutionState);
+        showPath(currSolutionState);
     }
 }
 
@@ -123,10 +121,7 @@ RobotState * Planner::rewire(RobotState *nearest, Location nextLocation) {
         }
     }
 
-    // re-draw the start/goal in case lines drew over them
-    drawer.drawCircle(start, START_COLOR, CIRCLE_RADIUS);
-    drawer.drawCircle(goal, END_COLOR, CIRCLE_RADIUS);
-    
+    showStartAndGoal(); // re-draw the start/goal in case lines drew over them
     return nextState;
 }
 
@@ -174,21 +169,17 @@ RobotState *Planner::createNewState(RobotState *parent, Location location) {
 }
 
 bool Planner::isInGoalSpace(RobotState *mostRecentState) {
-    if (euclideanDistance(mostRecentState->getLocation(), goal) <= epsilon) {
-        return true;
-    }
-    return false;
+    return euclideanDistance(mostRecentState->getLocation(), goal) <= epsilon;
 }
 
-void Planner::displayPath(RobotState *lastState) {
+void Planner::showPath(RobotState *lastState) {
     while (lastState != root) {
         RobotState* next = lastState->getParent();
         drawer.drawLine(lastState->getLocation(), next->getLocation(), PATH_COLOR, PATH_WIDTH);
         lastState = next;
     }
     // redraw the start/goal points so that the path doesn't display over them
-    drawer.drawCircle(start, START_COLOR, CIRCLE_RADIUS);
-    drawer.drawCircle(goal, END_COLOR, CIRCLE_RADIUS);
+    showStartAndGoal();
 }
 
 void Planner::redrawTree(RobotState *beginningState) {
@@ -213,4 +204,9 @@ Planner::~Planner() {
         delete state;
         state = nullptr;
     }
+}
+
+void Planner::showStartAndGoal() {
+    drawer.drawCircle(start, START_COLOR, CIRCLE_RADIUS);
+    drawer.drawCircle(goal, END_COLOR, CIRCLE_RADIUS);
 }

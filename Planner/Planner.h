@@ -29,9 +29,10 @@ private:
     Location makeLocationWithinEpsilon(RobotState *nearest, Location location);
     RobotState* createNewState(RobotState* parent, Location location);
     bool isInGoalSpace(RobotState *mostRecentState);
-    void displayPath(RobotState* lastState);
+    void showPath(RobotState *lastState);
     void redrawTree(RobotState *beginningState);
     void pauseAnimation(int milliSec);
+    void showStartAndGoal();
 
     // saving all created states and locations
     // this will make deleting pointers easy in the destructor
