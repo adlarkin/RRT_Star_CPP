@@ -10,7 +10,7 @@
 
 class EnergyPlanner : public Planner {
 public:
-    EnergyPlanner(WindowParamsDTO screenParams, int numPoints, double epsilon);
+    EnergyPlanner(const WindowParamsDTO &screenParams, int numPoints, double epsilon);
     double cost(RobotState *startState, RobotState *endState) override;
 };
 

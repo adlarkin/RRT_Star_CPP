@@ -12,22 +12,22 @@
 
 class Planner {
 public:
-    Planner(WindowParamsDTO screenParams, int numPoints, double epsilon);
+    Planner(const WindowParamsDTO &screenParams, int numPoints, double epsilon);
     void findBestPath();
     virtual ~Planner(); // todo: smart pointers? (avoid deletion)
 
 protected:
     // the cost method will be determined by the type of planner object that is constructed
     virtual double cost(RobotState *startState, RobotState *endState) = 0;
-    double euclideanDistance(Location start, Location end);
+    double euclideanDistance(const Location &start, const Location &end);
 
 private:
     void updatePath(RobotState *possibleSolution, size_t &pathsFound);
-    RobotState * rewire(RobotState *nearest, Location nextLocation);
+    RobotState * rewire(RobotState *nearest, const Location &nextLocation);
     void updateNeighboringStateCosts(RobotState *parent);
     Location makeUniqueLocation();
-    Location makeLocationWithinEpsilon(RobotState *nearest, Location location);
-    RobotState* createNewState(RobotState* parent, Location location);
+    Location makeLocationWithinEpsilon(RobotState *nearest, const Location &location);
+    RobotState* createNewState(RobotState *parent, const Location &location);
     bool isInGoalSpace(RobotState *mostRecentState);
     void showPath(RobotState *lastState);
     void redrawTree(RobotState *beginningState);

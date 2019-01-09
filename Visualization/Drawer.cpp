@@ -10,18 +10,18 @@
 
 #define PI 3.14159265359
 
-Drawer::Drawer(WindowParamsDTO screenParams) {
+Drawer::Drawer(const WindowParamsDTO &screenParams) {
     // this lets the user know the min/max values for lineWidth (used in the drawLine() method)
     // lineWidth depends on computer drivers, so if the values are restricted, this will let the user know
     GLfloat LineRange[2];
     glGetFloatv(GL_LINE_WIDTH_RANGE,LineRange);
     std::cout << "Minimum Line Width " << LineRange[0] << " -- ";
-    std::cout << "Maximum Line Width " << LineRange[1] << std::endl;
+    std::cout << "Maximum Line Width " << LineRange[1] << std::endl << std::endl;
 
     initScreen(screenParams);
 }
 
-void Drawer::initScreen(WindowParamsDTO screenParams) {
+void Drawer::initScreen(const WindowParamsDTO &screenParams) {
     // need to make fake command-line arguments since we don't take anything in from the command line
     char fakeParam[] = "fake";
     char *fakeArgv[] = { fakeParam, nullptr };
@@ -37,7 +37,7 @@ void Drawer::initScreen(WindowParamsDTO screenParams) {
     updateScreen(); // displaying a blank, all black window now that everything has been set up
 }
 
-void Drawer::drawCircle(Location center, Color color, double radius) {
+void Drawer::drawCircle(const Location &center, Color color, double radius) {
     glBegin(GL_POLYGON);
     setDrawingColor(color);
     for (int theta = 0; theta < 360; ++theta) {
@@ -47,7 +47,7 @@ void Drawer::drawCircle(Location center, Color color, double radius) {
     glEnd();
 }
 
-void Drawer::drawRectangle(double width, Location topLeft, double height, Color color) {
+void Drawer::drawRectangle(double width, const Location &topLeft, double height, Color color) {
     glBegin(GL_POLYGON);
     setDrawingColor(color);
     glVertex2f((float)topLeft.getXCoord(), (float)topLeft.getYCoord());
@@ -57,7 +57,7 @@ void Drawer::drawRectangle(double width, Location topLeft, double height, Color 
     glEnd();
 }
 
-void Drawer::drawLine(Location start, Location end, Color color, float lineWidth) {
+void Drawer::drawLine(const Location &start, const Location &end, Color color, float lineWidth) {
     glLineWidth(lineWidth);
     glBegin(GL_LINES);
     setDrawingColor(color);
@@ -66,7 +66,7 @@ void Drawer::drawLine(Location start, Location end, Color color, float lineWidth
     glEnd();
 }
 
-void Drawer::eraseLine(Location start, Location end, float lineWidth) {
+void Drawer::eraseLine(const Location &start, const Location &end, float lineWidth) {
     drawLine(start, end, BLACK);
 }
 

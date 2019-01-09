@@ -14,13 +14,13 @@ void MyRtree::remove(RobotState *state) {
 //    std::cout << "Remove called. Size of the rTree is " << rTree.size() << std::endl;
 }
 
-RobotState *MyRtree::getNearestElement(Location location) {
+RobotState *MyRtree::getNearestElement(const Location &location) {
     std::vector<Value> queryResults;
     rTree.query(bgi::nearest(getBoostLocation(location), 1), back_inserter(queryResults));
     return queryResults[0].second;
 }
 
-std::vector<RobotState *> MyRtree::getKNearestNeighbors(Location center, int k, double neighborhoodRadius) {
+std::vector<RobotState *> MyRtree::getKNearestNeighbors(const Location &center, int k, double neighborhoodRadius) {
     std::vector<Value> queryResults;
     rTree.query(bgi::nearest(getBoostLocation(center), k), back_inserter(queryResults));
     std::vector<RobotState*> neighboringStates;
@@ -37,6 +37,6 @@ size_t MyRtree::getSize() {
     return rTree.size();
 }
 
-BoostPoint MyRtree::getBoostLocation(Location location) {
+BoostPoint MyRtree::getBoostLocation(const Location &location) {
     return BoostPoint{location.getXCoord(), location.getYCoord()};
 }

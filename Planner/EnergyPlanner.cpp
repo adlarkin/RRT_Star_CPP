@@ -4,7 +4,7 @@
 
 #include "EnergyPlanner.h"
 
-EnergyPlanner::EnergyPlanner(WindowParamsDTO screenParams, int numPoints, double epsilon) :
+EnergyPlanner::EnergyPlanner(const WindowParamsDTO &screenParams, int numPoints, double epsilon) :
     Planner(screenParams, numPoints, epsilon)
     {}
 

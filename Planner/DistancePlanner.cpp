@@ -4,7 +4,7 @@
 
 #include "DistancePlanner.h"
 
-DistancePlanner::DistancePlanner(WindowParamsDTO screenParams, int numPoints, double epsilon) :
+DistancePlanner::DistancePlanner(const WindowParamsDTO &screenParams, int numPoints, double epsilon) :
     Planner(screenParams, numPoints, epsilon)
     {}
 

@@ -11,16 +11,16 @@
 
 #define CIRCLE_RADIUS .0085
 #define START_COLOR GREEN
-#define END_COLOR RED
+#define GOAL_COLOR RED
 #define LINE_COLOR GREY
-#define PATH_COLOR LIGHT_BLUE
-#define PATH_WIDTH 4.5f
+#define PATH_COLOR PINK
+#define PATH_WIDTH 3.5f
 #define NEIGHBORHOOD_SIZE 25
 #define KNN_NBHOOD_RADIUS_FACTOR 1.75
 
 // initializer lists init objects based on the order they're declared in the .h file
 // allLocations must be initialized before start/goal in order for makeUniqueLocation() to work
-Planner::Planner(WindowParamsDTO screenParams, int numPoints, double epsilon) :
+Planner::Planner(const WindowParamsDTO &screenParams, int numPoints, double epsilon) :
         maxIterations(numPoints),
         epsilon(epsilon),
         start(makeUniqueLocation()),
@@ -85,13 +85,13 @@ void Planner::updatePath(RobotState *possibleSolution, size_t &pathsFound) {
     }
 }
 
-double Planner::euclideanDistance(Location start, Location end) {
+double Planner::euclideanDistance(const Location &start, const Location &end) {
     double xDiff = end.getXCoord() - start.getXCoord();
     double yDiff = end.getYCoord() - start.getYCoord();
     return sqrt((xDiff * xDiff) + (yDiff * yDiff));
 }
 
-RobotState * Planner::rewire(RobotState *nearest, Location nextLocation) {
+RobotState * Planner::rewire(RobotState *nearest, const Location &nextLocation) {
     // todo: use polymorphic cost function instead of euclidean distance for minCost (create a cost(state, location) method?)
     // todo: the above line requires changes in the below lines for minCost and tempCost
     double minCost = nearest->getCost() + euclideanDistance(nearest->getLocation(), nextLocation);
@@ -142,7 +142,7 @@ Location Planner::makeUniqueLocation() {
     return location;
 }
 
-Location Planner::makeLocationWithinEpsilon(RobotState *nearest, Location location) {
+Location Planner::makeLocationWithinEpsilon(RobotState *nearest, const Location &location) {
     allLocations.erase(location);   // remove the location outside of epsilon since it's not valid
     double yDiff = location.getYCoord() - nearest->getLocation().getYCoord();
     double xDiff = location.getXCoord() - nearest->getLocation().getXCoord();
@@ -154,7 +154,7 @@ Location Planner::makeLocationWithinEpsilon(RobotState *nearest, Location locati
     return updatedLocation;
 }
 
-RobotState *Planner::createNewState(RobotState *parent, Location location) {
+RobotState *Planner::createNewState(RobotState *parent, const Location &location) {
     auto nextState = new RobotState(parent, location);
     // the root state has a cost of 0
     nextState->setCost(0);
@@ -208,5 +208,5 @@ Planner::~Planner() {
 
 void Planner::showStartAndGoal() {
     drawer.drawCircle(start, START_COLOR, CIRCLE_RADIUS);
-    drawer.drawCircle(goal, END_COLOR, CIRCLE_RADIUS);
+    drawer.drawCircle(goal, GOAL_COLOR, CIRCLE_RADIUS);
 }
