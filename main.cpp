@@ -74,12 +74,12 @@ int main(int argc, char** argv) {
     Planner* planner;
     switch (plannerType) {
         case ENERGY:
-            std::cout << "using the energy planner..." << std::endl;
+            std::cout << "using the ENERGY planner..." << std::endl;
             planner = new EnergyPlanner(screenParams, numPoints, epsilon, neighborhoodSize,
                     knnNeighborhoodRadiusFactor);
             break;
         default:
-            std::cout << "using the distance planner..." << std::endl;
+            std::cout << "using the DISTANCE planner..." << std::endl;
             planner = new DistancePlanner(screenParams, numPoints, epsilon, neighborhoodSize,
                     knnNeighborhoodRadiusFactor);
             break;
