@@ -14,7 +14,7 @@ Drawer::Drawer(const WindowParamsDTO &screenParams) {
     // this lets the user know the min/max values for lineWidth (used in the drawLine() method)
     // lineWidth depends on computer drivers, so if the values are restricted, this will let the user know
     GLfloat LineRange[2];
-    glGetFloatv(GL_LINE_WIDTH_RANGE,LineRange);
+    glGetFloatv(GL_LINE_WIDTH_RANGE, LineRange);
     std::cout << "Minimum Line Width " << LineRange[0] << " -- ";
     std::cout << "Maximum Line Width " << LineRange[1] << std::endl << std::endl;
 
@@ -92,4 +92,10 @@ void Drawer::deleteScreen() {
 
 void Drawer::setDrawingColor(Color color) {
     glColor3f(colorMap[color].at(0), colorMap[color].at(1), colorMap[color].at(2));
+}
+
+Drawer::~Drawer() {
+    std::cout << "calling the drawer destructor, which deletes the screen..." << std::endl;
+
+    deleteScreen();
 }

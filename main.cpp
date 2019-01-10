@@ -12,7 +12,7 @@ enum PlannerType {DISTANCE, ENERGY};
 int main(int argc, char** argv) {
     // define program inputs (from the commandLine)
     int x_winPos, y_winPos, winWidth, winHeight, numPoints, neighborhoodSize;
-    size_t testSeed = time(nullptr);
+    auto testSeed = (unsigned int)time(nullptr);
     double epsilon, knnNeighborhoodRadiusFactor;
     PlannerType plannerType;
 
@@ -41,7 +41,7 @@ int main(int argc, char** argv) {
         neighborhoodSize = parser.parseInt(argv[8]);
         knnNeighborhoodRadiusFactor = parser.parseDouble(argv[9]);
         if (argc == maxNumArgs) {
-            testSeed = parser.parseInt(argv[10]);
+            testSeed = (unsigned int)parser.parseInt(argv[10]);
             std::cout << "using the INPUT seed, " << testSeed << "..." << std::endl;
         } else {
             std::cout << "using a RANDOM seed, " << testSeed << "..." << std::endl;
@@ -67,7 +67,7 @@ int main(int argc, char** argv) {
     std::string title = "RRT* Planner";
     WindowParamsDTO screenParams(winWidth, winHeight, x_winPos, y_winPos, title);
 
-    // needed this to generate random locations throughout the program
+    // need this to generate random locations throughout the program
     srand(testSeed);
 
     // run the planner
@@ -88,5 +88,6 @@ int main(int argc, char** argv) {
 
     delete planner;
     planner = nullptr;
+
     return 0;
 }

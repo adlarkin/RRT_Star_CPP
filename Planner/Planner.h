@@ -15,7 +15,7 @@ public:
     Planner(const WindowParamsDTO &screenParams, int numPoints, double epsilon, int neighborhoodSize,
                 double knnNeighborhoodRadiusFactor);
     void findBestPath();
-    virtual ~Planner(); // todo: smart pointers? (avoid deletion)
+    virtual ~Planner();
 
 protected:
     // the cost method will be determined by the type of planner object that is constructed

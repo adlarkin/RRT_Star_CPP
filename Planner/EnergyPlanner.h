@@ -12,6 +12,7 @@ class EnergyPlanner : public Planner {
 public:
     EnergyPlanner(const WindowParamsDTO &screenParams, int numPoints, double epsilon, int neighborhoodSize,
                   double knnNeighborhoodRadiusFactor);
+    virtual ~EnergyPlanner();
 
 protected:
     double cost(RobotState *startState, RobotState *endState) override;

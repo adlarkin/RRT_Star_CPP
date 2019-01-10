@@ -18,16 +18,15 @@ enum Color {WHITE, BLACK, GREY, RED, GREEN, BLUE, LIGHT_BLUE, PINK};
 class Drawer {
 public:
     explicit Drawer(const WindowParamsDTO &screenParams);
-
     void drawCircle(const Location &center, Color color, double radius);
     void drawRectangle(double width, const Location &topLeft, double height, Color color);
     void drawLine(const Location &start, const Location &end, Color color, float lineWidth = DEFAULT_WIDTH);
     void eraseLine(const Location &start, const Location &end, float lineWidth = DEFAULT_WIDTH);
     void updateScreen();
     void clearScreen();
-
     void keepScreenOpen();
-    void deleteScreen();    // todo: maybe make a destructor & call this there instead of having another class call it
+    void deleteScreen();
+    virtual ~Drawer();
 
 private:
     void initScreen(const WindowParamsDTO &screenParams);

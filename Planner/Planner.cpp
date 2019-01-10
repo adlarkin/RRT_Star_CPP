@@ -195,9 +195,8 @@ void Planner::pauseAnimation(int milliSec) {
     std::this_thread::sleep_for(waitTime);
 }
 
-// TODO: make sure this gets called ... do I need to put destructors in the child classes too?
 Planner::~Planner() {
-    drawer.deleteScreen();
+    std::cout << "calling the generic planner's destructor..." << std::endl;
 
     for (auto state : allStates) {
         delete state;

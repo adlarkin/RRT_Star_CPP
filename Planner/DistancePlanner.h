@@ -12,6 +12,7 @@ class DistancePlanner : public Planner {
 public:
     DistancePlanner(const WindowParamsDTO &screenParams, int numPoints, double epsilon, int neighborhoodSize,
                     double knnNeighborhoodRadiusFactor);
+    virtual ~DistancePlanner();
 
 protected:
     double cost(RobotState *startState, RobotState *endState) override;

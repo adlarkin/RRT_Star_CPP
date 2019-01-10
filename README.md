@@ -24,3 +24,7 @@ More info on rTree can be found here:
 Using double buffer for the drawer (openGL-based) because of dedicated graphics cards:
 - https://stackoverflow.com/questions/18816882/no-display-transparent-window-with-opengl-2-and-primusrun-on-single-buffer
 - https://stackoverflow.com/questions/28298540/difference-between-single-bufferedglut-single-and-double-buffered-drawingglut
+
+To test with valgrind:
+- comment out the 'drawer.keepSreenOpen()' line at the end of planner's findBestPath() method
+- comment out the lineWidth information in the drawers constructor (don't comment out the initScreen() method call)
