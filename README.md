@@ -1,8 +1,9 @@
 # RRT_Star_CPP
 RRT* Planner for distance or (hopefully) energy efficiency (C++)
 
-Make sure you have openGL installed ... instructions here: 
+Make sure you have openGL installed ... instructions here:
 - http://www.codebind.com/linux-tutorials/install-opengl-ubuntu-linux/
+(this project uses freeGlut to actually implement openGL, not glut)
 
 Next, if using CLion, you need to add the following to your CMakeLists.txt file:
 - target_link_libraries(PROJECT_NAME -lglut -lGL -lGLU)
@@ -24,6 +25,3 @@ More info on rTree can be found here:
 Using double buffer for the drawer (openGL-based) because of dedicated graphics cards:
 - https://stackoverflow.com/questions/18816882/no-display-transparent-window-with-opengl-2-and-primusrun-on-single-buffer
 - https://stackoverflow.com/questions/28298540/difference-between-single-bufferedglut-single-and-double-buffered-drawingglut
-
-To test with valgrind:
-- comment out the lineWidth information in the drawers constructor (don't comment out the initScreen() method call)
