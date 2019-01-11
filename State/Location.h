@@ -15,6 +15,10 @@ public:
     Location(double xCoord, double yCoord, int unscaledRange);
     Location(const Location &l2);
 
+    // useful to have this is a public static method if you want to make obstacles
+    // (assuming obstacle hashing is being used)
+    static int getScaledPointRange(int unscaledRange);
+
     double getXCoord() const;
     double getYCoord() const;
 
@@ -22,7 +26,6 @@ public:
     bool operator!=(const Location &rhs) const;
 
 private:
-    int getScaledPointRange(int unscaledRange);
     Point makeRandomPoint(int unscaledRange);
     int makeIDFromCoord(double coord, int unscaledRange);
 
