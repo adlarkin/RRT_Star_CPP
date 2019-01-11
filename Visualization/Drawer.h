@@ -8,7 +8,7 @@
 
 #include <map>
 #include <vector>
-#include "../State/Location.h"
+#include "../Location/Location.h"
 #include "WindowParamsDTO.h"
 
 enum Color {WHITE, BLACK, GREY, RED, GREEN, BLUE, LIGHT_BLUE, PINK};

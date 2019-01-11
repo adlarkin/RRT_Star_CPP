@@ -7,7 +7,7 @@
 
 #include <set>
 #include <unordered_set>
-#include "Location.h"
+#include "../Location/Location.h"
 
 class RobotState {
 public:
