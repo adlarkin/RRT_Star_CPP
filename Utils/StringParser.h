@@ -11,6 +11,7 @@
 class StringParser {
 public:
     int parseInt(std::string inputStr);
+    size_t parseSizeT(std::string inputStr);
     double parseDouble(std::string inputStr);
     std::string toLowerCase(std::string inputStr);
 };

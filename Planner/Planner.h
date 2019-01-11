@@ -12,8 +12,8 @@
 
 class Planner {
 public:
-    Planner(const WindowParamsDTO &screenParams, int numPoints, double epsilon, int neighborhoodSize,
-                double knnNeighborhoodRadiusFactor);
+    Planner(const WindowParamsDTO &screenParams, size_t numPoints, double epsilon, int neighborhoodSize,
+            double knnNeighborhoodRadiusFactor);
     void findBestPath();
     virtual ~Planner();
 
@@ -43,7 +43,7 @@ private:
     std::unordered_set<Location> allLocations;
 
     RobotState* root;
-    int maxIterations;
+    size_t maxIterations;
     double epsilon;
     int neighborhoodSize;
     double knnNeighborhoodRadius;

@@ -7,12 +7,12 @@
 
 #define SCALING_FACTOR 4
 
-Location::Location(int pointValRange) :
+Location::Location(size_t pointValRange) :
     x(makeRandomPoint(pointValRange)),
     y(makeRandomPoint(pointValRange))
     {}
 
-Location::Location(double xCoord, double yCoord, int unscaledRange) :
+Location::Location(double xCoord, double yCoord, size_t unscaledRange) :
     x(makeIDFromCoord(xCoord, unscaledRange), xCoord),
     y(makeIDFromCoord(yCoord, unscaledRange), yCoord)
     {}
@@ -37,19 +37,19 @@ bool Location::operator!=(const Location &rhs) const {
 }
 
 
-int Location::getScaledPointRange(int unscaledRange) {
+size_t Location::getScaledPointRange(size_t unscaledRange) {
     return SCALING_FACTOR * unscaledRange;
 }
 
-Point Location::makeRandomPoint(int unscaledRange) {
+Point Location::makeRandomPoint(size_t unscaledRange) {
     // the number of possible points to be sampled from
     // higher pointRange means less chance for randomly sampling duplicate points
-    int pointRange = getScaledPointRange(unscaledRange);
+    size_t pointRange = getScaledPointRange(unscaledRange);
 
     // make a number between 0 and pointRange, exclusive
     // this number is the id of the coordinate
     // (using int IDs to compare with other coordinates for duplicates)
-    int id = rand() % pointRange;
+    size_t id = rand() % pointRange;
 
     /*
      * turn this number into a double between -1 and 1 (coordinate range for openGL)
@@ -68,7 +68,7 @@ Point Location::makeRandomPoint(int unscaledRange) {
  * this method is the inverse transformation of madeRandomPoint()
  * (makeRandomPoint() maps an id to a coord ... this method maps a coord to an ID)
  */
-int Location::makeIDFromCoord(double coord, int unscaledRange) {
-    int pointRange = getScaledPointRange(unscaledRange);
-    return (int) round((pointRange * (coord + 1)) / 2);
+size_t Location::makeIDFromCoord(double coord, size_t unscaledRange) {
+    size_t pointRange = getScaledPointRange(unscaledRange);
+    return (size_t) round((pointRange * (coord + 1)) / 2);
 }

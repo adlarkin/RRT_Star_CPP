@@ -11,13 +11,9 @@
 
 class Location {
 public:
-    explicit Location(int pointValRange);
-    Location(double xCoord, double yCoord, int unscaledRange);
+    explicit Location(size_t pointValRange);
+    Location(double xCoord, double yCoord, size_t unscaledRange);
     Location(const Location &l2);
-
-    // useful to have this is a public static method if you want to make obstacles
-    // (assuming obstacle hashing is being used)
-    static int getScaledPointRange(int unscaledRange);
 
     double getXCoord() const;
     double getYCoord() const;
@@ -25,9 +21,13 @@ public:
     bool operator==(const Location &rhs) const;
     bool operator!=(const Location &rhs) const;
 
+    // useful to have this is a public static method if you want to make obstacles
+    // (assuming obstacle hashing is being used)
+    static size_t getScaledPointRange(size_t unscaledRange);
+
 private:
-    Point makeRandomPoint(int unscaledRange);
-    int makeIDFromCoord(double coord, int unscaledRange);
+    Point makeRandomPoint(size_t unscaledRange);
+    size_t makeIDFromCoord(double coord, size_t unscaledRange);
 
     Point x;
     Point y;

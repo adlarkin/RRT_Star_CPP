@@ -13,6 +13,13 @@ int StringParser::parseInt(std::string inputStr) {
     return outputInt;
 }
 
+size_t StringParser::parseSizeT(std::string inputStr) {
+    std::stringstream userInput(inputStr);
+    size_t outputSizeT = 0;
+    userInput >> outputSizeT;
+    return outputSizeT;
+}
+
 double StringParser::parseDouble(std::string inputStr) {
     return std::atof(inputStr.c_str());
 }

@@ -18,7 +18,7 @@
 
 // initializer lists init objects based on the order they're declared in the .h file
 // allLocations must be initialized before start/goal in order for makeUniqueLocation() to work
-Planner::Planner(const WindowParamsDTO &screenParams, int numPoints, double epsilon, int neighborhoodSize,
+Planner::Planner(const WindowParamsDTO &screenParams, size_t numPoints, double epsilon, int neighborhoodSize,
                  double knnNeighborhoodRadiusFactor) :
         maxIterations(numPoints),
         epsilon(epsilon),
