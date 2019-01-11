@@ -198,6 +198,8 @@ void Planner::pauseAnimation(int milliSec) {
 Planner::~Planner() {
     std::cout << "calling the generic planner's destructor..." << std::endl;
 
+//    drawer.deleteScreen();
+
     for (auto state : allStates) {
         delete state;
         state = nullptr;

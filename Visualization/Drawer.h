@@ -25,8 +25,6 @@ public:
     void updateScreen();
     void clearScreen();
     void keepScreenOpen();
-    void deleteScreen();
-    virtual ~Drawer();
 
 private:
     void initScreen(const WindowParamsDTO &screenParams);
@@ -42,7 +40,6 @@ private:
             {LIGHT_BLUE, {0.0f, 0.55f, 1.0f}},
             {PINK, {0.8f, 0.5f, 0.65f}}
     };
-    int windowID;
 };
 
 

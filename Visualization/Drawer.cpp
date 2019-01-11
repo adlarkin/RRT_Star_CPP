@@ -2,9 +2,8 @@
 // Created by adlarkin on 11/5/18.
 //
 
-#include <GL/gl.h>
 #include <math.h>
-#include <GL/glut.h>
+#include <GL/freeglut.h>
 #include <iostream>
 #include "Drawer.h"
 
@@ -31,7 +30,7 @@ void Drawer::initScreen(const WindowParamsDTO &screenParams) {
     glutInitDisplayMode(GLUT_DOUBLE);   // double buffer works well with dedicated graphics cards
     glutInitWindowSize(screenParams.getWinWidth(), screenParams.getWinHeight());
     glutInitWindowPosition(screenParams.getX_winPos(), screenParams.getY_winPos());
-    windowID = glutCreateWindow(screenParams.getTitle().c_str());
+    glutCreateWindow(screenParams.getTitle().c_str());
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_ACCUM_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
     updateScreen(); // displaying a blank, all black window now that everything has been set up
@@ -82,20 +81,19 @@ void Drawer::clearScreen() {
     glClear(GL_COLOR_BUFFER_BIT);
 }
 
+// some useful information about closing the openGL window (see links for more info):
+// at the beginning of this method, glutGetWindow() should return a non-zero int
+// at the end of this method, glutGetWindow() should return 0 (because the window was closed by the client)
+// https://www.opengl.org/resources/libraries/glut/spec3/node19.html
+// https://www.opengl.org/resources/libraries/glut/spec3/node18.html
 void Drawer::keepScreenOpen() {
-    glutMainLoop();
-}
+    // let the program continue execution after the client closes the window
+    glutSetOption(GLUT_ACTION_ON_WINDOW_CLOSE,
+                  GLUT_ACTION_GLUTMAINLOOP_RETURNS);
 
-void Drawer::deleteScreen() {
-    glutDestroyWindow(windowID);
+    glutMainLoop(); // keeps the screen open until the client clicks the 'x' on it
 }
 
 void Drawer::setDrawingColor(Color color) {
     glColor3f(colorMap[color].at(0), colorMap[color].at(1), colorMap[color].at(2));
-}
-
-Drawer::~Drawer() {
-    std::cout << "calling the drawer destructor, which deletes the screen..." << std::endl;
-
-    deleteScreen();
 }
