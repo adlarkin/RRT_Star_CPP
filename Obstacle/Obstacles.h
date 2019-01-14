@@ -7,23 +7,23 @@
 
 
 #include <cstddef>
+#include <vector>
+
+struct rectangularObstacle {
+    size_t x_Min;
+    size_t x_Max;
+    size_t y_Min;
+    size_t y_Max;
+};
 
 class Obstacles {
 public:
-    Obstacles(size_t dimension, size_t numOfObstacles);
-    virtual ~Obstacles();
+    Obstacles(size_t scaledPointRange, size_t numOfObstacles);
 
 private:
-    void initObstacleArray();
     void makeRandomObstacles(size_t numOfObstacles);
-    void destroyObstacleArray();
 
-    size_t arrayDim;
-
-    // a 2D array of booleans, of size arrayDim x arrayDim
-    // indexing an array is like indexing a location through the ID
-    // ex: obstacleLocations[1][2] will return if there's an object at (1,2)
-    bool **obstacleLocations;
+    std::vector<rectangularObstacle> existingObstacles;
 };
 
 

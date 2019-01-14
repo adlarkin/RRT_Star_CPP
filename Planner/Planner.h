@@ -9,6 +9,7 @@
 #include <unordered_set>
 #include "../Utils/MyRtree.h"
 #include "../Visualization/Drawer.h"
+#include "../Obstacle/Obstacles.h"
 
 class Planner {
 public:
@@ -47,6 +48,7 @@ private:
     double epsilon;
     int neighborhoodSize;
     double knnNeighborhoodRadius;
+    Obstacles obstacles;
     Location start;
     Location goal;
     MyRtree rTree;

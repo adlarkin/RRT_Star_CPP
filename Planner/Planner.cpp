@@ -15,6 +15,7 @@
 #define LINE_COLOR GREY
 #define PATH_COLOR PINK
 #define PATH_WIDTH 3.5f
+#define NUM_OBSTACLES 1
 
 // initializer lists init objects based on the order they're declared in the .h file
 // allLocations must be initialized before start/goal in order for makeUniqueLocation() to work
@@ -24,6 +25,7 @@ Planner::Planner(const WindowParamsDTO &screenParams, size_t numPoints, double e
         epsilon(epsilon),
         neighborhoodSize(neighborhoodSize),
         knnNeighborhoodRadius(knnNeighborhoodRadiusFactor * epsilon),
+        obstacles(Location::getScaledPointRange(numPoints), NUM_OBSTACLES),
         start(makeUniqueLocation()),
         goal(makeUniqueLocation()),
         drawer(screenParams)    // initializing the drawer also sets up a blank screen
