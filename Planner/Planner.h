@@ -29,6 +29,7 @@ private:
     RobotState * rewire(RobotState *nearest, const Location &nextLocation);
     void updateNeighboringStateCosts(RobotState *parent);
     Location makeUniqueLocation();
+    bool isObstacleFree(const Location& location) const;
     Location makeLocationWithinEpsilon(RobotState *nearest, const Location &location);
     RobotState* createNewState(RobotState *parent, const Location &location);
     bool isInGoalSpace(RobotState *mostRecentState);

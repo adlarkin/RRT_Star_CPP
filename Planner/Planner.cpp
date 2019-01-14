@@ -138,11 +138,15 @@ void Planner::updateNeighboringStateCosts(RobotState *parent) {
 
 Location Planner::makeUniqueLocation() {
     Location location(maxIterations);
-    while (allLocations.count(location)) {
+    while ((!isObstacleFree(location)) || allLocations.count(location)) {
         location = Location(maxIterations);
     }
     allLocations.insert(location);
     return location;
+}
+
+bool Planner::isObstacleFree(const Location &location) const {
+    return obstacles.isObstacleFree(location);
 }
 
 Location Planner::makeLocationWithinEpsilon(RobotState *nearest, const Location &location) {
