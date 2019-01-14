@@ -49,7 +49,7 @@ size_t Location::getScaledPointRange(size_t unscaledPointRange) {
     return SCALING_FACTOR * unscaledPointRange;
 }
 
-size_t Location::madeIDFromPointRange(size_t scaledPointRange) {
+size_t Location::makeIDFromPointRange(size_t scaledPointRange) {
     return rand() % scaledPointRange;
 }
 
@@ -61,7 +61,7 @@ Point Location::makeRandomPoint(size_t unscaledPointRange) {
     // make a number between 0 and pointRange, exclusive
     // this number is the id of the coordinate
     // (using int IDs to compare with other coordinates for duplicates)
-    size_t id = Location::madeIDFromPointRange(pointRange);
+    size_t id = Location::makeIDFromPointRange(pointRange);
 
     // the id now needs to be mapped to an actual screen coordinate so it can be displayed
     double pos = makeCoordFromID(id, pointRange);

@@ -13,7 +13,9 @@ add_executable(RRT_Star_CPP main.cpp
         Planner/DistancePlanner.cpp Planner/DistancePlanner.h
         Planner/EnergyPlanner.cpp Planner/EnergyPlanner.h
         Visualization/WindowParamsDTO.cpp Visualization/WindowParamsDTO.h
-        Utils/StringParser.cpp Utils/StringParser.h Obstacle/Obstacles.cpp Obstacle/Obstacles.h)
+        Utils/StringParser.cpp Utils/StringParser.h
+        Obstacle/Obstacles.cpp Obstacle/Obstacles.h
+        Obstacle/DisplayableRectObstacle.cpp Obstacle/DisplayableRectObstacle.h)
 
 # added this in so that openGL works with the project
 target_link_libraries(RRT_Star_CPP -lglut -lGL -lGLU)

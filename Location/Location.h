@@ -25,7 +25,7 @@ public:
     // useful to have these as public static methods if you want to make obstacles
     // (assuming obstacle hashing is being used)
     static size_t getScaledPointRange(size_t unscaledPointRange);
-    static size_t madeIDFromPointRange(size_t scaledPointRange);
+    static size_t makeIDFromPointRange(size_t scaledPointRange);
 
 private:
     Point makeRandomPoint(size_t unscaledPointRange);

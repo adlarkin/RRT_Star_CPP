@@ -36,6 +36,7 @@ private:
     void redrawTree(RobotState *beginningState);
     void pauseAnimation(int milliSec);
     void showStartAndGoal();
+    void drawObstacles();
 
     // saving all created states and locations
     // this will make deleting pointers easy in the destructor

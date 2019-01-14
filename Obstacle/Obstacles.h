@@ -8,22 +8,18 @@
 
 #include <cstddef>
 #include <vector>
-
-struct rectangularObstacle {
-    size_t x_Min;
-    size_t x_Max;
-    size_t y_Min;
-    size_t y_Max;
-};
+#include "DisplayableRectObstacle.h"
 
 class Obstacles {
 public:
     Obstacles(size_t scaledPointRange, size_t numOfObstacles);
+    const std::vector<DisplayableRectObstacle> &getExistingObstacles() const;
 
 private:
-    void makeRandomObstacles(size_t numOfObstacles);
+    void generateObstacles(size_t scaledPointRange, size_t numOfObstacles);
+    DisplayableRectObstacle makeRandomObstacle(size_t scaledPointRange);
 
-    std::vector<rectangularObstacle> existingObstacles;
+    std::vector<DisplayableRectObstacle> existingObstacles;
 };
 
 

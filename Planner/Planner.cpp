@@ -16,6 +16,7 @@
 #define PATH_COLOR PINK
 #define PATH_WIDTH 3.5f
 #define NUM_OBSTACLES 1
+#define OBSTACLE_COLOR WHITE
 
 // initializer lists init objects based on the order they're declared in the .h file
 // allLocations must be initialized before start/goal in order for makeUniqueLocation() to work
@@ -37,8 +38,8 @@ Planner::Planner(const WindowParamsDTO &screenParams, size_t numPoints, double e
 }
 
 void Planner::findBestPath() {
-    // let the client see the start and goal points
-    showStartAndGoal();
+    drawObstacles();
+    showStartAndGoal(); // let the client see the start and goal points
     drawer.updateScreen();
     pauseAnimation(500);
 
@@ -77,6 +78,7 @@ void Planner::updatePath(RobotState *possibleSolution, size_t &pathsFound) {
         // (sometimes, erasing old connections can (partially) erase other valid connections)
         bestCostSoFar = currSolutionState->getCost();
         drawer.clearScreen();
+        drawObstacles();
         redrawTree(root);
         pathsFound++;
         std::cout << "PATH FOUND! Cost is: " << bestCostSoFar << std::endl;
@@ -200,8 +202,6 @@ void Planner::pauseAnimation(int milliSec) {
 Planner::~Planner() {
     std::cout << "calling the generic planner's destructor..." << std::endl;
 
-//    drawer.deleteScreen();
-
     for (auto state : allStates) {
         delete state;
         state = nullptr;
@@ -211,4 +211,15 @@ Planner::~Planner() {
 void Planner::showStartAndGoal() {
     drawer.drawCircle(start, START_COLOR, CIRCLE_RADIUS);
     drawer.drawCircle(goal, GOAL_COLOR, CIRCLE_RADIUS);
+}
+
+void Planner::drawObstacles() {
+    std::vector<DisplayableRectObstacle> existingObs = obstacles.getExistingObstacles();
+    for (auto ob : existingObs) {
+        Location topRight(ob.getX_max(), ob.getY_max(), Location::getScaledPointRange(maxIterations));
+        double width = euclideanDistance(ob.getTopLeftLoc(), topRight);
+        Location bottomLeft(ob.getX_min(), ob.getY_min(), Location::getScaledPointRange(maxIterations));
+        double height = euclideanDistance(ob.getTopLeftLoc(), bottomLeft);
+        drawer.drawRectangle(width, ob.getTopLeftLoc(), height, OBSTACLE_COLOR);
+    }
 }
