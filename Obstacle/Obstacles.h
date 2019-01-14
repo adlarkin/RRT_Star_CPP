@@ -14,6 +14,7 @@ class Obstacles {
 public:
     Obstacles(size_t scaledPointRange, size_t numOfObstacles);
     const std::vector<DisplayableRectObstacle> &getExistingObstacles() const;
+    bool isObstacleFree(const Location& location) const;
 
 private:
     void generateObstacles(size_t scaledPointRange, size_t numOfObstacles);

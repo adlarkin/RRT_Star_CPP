@@ -14,6 +14,15 @@ const std::vector<DisplayableRectObstacle> &Obstacles::getExistingObstacles() co
     return existingObstacles;
 }
 
+bool Obstacles::isObstacleFree(const Location &location) const {
+    for (auto ob : existingObstacles) {
+        if (ob.isInX(location) && ob.isInY(location)) {
+            return false;
+        }
+    }
+    return true;
+}
+
 void Obstacles::generateObstacles(size_t scaledPointRange, size_t numOfObstacles) {
     for (size_t i = 0; i < numOfObstacles; ++i) {
         DisplayableRectObstacle nextOb = makeRandomObstacle(scaledPointRange);

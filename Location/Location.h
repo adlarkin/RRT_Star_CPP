@@ -18,6 +18,8 @@ public:
 
     double getXCoord() const;
     double getYCoord() const;
+    size_t getX_ID() const;
+    size_t getY_ID() const;
 
     bool operator==(const Location &rhs) const;
     bool operator!=(const Location &rhs) const;

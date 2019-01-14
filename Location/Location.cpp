@@ -35,6 +35,14 @@ double Location::getYCoord() const {
     return y.getCoordinate();
 }
 
+size_t Location::getX_ID() const {
+    return x.getID();
+}
+
+size_t Location::getY_ID() const {
+    return y.getID();
+}
+
 bool Location::operator==(const Location &rhs) const {
     return x.getID() == rhs.x.getID() &&
            y.getID() == rhs.y.getID();

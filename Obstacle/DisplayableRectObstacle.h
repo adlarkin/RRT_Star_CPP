@@ -13,6 +13,8 @@ class DisplayableRectObstacle {
 public:
     explicit DisplayableRectObstacle(size_t scaledPointRange);
     Location getTopLeftLoc() const;
+    bool isInX(const Location& location) const;
+    bool isInY(const Location& location) const;
 
     size_t getX_min() const;
     size_t getX_max() const;

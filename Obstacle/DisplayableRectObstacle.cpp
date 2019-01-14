@@ -21,6 +21,14 @@ Location DisplayableRectObstacle::getTopLeftLoc() const {
     return Location(x_min, y_max, scaledPointRange);
 }
 
+bool DisplayableRectObstacle::isInX(const Location &location) const {
+    return (location.getX_ID() >= x_min) && (location.getX_ID() <= x_max);
+}
+
+bool DisplayableRectObstacle::isInY(const Location &location) const {
+    return (location.getY_ID() >= y_min) && (location.getY_ID() <= y_max);
+}
+
 size_t DisplayableRectObstacle::getX_min() const {
     return x_min;
 }
