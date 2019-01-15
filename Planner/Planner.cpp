@@ -19,7 +19,7 @@
 #define OBSTACLE_COLOR WHITE
 
 // initializer lists init objects based on the order they're declared in the .h file
-// allLocations must be initialized before start/goal in order for makeUniqueLocation() to work
+// allLocations must be initialized before start/goal in order for makeUniqueObstacleFreeLocation() to work
 Planner::Planner(const WindowParamsDTO &screenParams, size_t numPoints, double epsilon, int neighborhoodSize,
                  double knnNeighborhoodRadiusFactor) :
         maxIterations(numPoints),
@@ -27,8 +27,8 @@ Planner::Planner(const WindowParamsDTO &screenParams, size_t numPoints, double e
         neighborhoodSize(neighborhoodSize),
         knnNeighborhoodRadius(knnNeighborhoodRadiusFactor * epsilon),
         obstacles(Location::getScaledPointRange(numPoints), NUM_OBSTACLES),
-        start(makeUniqueLocation()),
-        goal(makeUniqueLocation()),
+        start(makeUniqueObstacleFreeLocation()),
+        goal(makeUniqueObstacleFreeLocation()),
         drawer(screenParams)    // initializing the drawer also sets up a blank screen
         {
     this->root = createNewState(nullptr, this->start);  // the root state has no parent
@@ -45,16 +45,19 @@ void Planner::findBestPath() {
 
     size_t numBetterPathsFound = 0;
     while (allStates.size() < maxIterations) {
-        Location sampledLoc = makeUniqueLocation();
+        Location sampledLoc = makeUniqueObstacleFreeLocation();
         RobotState* nearest = rTree.getNearestElement(sampledLoc);
         if (euclideanDistance(nearest->getLocation(), sampledLoc) > epsilon) {
             sampledLoc = makeLocationWithinEpsilon(nearest, sampledLoc);
         }
-        RobotState* nextState = rewire(nearest, sampledLoc);
-        updatePath(nextState, numBetterPathsFound);
-        drawer.updateScreen();
+        // makeLocationWithinEpsilon() may make a new location that isn't obstacle free
+        if (isObstacleFree(sampledLoc)) {
+            RobotState* nextState = rewire(nearest, sampledLoc);
+            updatePath(nextState, numBetterPathsFound);
+            drawer.updateScreen();
+        }
     }
-
+    
     std::cout << std::endl << "Found a total of " << numBetterPathsFound << " paths" << std::endl;
     drawer.keepScreenOpen();    // let the client see the (possible) resulting path
 }
@@ -136,7 +139,7 @@ void Planner::updateNeighboringStateCosts(RobotState *parent) {
     }
 }
 
-Location Planner::makeUniqueLocation() {
+Location Planner::makeUniqueObstacleFreeLocation() {
     Location location(maxIterations);
     while ((!isObstacleFree(location)) || allLocations.count(location)) {
         location = Location(maxIterations);
@@ -157,7 +160,9 @@ Location Planner::makeLocationWithinEpsilon(RobotState *nearest, const Location 
     double xCoord = nearest->getLocation().getXCoord() + (epsilon * cos(theta));
     double yCoord = nearest->getLocation().getYCoord() + (epsilon * sin(theta));
     Location updatedLocation(xCoord, yCoord, maxIterations);
-    allLocations.insert(updatedLocation);
+    if (isObstacleFree(updatedLocation)) {
+        allLocations.insert(updatedLocation);
+    }
     return updatedLocation;
 }
 

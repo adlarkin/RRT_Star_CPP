@@ -28,7 +28,7 @@ private:
     void updatePath(RobotState *possibleSolution, size_t &pathsFound);
     RobotState * rewire(RobotState *nearest, const Location &nextLocation);
     void updateNeighboringStateCosts(RobotState *parent);
-    Location makeUniqueLocation();
+    Location makeUniqueObstacleFreeLocation();
     bool isObstacleFree(const Location& location) const;
     Location makeLocationWithinEpsilon(RobotState *nearest, const Location &location);
     RobotState* createNewState(RobotState *parent, const Location &location);
