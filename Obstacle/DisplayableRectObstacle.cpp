@@ -5,6 +5,7 @@
 #include "DisplayableRectObstacle.h"
 #include "../Location/Location.h"
 
+
 DisplayableRectObstacle::DisplayableRectObstacle(size_t scaledPointRange) : scaledPointRange(scaledPointRange) {
     size_t firstID = Location::makeIDFromPointRange(scaledPointRange);
     size_t secondID = Location::makeIDFromPointRange(scaledPointRange);

@@ -57,8 +57,14 @@ void Planner::findBestPath() {
             drawer.updateScreen();
         }
     }
-    
+
+    // update the screen one last time now that the algorithm is complete
+    drawer.clearScreen();
+    drawObstacles();
+    redrawTree(root);
+    showPath(currSolutionState);
     std::cout << std::endl << "Found a total of " << numBetterPathsFound << " paths" << std::endl;
+    std::cout << "The straight line euclidean distance cost is " << euclideanDistance(start, goal) << std::endl;
     drawer.keepScreenOpen();    // let the client see the (possible) resulting path
 }
 
@@ -77,20 +83,18 @@ void Planner::updatePath(RobotState *possibleSolution, size_t &pathsFound) {
     }
 
     if (foundBetterPath) {
+        pathsFound++;
         // update the cost and redraw the tree to make the rewiring more clear
         // (sometimes, erasing old connections can (partially) erase other valid connections)
         bestCostSoFar = currSolutionState->getCost();
         drawer.clearScreen();
         drawObstacles();
         redrawTree(root);
-        pathsFound++;
         std::cout << "PATH FOUND! Cost is: " << bestCostSoFar << std::endl;
     }
 
     // redraw the path in case newly created connections drew over it
-    if (currSolutionState != nullptr) {
-        showPath(currSolutionState);
-    }
+    showPath(currSolutionState);
 }
 
 double Planner::euclideanDistance(const Location &start, const Location &end) {
@@ -185,6 +189,10 @@ bool Planner::isInGoalSpace(RobotState *mostRecentState) {
 }
 
 void Planner::showPath(RobotState *lastState) {
+    if (lastState == nullptr) {
+        return;
+    }
+
     while (lastState != root) {
         RobotState* next = lastState->getParent();
         drawer.drawLine(lastState->getLocation(), next->getLocation(), PATH_COLOR, PATH_WIDTH);
