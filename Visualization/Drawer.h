@@ -33,7 +33,7 @@ private:
     std::map<Color, std::vector<float> > colorMap {
             {WHITE, {1.0f, 1.0f, 1.0f}},
             {BLACK, {0.0f, 0.0f, 0.0f}},
-            {GREY, {.35f, .35f, .35f}},
+            {GREY, {.2f, .2f, .2f}},
             {RED, {1.0f, 0.0f, 0.0f}},
             {GREEN, {0.0f, 0.9f, 0.0f}},
             {BLUE, {0.0f, 0.1f, 1.0f}},

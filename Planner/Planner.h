@@ -25,14 +25,13 @@ protected:
     double euclideanDistance(const Location &start, const Location &end);
 
 private:
-    void updatePath(RobotState *possibleSolution, size_t &pathsFound);
-    RobotState * rewire(RobotState *nearest, const Location &nextLocation);
+    void updatePath(size_t &pathsFound);
+    void rewire(RobotState *nearest, const Location &nextLocation);
     void updateNeighboringStateCosts(RobotState *parent);
     Location makeUniqueObstacleFreeLocation();
     bool isObstacleFree(const Location& location) const;
     Location makeLocationWithinEpsilon(RobotState *nearest, const Location &location);
     RobotState* createNewState(RobotState *parent, const Location &location);
-    bool isInGoalSpace(RobotState *mostRecentState);
     void showPath(RobotState *lastState);
     void redrawTree(RobotState *beginningState);
     void pauseAnimation(int milliSec);

@@ -13,8 +13,8 @@
 #define START_COLOR GREEN
 #define GOAL_COLOR RED
 #define LINE_COLOR GREY
-#define PATH_COLOR PINK
-#define PATH_WIDTH 3.5f
+#define PATH_COLOR LIGHT_BLUE
+#define PATH_WIDTH 1.5f
 #define NUM_OBSTACLES 1
 #define OBSTACLE_COLOR WHITE
 
@@ -52,8 +52,8 @@ void Planner::findBestPath() {
         }
         // makeLocationWithinEpsilon() may make a new location that isn't obstacle free
         if (isObstacleFree(sampledLoc)) {
-            RobotState* nextState = rewire(nearest, sampledLoc);
-            updatePath(nextState, numBetterPathsFound);
+            rewire(nearest, sampledLoc);
+            updatePath(numBetterPathsFound);
             drawer.updateScreen();
         }
     }
@@ -68,18 +68,16 @@ void Planner::findBestPath() {
     drawer.keepScreenOpen();    // let the client see the (possible) resulting path
 }
 
-void Planner::updatePath(RobotState *possibleSolution, size_t &pathsFound) {
+void Planner::updatePath(size_t &pathsFound) {
+    // see if any states within epsilon of the goal state are a better solution due to rewiring
     bool foundBetterPath = false;
-
-    // is there a better path, and if so, is that from the same or different solution state?
-    if ((currSolutionState != nullptr) && (currSolutionState->getCost() < bestCostSoFar)) {
-        // rewiring created a better way to get to the current solution state
-        foundBetterPath = true;
-    }
-    if ((possibleSolution->getCost() < bestCostSoFar) && isInGoalSpace(possibleSolution)) {
-        // the new state is a valid one with a better cost than the current solution state
-        currSolutionState = possibleSolution;
-        foundBetterPath = true;
+    std::vector<RobotState*> solutionCandidates = rTree.getKNearestNeighbors(goal, neighborhoodSize, epsilon);
+    for (auto candidate : solutionCandidates) {
+        if (candidate->getCost() < bestCostSoFar) {
+            currSolutionState = candidate;
+            bestCostSoFar = candidate->getCost();
+            foundBetterPath = true;
+        }
     }
 
     if (foundBetterPath) {
@@ -103,7 +101,7 @@ double Planner::euclideanDistance(const Location &start, const Location &end) {
     return sqrt((xDiff * xDiff) + (yDiff * yDiff));
 }
 
-RobotState * Planner::rewire(RobotState *nearest, const Location &nextLocation) {
+void Planner::rewire(RobotState *nearest, const Location &nextLocation) {
     double minCost = nearest->getCost() + cost(nearest, nextLocation);
     std::vector<RobotState*> stateNeighborhood =
             rTree.getKNearestNeighbors(nextLocation, neighborhoodSize, knnNeighborhoodRadius);
@@ -132,7 +130,6 @@ RobotState * Planner::rewire(RobotState *nearest, const Location &nextLocation) 
     }
 
     showStartAndGoal(); // re-draw the start/goal in case lines drew over them
-    return nextState;
 }
 
 void Planner::updateNeighboringStateCosts(RobotState *parent) {
@@ -182,10 +179,6 @@ RobotState *Planner::createNewState(RobotState *parent, const Location &location
     allStates.push_back(nextState);
     rTree.add(nextState);
     return nextState;
-}
-
-bool Planner::isInGoalSpace(RobotState *mostRecentState) {
-    return euclideanDistance(mostRecentState->getLocation(), goal) <= epsilon;
 }
 
 void Planner::showPath(RobotState *lastState) {
