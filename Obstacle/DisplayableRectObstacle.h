@@ -11,10 +11,13 @@
 
 class DisplayableRectObstacle {
 public:
-    explicit DisplayableRectObstacle(size_t scaledPointRange);
+    DisplayableRectObstacle(size_t scaledPointRange, size_t maxDimension);
     Location getTopLeftLoc() const;
     bool isInX(const Location& location) const;
     bool isInY(const Location& location) const;
+    bool isInX(size_t xID_other) const;
+    bool isInY(size_t yID_other) const;
+    bool obstaclesOverlap(const DisplayableRectObstacle& otherObs) const;
 
     size_t getX_min() const;
     size_t getX_max() const;

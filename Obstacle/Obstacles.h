@@ -18,7 +18,7 @@ public:
 
 private:
     void generateObstacles(size_t scaledPointRange, size_t numOfObstacles);
-    DisplayableRectObstacle makeRandomObstacle(size_t scaledPointRange);
+    DisplayableRectObstacle makeRandomObstacle(size_t scaledPointRange, size_t maxDimension);
 
     std::vector<DisplayableRectObstacle> existingObstacles;
 };

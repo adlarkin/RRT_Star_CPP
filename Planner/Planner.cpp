@@ -15,7 +15,7 @@
 #define LINE_COLOR GREY
 #define PATH_COLOR LIGHT_BLUE
 #define PATH_WIDTH 1.5f
-#define NUM_OBSTACLES 1
+#define NUM_OBSTACLES 4
 #define OBSTACLE_COLOR WHITE
 
 // initializer lists init objects based on the order they're declared in the .h file
