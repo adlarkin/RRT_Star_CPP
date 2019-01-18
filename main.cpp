@@ -11,7 +11,8 @@ enum PlannerType {DISTANCE, ENERGY};
 
 int main(int argc, char** argv) {
     // define program inputs (from the commandLine)
-    int x_winPos, y_winPos, winWidth, winHeight, numPoints, neighborhoodSize;
+    int x_winPos, y_winPos, winWidth, winHeight, neighborhoodSize;
+    size_t numPoints;
     auto testSeed = (unsigned int)time(nullptr);
     double epsilon, knnNeighborhoodRadiusFactor;
     PlannerType plannerType;
@@ -28,7 +29,7 @@ int main(int argc, char** argv) {
         y_winPos = parser.parseInt(argv[2]);
         winWidth = parser.parseInt(argv[3]);
         winHeight = parser.parseInt(argv[4]);
-        numPoints = parser.parseInt(argv[5]);
+        numPoints = parser.parseSizeT(argv[5]);
         epsilon = parser.parseDouble(argv[6]);
         std::string inputType = parser.toLowerCase(argv[7]);
         if (inputType == "energy") {

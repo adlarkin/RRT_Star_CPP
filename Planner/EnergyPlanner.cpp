@@ -5,8 +5,8 @@
 #include <iostream>
 #include "EnergyPlanner.h"
 
-EnergyPlanner::EnergyPlanner(const WindowParamsDTO &screenParams, int numPoints, double epsilon,
-        int neighborhoodSize, double knnNeighborhoodRadiusFactor) :
+EnergyPlanner::EnergyPlanner(const WindowParamsDTO &screenParams, size_t numPoints, double epsilon,
+                             int neighborhoodSize, double knnNeighborhoodRadiusFactor) :
         Planner(screenParams, numPoints, epsilon, neighborhoodSize, knnNeighborhoodRadiusFactor)
         {}
 

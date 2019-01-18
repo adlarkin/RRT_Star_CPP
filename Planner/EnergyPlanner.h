@@ -10,7 +10,7 @@
 
 class EnergyPlanner : public Planner {
 public:
-    EnergyPlanner(const WindowParamsDTO &screenParams, int numPoints, double epsilon, int neighborhoodSize,
+    EnergyPlanner(const WindowParamsDTO &screenParams, size_t numPoints, double epsilon, int neighborhoodSize,
                   double knnNeighborhoodRadiusFactor);
     virtual ~EnergyPlanner();
 

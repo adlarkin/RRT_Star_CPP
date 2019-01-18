@@ -9,7 +9,7 @@
 #include <boost/geometry.hpp>
 #include <boost/geometry/index/rtree.hpp>
 
-#include "../State/Location.h"
+#include "../Location/Location.h"
 #include "../State/RobotState.h"
 
 // setting up the rTree so that it can be wrapped for simplicity

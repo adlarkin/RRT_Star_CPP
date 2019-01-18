@@ -9,11 +9,12 @@
 #include <unordered_set>
 #include "../Utils/MyRtree.h"
 #include "../Visualization/Drawer.h"
+#include "../Obstacle/Obstacles.h"
 
 class Planner {
 public:
-    Planner(const WindowParamsDTO &screenParams, int numPoints, double epsilon, int neighborhoodSize,
-                double knnNeighborhoodRadiusFactor);
+    Planner(const WindowParamsDTO &screenParams, size_t numPoints, double epsilon, int neighborhoodSize,
+            double knnNeighborhoodRadiusFactor);
     void findBestPath();
     virtual ~Planner();
 
@@ -24,17 +25,18 @@ protected:
     double euclideanDistance(const Location &start, const Location &end);
 
 private:
-    void updatePath(RobotState *possibleSolution, size_t &pathsFound);
-    RobotState * rewire(RobotState *nearest, const Location &nextLocation);
+    void updatePath(size_t &pathsFound);
+    void rewire(RobotState *nearest, const Location &nextLocation);
     void updateNeighboringStateCosts(RobotState *parent);
-    Location makeUniqueLocation();
+    Location makeUniqueObstacleFreeLocation();
+    bool isObstacleFree(const Location& location) const;
     Location makeLocationWithinEpsilon(RobotState *nearest, const Location &location);
     RobotState* createNewState(RobotState *parent, const Location &location);
-    bool isInGoalSpace(RobotState *mostRecentState);
     void showPath(RobotState *lastState);
     void redrawTree(RobotState *beginningState);
     void pauseAnimation(int milliSec);
     void showStartAndGoal();
+    void drawObstacles();
 
     // saving all created states and locations
     // this will make deleting pointers easy in the destructor
@@ -43,10 +45,11 @@ private:
     std::unordered_set<Location> allLocations;
 
     RobotState* root;
-    int maxIterations;
+    size_t maxIterations;
     double epsilon;
     int neighborhoodSize;
     double knnNeighborhoodRadius;
+    Obstacles obstacles;
     Location start;
     Location goal;
     MyRtree rTree;

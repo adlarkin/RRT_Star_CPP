@@ -5,22 +5,23 @@
 #ifndef RRT_STAR_CPP_POINT_H
 #define RRT_STAR_CPP_POINT_H
 
+#include <cstddef>
 
 class Point {
 public:
-    Point(int ID, double coordinate);
+    Point(size_t ID, double coordinate);
     Point(const Point &p2);
 
-    int getID() const;
+    size_t getID() const;
 
-    void setID(int ID);
+    void setID(size_t ID);
 
     double getCoordinate() const;
 
     void setCoordinate(double coordinate);
 
 private:
-    int ID; // for obstacle hashing
+    size_t ID; // for obstacle hashing
     double coordinate;
 };
 

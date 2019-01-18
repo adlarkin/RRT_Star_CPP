@@ -10,7 +10,7 @@
 
 class DistancePlanner : public Planner {
 public:
-    DistancePlanner(const WindowParamsDTO &screenParams, int numPoints, double epsilon, int neighborhoodSize,
+    DistancePlanner(const WindowParamsDTO &screenParams, size_t numPoints, double epsilon, int neighborhoodSize,
                     double knnNeighborhoodRadiusFactor);
     virtual ~DistancePlanner();
 

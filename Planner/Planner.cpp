@@ -13,19 +13,22 @@
 #define START_COLOR GREEN
 #define GOAL_COLOR RED
 #define LINE_COLOR GREY
-#define PATH_COLOR PINK
-#define PATH_WIDTH 3.5f
+#define PATH_COLOR LIGHT_BLUE
+#define PATH_WIDTH 1.5f
+#define NUM_OBSTACLES 5
+#define OBSTACLE_COLOR WHITE
 
 // initializer lists init objects based on the order they're declared in the .h file
-// allLocations must be initialized before start/goal in order for makeUniqueLocation() to work
-Planner::Planner(const WindowParamsDTO &screenParams, int numPoints, double epsilon, int neighborhoodSize,
+// allLocations must be initialized before start/goal in order for makeUniqueObstacleFreeLocation() to work
+Planner::Planner(const WindowParamsDTO &screenParams, size_t numPoints, double epsilon, int neighborhoodSize,
                  double knnNeighborhoodRadiusFactor) :
         maxIterations(numPoints),
         epsilon(epsilon),
         neighborhoodSize(neighborhoodSize),
         knnNeighborhoodRadius(knnNeighborhoodRadiusFactor * epsilon),
-        start(makeUniqueLocation()),
-        goal(makeUniqueLocation()),
+        obstacles(Location::getScaledPointRange(numPoints), NUM_OBSTACLES),
+        start(makeUniqueObstacleFreeLocation()),
+        goal(makeUniqueObstacleFreeLocation()),
         drawer(screenParams)    // initializing the drawer also sets up a blank screen
         {
     this->root = createNewState(nullptr, this->start);  // the root state has no parent
@@ -35,55 +38,63 @@ Planner::Planner(const WindowParamsDTO &screenParams, int numPoints, double epsi
 }
 
 void Planner::findBestPath() {
-    // let the client see the start and goal points
-    showStartAndGoal();
+    drawObstacles();
+    showStartAndGoal(); // let the client see the start and goal points
     drawer.updateScreen();
     pauseAnimation(500);
 
     size_t numBetterPathsFound = 0;
     while (allStates.size() < maxIterations) {
-        Location sampledLoc = makeUniqueLocation();
+        Location sampledLoc = makeUniqueObstacleFreeLocation();
         RobotState* nearest = rTree.getNearestElement(sampledLoc);
         if (euclideanDistance(nearest->getLocation(), sampledLoc) > epsilon) {
             sampledLoc = makeLocationWithinEpsilon(nearest, sampledLoc);
+            // makeLocationWithinEpsilon() may make a new location that isn't obstacle free
+            if (!isObstacleFree(sampledLoc)) {
+                continue;
+            }
         }
-        RobotState* nextState = rewire(nearest, sampledLoc);
-        updatePath(nextState, numBetterPathsFound);
+        rewire(nearest, sampledLoc);
+        updatePath(numBetterPathsFound);
         drawer.updateScreen();
     }
 
+    // update the screen one last time now that the algorithm is complete
+    drawer.clearScreen();
+    drawObstacles();
+    redrawTree(root);
+    showPath(currSolutionState);
     std::cout << std::endl << "Found a total of " << numBetterPathsFound << " paths" << std::endl;
+    std::cout << "The straight line euclidean distance cost is " << euclideanDistance(start, goal) << std::endl;
     drawer.keepScreenOpen();    // let the client see the (possible) resulting path
 }
 
-void Planner::updatePath(RobotState *possibleSolution, size_t &pathsFound) {
+void Planner::updatePath(size_t &pathsFound) {
+    // see if any states within epsilon of the goal state are a better solution due to rewiring
     bool foundBetterPath = false;
-
-    // is there a better path, and if so, is that from the same or different solution state?
-    if ((currSolutionState != nullptr) && (currSolutionState->getCost() < bestCostSoFar)) {
-        // rewiring created a better way to get to the current solution state
-        foundBetterPath = true;
-    }
-    if ((possibleSolution->getCost() < bestCostSoFar) && isInGoalSpace(possibleSolution)) {
-        // the new state is a valid one with a better cost than the current solution state
-        currSolutionState = possibleSolution;
-        foundBetterPath = true;
+    std::vector<RobotState*> solutionCandidates = rTree.getKNearestNeighbors(goal, neighborhoodSize,
+            knnNeighborhoodRadius);
+    for (auto candidate : solutionCandidates) {
+        if (candidate->getCost() < bestCostSoFar) {
+            currSolutionState = candidate;
+            bestCostSoFar = candidate->getCost();
+            foundBetterPath = true;
+        }
     }
 
     if (foundBetterPath) {
+        pathsFound++;
         // update the cost and redraw the tree to make the rewiring more clear
         // (sometimes, erasing old connections can (partially) erase other valid connections)
         bestCostSoFar = currSolutionState->getCost();
         drawer.clearScreen();
+        drawObstacles();
         redrawTree(root);
-        pathsFound++;
         std::cout << "PATH FOUND! Cost is: " << bestCostSoFar << std::endl;
     }
 
     // redraw the path in case newly created connections drew over it
-    if (currSolutionState != nullptr) {
-        showPath(currSolutionState);
-    }
+    showPath(currSolutionState);
 }
 
 double Planner::euclideanDistance(const Location &start, const Location &end) {
@@ -92,7 +103,7 @@ double Planner::euclideanDistance(const Location &start, const Location &end) {
     return sqrt((xDiff * xDiff) + (yDiff * yDiff));
 }
 
-RobotState * Planner::rewire(RobotState *nearest, const Location &nextLocation) {
+void Planner::rewire(RobotState *nearest, const Location &nextLocation) {
     double minCost = nearest->getCost() + cost(nearest, nextLocation);
     std::vector<RobotState*> stateNeighborhood =
             rTree.getKNearestNeighbors(nextLocation, neighborhoodSize, knnNeighborhoodRadius);
@@ -121,7 +132,6 @@ RobotState * Planner::rewire(RobotState *nearest, const Location &nextLocation) 
     }
 
     showStartAndGoal(); // re-draw the start/goal in case lines drew over them
-    return nextState;
 }
 
 void Planner::updateNeighboringStateCosts(RobotState *parent) {
@@ -132,13 +142,17 @@ void Planner::updateNeighboringStateCosts(RobotState *parent) {
     }
 }
 
-Location Planner::makeUniqueLocation() {
+Location Planner::makeUniqueObstacleFreeLocation() {
     Location location(maxIterations);
-    while (allLocations.count(location)) {
+    while ((!isObstacleFree(location)) || allLocations.count(location)) {
         location = Location(maxIterations);
     }
     allLocations.insert(location);
     return location;
+}
+
+bool Planner::isObstacleFree(const Location &location) const {
+    return obstacles.isObstacleFree(location);
 }
 
 Location Planner::makeLocationWithinEpsilon(RobotState *nearest, const Location &location) {
@@ -149,7 +163,9 @@ Location Planner::makeLocationWithinEpsilon(RobotState *nearest, const Location 
     double xCoord = nearest->getLocation().getXCoord() + (epsilon * cos(theta));
     double yCoord = nearest->getLocation().getYCoord() + (epsilon * sin(theta));
     Location updatedLocation(xCoord, yCoord, maxIterations);
-    allLocations.insert(updatedLocation);
+    if (isObstacleFree(updatedLocation)) {
+        allLocations.insert(updatedLocation);
+    }
     return updatedLocation;
 }
 
@@ -167,11 +183,11 @@ RobotState *Planner::createNewState(RobotState *parent, const Location &location
     return nextState;
 }
 
-bool Planner::isInGoalSpace(RobotState *mostRecentState) {
-    return euclideanDistance(mostRecentState->getLocation(), goal) <= epsilon;
-}
-
 void Planner::showPath(RobotState *lastState) {
+    if (lastState == nullptr) {
+        return;
+    }
+
     while (lastState != root) {
         RobotState* next = lastState->getParent();
         drawer.drawLine(lastState->getLocation(), next->getLocation(), PATH_COLOR, PATH_WIDTH);
@@ -198,8 +214,6 @@ void Planner::pauseAnimation(int milliSec) {
 Planner::~Planner() {
     std::cout << "calling the generic planner's destructor..." << std::endl;
 
-//    drawer.deleteScreen();
-
     for (auto state : allStates) {
         delete state;
         state = nullptr;
@@ -209,4 +223,15 @@ Planner::~Planner() {
 void Planner::showStartAndGoal() {
     drawer.drawCircle(start, START_COLOR, CIRCLE_RADIUS);
     drawer.drawCircle(goal, GOAL_COLOR, CIRCLE_RADIUS);
+}
+
+void Planner::drawObstacles() {
+    std::vector<DisplayableRectObstacle> existingObs = obstacles.getExistingObstacles();
+    for (auto ob : existingObs) {
+        Location topRight(ob.getX_max(), ob.getY_max(), Location::getScaledPointRange(maxIterations));
+        double width = euclideanDistance(ob.getTopLeftLoc(), topRight);
+        Location bottomLeft(ob.getX_min(), ob.getY_min(), Location::getScaledPointRange(maxIterations));
+        double height = euclideanDistance(ob.getTopLeftLoc(), bottomLeft);
+        drawer.drawRectangle(width, ob.getTopLeftLoc(), height, OBSTACLE_COLOR);
+    }
 }
