@@ -34,6 +34,7 @@ private:
     bool ifVerticalEdgeOverlaps(const DisplayableRectObstacle &otherObs) const;
 
     size_t scaledPointRange;
+    size_t obsPadding;
     size_t x_min;
     size_t x_max;
     size_t y_min;

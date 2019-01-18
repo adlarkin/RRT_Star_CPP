@@ -6,8 +6,11 @@
 #include "../Location/Location.h"
 
 
+#define PADDING_FACTOR .0025    // obstacle padding (percentage of total space)
+
 DisplayableRectObstacle::DisplayableRectObstacle(size_t scaledPointRange, size_t maxDimension, size_t minDimension,
         bool shorterWidth, bool shorterHeight) : scaledPointRange(scaledPointRange) {
+    obsPadding = (size_t)(scaledPointRange * PADDING_FACTOR);
     double widthFactor = 1.0;
     double heightFactor = 1.0;
     if (shorterWidth) {
@@ -59,11 +62,11 @@ bool DisplayableRectObstacle::isInY(const Location &location) const {
 }
 
 bool DisplayableRectObstacle::isInX(size_t xID_other) const {
-    return (xID_other >= x_min) && (xID_other <= x_max);
+    return (xID_other >= (x_min - obsPadding)) && (xID_other <= (x_max + obsPadding));
 }
 
 bool DisplayableRectObstacle::isInY(size_t yID_other) const {
-    return (yID_other >= y_min) && (yID_other <= y_max);
+    return (yID_other >= (y_min - obsPadding)) && (yID_other <= (y_max + obsPadding));
 }
 
 bool DisplayableRectObstacle::obstaclesOverlap(const DisplayableRectObstacle &otherObs) const {

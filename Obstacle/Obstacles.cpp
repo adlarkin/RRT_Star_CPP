@@ -40,6 +40,7 @@ void Obstacles::generateObstacles(size_t scaledPointRange, size_t numOfObstacles
         DisplayableRectObstacle nextOb = makeRandomObstacle(scaledPointRange, maxLengthWidth, minLengthWidth,
                 shorterWidth, shorterHeight);
         existingObstacles.push_back(nextOb);
+        // changing the orientation of the next obstacle
         shorterWidth = !shorterWidth;
         shorterHeight = !shorterHeight;
     }
