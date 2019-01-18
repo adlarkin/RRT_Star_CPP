@@ -6,22 +6,43 @@
 #include "../Location/Location.h"
 
 
-DisplayableRectObstacle::DisplayableRectObstacle(size_t scaledPointRange, size_t maxDimension)
-        : scaledPointRange(scaledPointRange) {
+DisplayableRectObstacle::DisplayableRectObstacle(size_t scaledPointRange, size_t maxDimension, size_t minDimension,
+        bool shorterWidth, bool shorterHeight) : scaledPointRange(scaledPointRange) {
+    double widthFactor = 1.0;
+    double heightFactor = 1.0;
+    if (shorterWidth) {
+        widthFactor = .5 * widthFactor;
+    }
+    if (shorterHeight) {
+        heightFactor = .5 * heightFactor;
+    }
+
+    setMinMaxX(maxDimension, minDimension, widthFactor);
+    setMinMaxY(maxDimension, minDimension, heightFactor);
+}
+
+void DisplayableRectObstacle::setMinMaxX(size_t maxDimension, size_t minDimension, double widthFactor) {
     size_t firstID = Location::makeIDFromPointRange(scaledPointRange);
     size_t secondID = Location::makeIDFromPointRange(scaledPointRange);
-    size_t thirdID = Location::makeIDFromPointRange(scaledPointRange);
-    size_t fourthID = Location::makeIDFromPointRange(scaledPointRange);
-
     x_min = std::min(firstID, secondID);
     x_max = std::max(firstID, secondID);
     if ((x_max - x_min) > maxDimension) {
-        x_max = x_min + maxDimension;
+        x_max = x_min + (size_t)(widthFactor * maxDimension);
+    } else if ((x_max - x_min) < minDimension) {
+        x_max = x_min + (size_t)(widthFactor * minDimension);
     }
-    y_min = std::min(thirdID, fourthID);
-    y_max = std::max(thirdID, fourthID);
+}
+
+void DisplayableRectObstacle::setMinMaxY(size_t maxDimension, size_t minDimension, double heightFactor) {
+    size_t firstID = Location::makeIDFromPointRange(scaledPointRange);
+    size_t secondID = Location::makeIDFromPointRange(scaledPointRange);
+    y_min = std::min(firstID, secondID);
+    y_max = std::max(firstID, secondID);
     if ((y_max - y_min) > maxDimension) {
-        y_max = y_min + maxDimension;
+        auto var = (size_t)(heightFactor * maxDimension);
+        y_max = y_min + (size_t)(heightFactor * maxDimension);
+    } else if ((y_max - y_min) < minDimension) {
+        y_max = y_min + (size_t)(heightFactor * minDimension);
     }
 }
 
@@ -46,11 +67,29 @@ bool DisplayableRectObstacle::isInY(size_t yID_other) const {
 }
 
 bool DisplayableRectObstacle::obstaclesOverlap(const DisplayableRectObstacle &otherObs) const {
-    // checking to see if one of the corners of otherObs is in 'this'
-    return (isInX(otherObs.getX_min()) && isInY(otherObs.getY_min())) ||
-            (isInX(otherObs.getX_min()) && isInY(otherObs.getY_max())) ||
-            (isInX(otherObs.getX_max()) && isInY(otherObs.getY_min())) ||
-            (isInX(otherObs.getX_max()) && isInY(otherObs.getY_max()));
+    return ifCornersOverlap(otherObs) || ifEdgesOverlap(otherObs) ||
+            otherObs.ifCornersOverlap(*this) || otherObs.ifEdgesOverlap(*this);
+}
+
+bool DisplayableRectObstacle::ifCornersOverlap(const DisplayableRectObstacle &otherObs) const {
+    return (isInX(otherObs.x_min) && isInY(otherObs.y_min)) ||
+           (isInX(otherObs.x_min) && isInY(otherObs.y_max)) ||
+           (isInX(otherObs.x_max) && isInY(otherObs.y_min)) ||
+           (isInX(otherObs.x_max) && isInY(otherObs.y_max));
+}
+
+bool DisplayableRectObstacle::ifEdgesOverlap(const DisplayableRectObstacle &otherObs) const {
+    return ifHorizontalEdgeOverlaps(otherObs) || ifVerticalEdgeOverlaps(otherObs);
+}
+
+bool DisplayableRectObstacle::ifHorizontalEdgeOverlaps(const DisplayableRectObstacle &otherObs) const {
+    return (x_min > otherObs.x_min) && (x_max < otherObs.x_max) &&
+           (y_min < otherObs.y_min) && (y_max > otherObs.y_max);
+}
+
+bool DisplayableRectObstacle::ifVerticalEdgeOverlaps(const DisplayableRectObstacle &otherObs) const {
+    return (x_min < otherObs.x_min) && (x_max > otherObs.x_max) &&
+           (y_min > otherObs.y_min) && (y_max < otherObs.y_max);
 }
 
 size_t DisplayableRectObstacle::getX_min() const {

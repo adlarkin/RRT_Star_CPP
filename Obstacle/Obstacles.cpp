@@ -2,9 +2,12 @@
 // Created by adlarkin on 1/11/19.
 //
 
+#include <iostream>
 #include "Obstacles.h"
+#include <math.h>
 
-#define OBSTACLE_SPACE 0.75  // obstacles should only take up no more than this much of the search space
+#define MAX_OB_SPACE 0.35   // obstacles should take up no more than this much of the search space
+#define MIN_OB_SPACE 0.25   // obstacles should take up no less than this much of the search space
 
 Obstacles::Obstacles(size_t scaledPointRange, size_t numOfObstacles) {
     generateObstacles(scaledPointRange, numOfObstacles);
@@ -24,28 +27,48 @@ bool Obstacles::isObstacleFree(const Location &location) const {
 }
 
 void Obstacles::generateObstacles(size_t scaledPointRange, size_t numOfObstacles) {
-    // set the max length and width of the rectangular obstacles
-    // this is so that the combined obstacle area doesn't exceed OBSTACLE_SPACE
-    auto lengthWidth = (size_t)(OBSTACLE_SPACE * scaledPointRange);
-    lengthWidth = lengthWidth / numOfObstacles;
+    // set the max/min length and width of the rectangular obstacles
+    // this is so that there's a good ratio between the total space and obstacle space
+    size_t totalArea = scaledPointRange * scaledPointRange;
+    auto maxLengthWidth = (size_t) sqrt((MAX_OB_SPACE * totalArea) / numOfObstacles);
+    auto minLengthWidth = (size_t) sqrt((MIN_OB_SPACE * totalArea) / numOfObstacles);
 
+    // for every obstacle that's made, 'transpose' it (so there are differently oriented obstacles)
+    bool shorterWidth = false;
+    bool shorterHeight = true;
     for (size_t i = 0; i < numOfObstacles; ++i) {
-        DisplayableRectObstacle nextOb = makeRandomObstacle(scaledPointRange, lengthWidth);
+        DisplayableRectObstacle nextOb = makeRandomObstacle(scaledPointRange, maxLengthWidth, minLengthWidth,
+                shorterWidth, shorterHeight);
         existingObstacles.push_back(nextOb);
+        shorterWidth = !shorterWidth;
+        shorterHeight = !shorterHeight;
     }
 }
 
-DisplayableRectObstacle Obstacles::makeRandomObstacle(size_t scaledPointRange, size_t maxDimension) {
-    DisplayableRectObstacle obstacle(scaledPointRange, maxDimension);
+DisplayableRectObstacle
+Obstacles::makeRandomObstacle(size_t scaledPointRange, size_t maxDimension, size_t minDimension,
+        bool shorterWidth, bool shorterHeight) {
+    DisplayableRectObstacle obstacle(scaledPointRange, maxDimension, minDimension,
+            shorterWidth, shorterHeight);
 
-    // make sure the newly created obstacle doesn't overlap with other obstacles
-    bool overlaps = true;
-    while (overlaps) {
-        overlaps = false;
+    // make sure the newly created obstacle doesn't overlap with other obstacles or go off the screen
+    bool invalidObs = true;
+    while (invalidObs) {
+        invalidObs = false;
+        // is the obstacle going off the screen?
+        if ((obstacle.getX_max() > scaledPointRange) || (obstacle.getY_max() > scaledPointRange)) {
+            invalidObs = true;
+            obstacle = DisplayableRectObstacle(scaledPointRange, maxDimension, minDimension,
+                                               shorterWidth, shorterHeight);
+            continue;
+        }
+        // does the obstacle overlap/intersect with any other obstacles?
         for (auto obs : existingObstacles) {
             if (obs.obstaclesOverlap(obstacle)) {
-                obstacle = DisplayableRectObstacle(scaledPointRange, maxDimension);
-                overlaps = true;
+                obstacle = DisplayableRectObstacle(scaledPointRange, maxDimension, minDimension,
+                        shorterWidth, shorterHeight);
+                invalidObs = true;
+                break;
             }
         }
     }
