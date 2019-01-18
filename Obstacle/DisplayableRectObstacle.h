@@ -28,6 +28,10 @@ public:
 private:
     void setMinMaxX(size_t maxDimension, size_t minDimension, double widthFactor);
     void setMinMaxY(size_t maxDimension, size_t minDimension, double heightFactor);
+    size_t getPaddedX_Min() const;
+    size_t getPaddedX_Max() const;
+    size_t getPaddedY_Min() const;
+    size_t getPaddedY_Max() const;
     bool ifCornersOverlap(const DisplayableRectObstacle &otherObs) const;
     bool ifEdgesOverlap(const DisplayableRectObstacle &otherObs) const;
     bool ifHorizontalEdgeOverlaps(const DisplayableRectObstacle &otherObs) const;

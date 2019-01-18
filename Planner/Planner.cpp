@@ -15,7 +15,7 @@
 #define LINE_COLOR GREY
 #define PATH_COLOR LIGHT_BLUE
 #define PATH_WIDTH 1.5f
-#define NUM_OBSTACLES 4
+#define NUM_OBSTACLES 5
 #define OBSTACLE_COLOR WHITE
 
 // initializer lists init objects based on the order they're declared in the .h file
@@ -49,13 +49,14 @@ void Planner::findBestPath() {
         RobotState* nearest = rTree.getNearestElement(sampledLoc);
         if (euclideanDistance(nearest->getLocation(), sampledLoc) > epsilon) {
             sampledLoc = makeLocationWithinEpsilon(nearest, sampledLoc);
+            // makeLocationWithinEpsilon() may make a new location that isn't obstacle free
+            if (!isObstacleFree(sampledLoc)) {
+                continue;
+            }
         }
-        // makeLocationWithinEpsilon() may make a new location that isn't obstacle free
-        if (isObstacleFree(sampledLoc)) {
-            rewire(nearest, sampledLoc);
-            updatePath(numBetterPathsFound);
-            drawer.updateScreen();
-        }
+        rewire(nearest, sampledLoc);
+        updatePath(numBetterPathsFound);
+        drawer.updateScreen();
     }
 
     // update the screen one last time now that the algorithm is complete
@@ -71,7 +72,8 @@ void Planner::findBestPath() {
 void Planner::updatePath(size_t &pathsFound) {
     // see if any states within epsilon of the goal state are a better solution due to rewiring
     bool foundBetterPath = false;
-    std::vector<RobotState*> solutionCandidates = rTree.getKNearestNeighbors(goal, neighborhoodSize, epsilon);
+    std::vector<RobotState*> solutionCandidates = rTree.getKNearestNeighbors(goal, neighborhoodSize,
+            knnNeighborhoodRadius);
     for (auto candidate : solutionCandidates) {
         if (candidate->getCost() < bestCostSoFar) {
             currSolutionState = candidate;

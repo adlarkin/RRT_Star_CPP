@@ -49,6 +49,38 @@ void DisplayableRectObstacle::setMinMaxY(size_t maxDimension, size_t minDimensio
     }
 }
 
+size_t DisplayableRectObstacle::getPaddedX_Min() const {
+    // checking for overflow
+    if (x_min < obsPadding) {
+        return 0;
+    }
+    return x_min - obsPadding;
+}
+
+size_t DisplayableRectObstacle::getPaddedX_Max() const {
+    // checking for overflow
+    if ((x_max + obsPadding) < x_max) {
+        return scaledPointRange;
+    }
+    return x_max + obsPadding;
+}
+
+size_t DisplayableRectObstacle::getPaddedY_Min() const {
+    // checking for overflow
+    if (y_min < obsPadding) {
+        return 0;
+    }
+    return y_min - obsPadding;
+}
+
+size_t DisplayableRectObstacle::getPaddedY_Max() const {
+    // checking for overflow
+    if ((y_max + obsPadding) < y_max) {
+        return scaledPointRange;
+    }
+    return y_max + obsPadding;
+}
+
 Location DisplayableRectObstacle::getTopLeftLoc() const {
     return Location(x_min, y_max, scaledPointRange);
 }
@@ -62,11 +94,11 @@ bool DisplayableRectObstacle::isInY(const Location &location) const {
 }
 
 bool DisplayableRectObstacle::isInX(size_t xID_other) const {
-    return (xID_other >= (x_min - obsPadding)) && (xID_other <= (x_max + obsPadding));
+    return (xID_other >= getPaddedX_Min()) && (xID_other <= getPaddedX_Max());
 }
 
 bool DisplayableRectObstacle::isInY(size_t yID_other) const {
-    return (yID_other >= (y_min - obsPadding)) && (yID_other <= (y_max + obsPadding));
+    return (yID_other >= getPaddedY_Min()) && (yID_other <= getPaddedY_Max());
 }
 
 bool DisplayableRectObstacle::obstaclesOverlap(const DisplayableRectObstacle &otherObs) const {

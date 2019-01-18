@@ -16,6 +16,9 @@ In order to use the rTree data structure, ensure that boost is installed:
 To run the program, you must pass in command-line parameters. The parameter list is as follows:
 - executable x_winPos y_winPos winWidth winHeight numPoints epsilon plannerType neighborhoodSize knnNeighborhoodRadiusFactor testSeed
 - 'plannerType' should be either "distance" or "energy" (it is NOT case sensitive)
+- 'knnNeighborhoodRadiusFactor' determines how big of a search radius is used when looking for solutions and states to rewire
+    - for example, if you set this to 1.5, then you will search for states within 1.5*epsilon
+    - when looking for solutions, the planner will take the best state within this search radius from the goal state (if one exists)
 - the 'testSeed' parameter is optional
 
 
