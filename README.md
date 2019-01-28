@@ -1,7 +1,7 @@
 # RRT_Star_CPP
 RRT* Planner for distance or (hopefully) energy efficiency (C++)
 
-## Installation
+## Installation and Setup
 This project uses openGL and C++ Boost libraries.
 To install openGL:
 ```bash	
@@ -14,6 +14,7 @@ $ sudo apt install libboost-dev
 ```
 (this project uses freeGlut to actually implement openGL, not glut)
 
+## Running the Program
 Next, if using CLion, you need to add the following to your CMakeLists.txt file:
 ```bash
 target_link_libraries(PROJECT_NAME -lglut -lGL -lGLU)
@@ -28,7 +29,7 @@ To run the program, you must pass in command-line parameters. The parameter list
     - when looking for solutions, the planner will take the best state within this search radius from the goal state (if one exists)
 - the 'testSeed' parameter is optional
 
-
+## Other Information
 More info on rTree can be found here:
 - https://www.boost.org/doc/libs/1_68_0/libs/geometry/doc/html/geometry/spatial_indexes/introduction.html
 
