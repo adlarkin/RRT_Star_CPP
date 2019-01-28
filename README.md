@@ -8,11 +8,12 @@ To install openGL:
 $ sudo apt update
 $ sudo apt install libglu1-mesa-dev freeglut3-dev mesa-common-dev
 ```
+(this project uses freeGlut to actually implement openGL, not glut)
+
 To install Boost:
 ```bash
 $ sudo apt install libboost-dev
 ```
-(this project uses freeGlut to actually implement openGL, not glut)
 
 ## Running the Program
 Next, if using CLion, you need to add the following to your CMakeLists.txt file:
