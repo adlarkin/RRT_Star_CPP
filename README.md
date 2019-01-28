@@ -1,17 +1,24 @@
 # RRT_Star_CPP
 RRT* Planner for distance or (hopefully) energy efficiency (C++)
 
-Make sure you have openGL installed ... instructions here:
-- http://www.codebind.com/linux-tutorials/install-opengl-ubuntu-linux/
+## Installation
+This project uses openGL and C++ Boost libraries.
+To install openGL:
+```bash	
+$ sudo apt update
+$ sudo apt install libglu1-mesa-dev freeglut3-dev mesa-common-dev
+```
+To install Boost:
+```bash
+$ sudo apt install libboost-dev
+```
 (this project uses freeGlut to actually implement openGL, not glut)
 
 Next, if using CLion, you need to add the following to your CMakeLists.txt file:
-- target_link_libraries(PROJECT_NAME -lglut -lGL -lGLU)
-- when adding the above line, replace 'PROJECT_NAME' with the name of your project
-
-In order to use the rTree data structure, ensure that boost is installed:
-- https://www.boost.org/doc/libs/1_68_0/more/getting_started/index.html
-- https://www.boost.org/doc/libs/1_69_0/more/getting_started/unix-variants.html
+```bash
+target_link_libraries(PROJECT_NAME -lglut -lGL -lGLU)
+```
+(when adding the above line, replace 'PROJECT_NAME' with the name of your project)
 
 To run the program, you must pass in command-line parameters. The parameter list is as follows:
 - executable x_winPos y_winPos winWidth winHeight numPoints epsilon plannerType neighborhoodSize knnNeighborhoodRadiusFactor testSeed
