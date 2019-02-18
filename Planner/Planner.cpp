@@ -15,7 +15,7 @@
 #define LINE_COLOR GREY
 #define PATH_COLOR LIGHT_BLUE
 #define PATH_WIDTH 1.5f
-#define NUM_OBSTACLES 5
+#define NUM_OBSTACLES 20
 #define OBSTACLE_COLOR WHITE
 
 // initializer lists init objects based on the order they're declared in the .h file
@@ -84,9 +84,8 @@ void Planner::updatePath(size_t &pathsFound) {
 
     if (foundBetterPath) {
         pathsFound++;
-        // update the cost and redraw the tree to make the rewiring more clear
+        // redraw the tree to make the rewiring more clear
         // (sometimes, erasing old connections can (partially) erase other valid connections)
-        bestCostSoFar = currSolutionState->getCost();
         drawer.clearScreen();
         drawObstacles();
         redrawTree(root);
@@ -126,8 +125,7 @@ void Planner::rewire(RobotState *nearest, const Location &nextLocation) {
             drawer.eraseLine(state->getLocation(), state->getParent()->getLocation());
             state->updateParent(nextState, tempCost);
             drawer.drawLine(state->getLocation(), state->getParent()->getLocation(), LINE_COLOR);
-            updateNeighboringStateCosts(state); // todo: see if this is really needed
-            // todo: make sure the old parent isn't an empty node? (this shouldn't happen, just think about it some more)
+            updateNeighboringStateCosts(state);
         }
     }
 

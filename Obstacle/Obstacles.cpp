@@ -6,8 +6,8 @@
 #include "Obstacles.h"
 #include <math.h>
 
-#define MAX_OB_SPACE 0.35   // obstacles should take up no more than this much of the search space
-#define MIN_OB_SPACE 0.25   // obstacles should take up no less than this much of the search space
+#define MAX_OB_SPACE 0.50   // obstacles should take up no more than this much of the search space
+#define MIN_OB_SPACE 0.40   // obstacles should take up no less than this much of the search space
 
 Obstacles::Obstacles(size_t scaledPointRange, size_t numOfObstacles) {
     generateObstacles(scaledPointRange, numOfObstacles);
