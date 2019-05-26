@@ -29,7 +29,9 @@ void Drawer::initScreen(const WindowParamsDTO &screenParams) {
     int fakeArgc = 1;
 
     glutInit( &fakeArgc, fakeArgv );
-    glutInitDisplayMode(GLUT_DOUBLE);   // double buffer works well with dedicated graphics cards
+    // TODO: enforce some check for if the computer has a graphics card or not
+    glutInitDisplayMode(GLUT_SINGLE);
+//    glutInitDisplayMode(GLUT_DOUBLE);   // double buffer works well with dedicated graphics cards
     glutInitWindowSize(screenParams.getWinWidth(), screenParams.getWinHeight());
     glutInitWindowPosition(screenParams.getX_winPos(), screenParams.getY_winPos());
     glutCreateWindow(screenParams.getTitle().c_str());
@@ -72,8 +74,9 @@ void Drawer::eraseLine(const Location &start, const Location &end, float lineWid
 }
 
 void Drawer::updateScreen() {
-    // doing this instead of glFlush()/glFinish() since a double duffer implementation is used (see link in README)
-    glutSwapBuffers();
+    // TODO: enforce some check for if the computer has a graphics card or not
+    glFlush();
+//    glutSwapBuffers();  // doing this instead of glFlush() for double duffer implementation (see link in README)
 }
 
 void Drawer::clearScreen() {
