@@ -11,23 +11,37 @@ $ sudo apt install libglu1-mesa-dev freeglut3-dev mesa-common-dev
 ```
 To install Boost:
 ```bash
+$ sudo apt update
 $ sudo apt install libboost-dev
 ```
 
 ## Running the Program
-Next, if using CLion, you need to add the following to your CMakeLists.txt file:
+This project uses cmake:
 ```bash
-target_link_libraries(PROJECT_NAME -lglut -lGL -lGLU)
+$ cd <PATH TO RRT_STAR_CPP DIRECTORY>
+$ mkdir build
+$ cd build
+$ cmake ..
+$ make
+$ ./RRT_Star_CPP <x_winPos> <y_winPos> <winWidth> <winHeight> <numPoints> <epsilon> <plannerType> <neighborhoodSize> <knnNeighborhoodRadiusFactor> [testSeed]
 ```
-(when adding the above line, replace 'PROJECT_NAME' with the name of your project)
-
-To run the program, you must pass in command-line parameters. The parameter list is as follows:
-- executable x_winPos y_winPos winWidth winHeight numPoints epsilon plannerType neighborhoodSize knnNeighborhoodRadiusFactor testSeed
+The parameters listed above are described below. If you are unsure what to enter for the above parameters, here is an example that can be modified to your needs (it is likely that you will need to modify the window parameters to meet your screen specs):
+```bash
+$ ./RRT_Star_CPP 430 50 1000 900 100000 .01 distance 25 1.75
+```
+- x_winPos & y_winPos: defines the top-left position of the animation window  
+- winWidth: the width of the animation window
+- winHeight: the height of the animation window
+- numPoints: the number of obstacle-free points to be sampled (# of iterations)
+- epsilon: the amount the tree can expand at each iteration
 - 'plannerType' should be either "distance" or "energy" (it is NOT case sensitive)
+- neighborhoodSize
 - 'knnNeighborhoodRadiusFactor' determines how big of a search radius is used when looking for solutions and states to rewire
     - for example, if you set this to 1.5, then you will search for states within 1.5*epsilon
     - when looking for solutions, the planner will take the best state within this search radius from the goal state (if one exists)
-- the 'testSeed' parameter is optional
+- testSeed: can be used for debugging
+    - if nothing is listed for this parameter, a random seed is chosen
+    - the seed chosen is the first line of output from the program
 
 ## Other Information
 More info on rTree can be found here:
