@@ -3,13 +3,11 @@ RRT* Planner for distance or (hopefully) energy efficiency (C++)
 
 ## Installation and Setup
 This project uses openGL and C++ Boost libraries.
-To install openGL:
+To install openGL (this project uses freeGlut to actually implement openGL, not glut):
 ```bash	
 $ sudo apt update
 $ sudo apt install libglu1-mesa-dev freeglut3-dev mesa-common-dev
 ```
-(this project uses freeGlut to actually implement openGL, not glut)
-
 To install Boost:
 ```bash
 $ sudo apt install libboost-dev
