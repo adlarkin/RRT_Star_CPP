@@ -3,6 +3,7 @@ RRT* Planner for distance or (hopefully) energy efficiency (C++)
 
 ## Installation and Setup
 This project uses openGL and C++ Boost libraries.
+
 To install openGL (this project uses freeGlut to actually implement openGL, not glut):
 ```bash	
 $ sudo apt update
