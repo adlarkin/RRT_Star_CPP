@@ -1,5 +1,5 @@
 # RRT_Star_CPP
-RRT* Planner for distance or (hopefully) energy efficiency (C++)
+This repository simulates the RRT* planning algorithm. A random environment is generated, along with a random start and goal location. The building of the search tree is simulated as new locations are sampled, and the path is modified over time along with outputs of the improved path cost. Currently, the heuristic used is euclidean distance. An energy metric may be incorporated later.
 
 ## Installation and Setup
 This project uses openGL and C++ Boost libraries.
@@ -15,7 +15,7 @@ $ sudo apt update
 $ sudo apt install libboost-dev
 ```
 
-## Running the Program
+## Usage
 This project uses cmake:
 ```bash
 $ cd <PATH TO RRT_STAR_CPP DIRECTORY>
@@ -44,9 +44,11 @@ $ ./RRT_Star_CPP 430 50 1000 900 100000 .01 distance 25 1.75
     - the seed chosen is the first line of output from the program
 
 ## Other Information
+This project was implemented with C++.
+
 More info on rTree can be found here:
 - https://www.boost.org/doc/libs/1_68_0/libs/geometry/doc/html/geometry/spatial_indexes/introduction.html
 
-Using double buffer for the drawer (openGL-based) because of dedicated graphics cards:
+Use a double buffer implementation for the drawer (updateScreen() method in Visualization/Drawer.cpp) if you have a dedicated graphics card (if not, single buffer should be used -- single buffer is the default setting in the repository):
 - https://stackoverflow.com/questions/18816882/no-display-transparent-window-with-opengl-2-and-primusrun-on-single-buffer
 - https://stackoverflow.com/questions/28298540/difference-between-single-bufferedglut-single-and-double-buffered-drawingglut
